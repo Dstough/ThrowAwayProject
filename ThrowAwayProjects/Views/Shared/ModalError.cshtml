@@ -1,0 +1,16 @@
+@model Exception;
+@{
+    var errorMessage = Model.ToString().Split(new string[] { " at " }, StringSplitOptions.None);
+}
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <h2 class="modal-title">@errorMessage[0]</h2>
+</div>
+<div class="modal-body">
+    @for(int i = 1; i < errorMessage.Length; i++)
+    {
+        <h3>@errorMessage[i]</h3>;
+    }
+</div>

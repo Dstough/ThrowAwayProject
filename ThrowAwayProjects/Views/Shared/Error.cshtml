@@ -1,0 +1,14 @@
+﻿@model Exception
+@{    
+    var errorMessage = Model.ToString().Split(new string[] { " at " }, StringSplitOptions.None);
+    ViewData["Title"] = "Error";
+    ViewData["PageHeader"] = "";
+    ViewData["PageDescription"] = "";
+}
+<div>
+    <h2>@errorMessage[0]</h2>
+    @for(int i = 1; i < errorMessage.Length; i++)
+    {
+        <h5>@errorMessage[i]</h5>;
+    }
+</div>
