@@ -3,5 +3,6 @@ namespace DataBase
 {
     public class TrainRepository : BaseRepository<Train>
     {
+        
     }
 }

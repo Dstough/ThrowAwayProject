@@ -6,9 +6,9 @@ namespace ThrowAwayProjects.Models
         public string Make { get; private set; }
         public string CarModel { get; private set; }
         public int Id {get;set;}
-        public CarViewModel() :this(new Car())
+        public CarViewModel() : this(new Car())
         {
-            
+
         }
         public CarViewModel(Car _Car)
         {
