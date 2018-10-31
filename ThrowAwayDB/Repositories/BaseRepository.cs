@@ -14,7 +14,6 @@ namespace DataBase
 
         public virtual T GetById(int id)
         {
-            //TODO: Select with reflection property generated SQL
             var item = new T();
             var tableName = item.GetType().Name;
             var columnList = "";
@@ -32,12 +31,12 @@ namespace DataBase
                 conn.Open();
                 using (var reader = cmd.ExecuteReader())
                 {
-                    if (!reader.Read()) 
+                    if (!reader.Read())
                         return null;
 
-                    foreach (var prop in item.GetType().GetProperties().Where(e=>e.CanWrite))
+                    foreach (var prop in item.GetType().GetProperties().Where(e => e.CanWrite))
                     {
-                        prop.SetValue(item, reader[prop.Name], null);                       
+                        prop.SetValue(item, reader[prop.Name], null);
                     }
                 }
             }
@@ -46,14 +45,36 @@ namespace DataBase
         }
         public virtual IEnumerable<T> GetAll()
         {
-            var list = new List<T>();
             //TODO: Select with reflection property generated SQL
-            for (int i = 0; i < 5; i++)
+            var list = new List<T>();
+            var itemTemplate = new T();
+            var tableName = itemTemplate.GetType().Name;
+            var columnList = "";
+
+            foreach (var prop in itemTemplate.GetType().GetProperties())
             {
-                var t = new T();
-                t.Id = i;
-                list.Add(t);
+                columnList += prop.Name + ",";
             }
+            
+            using (var conn = new SqlConnection(ConnString))
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + ";";
+                conn.Open();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var item = new T();
+                        foreach (var prop in item.GetType().GetProperties().Where(e => e.CanWrite))
+                        {
+                            prop.SetValue(item, reader[prop.Name], null);
+                        }
+                        list.Add(item);
+                    }
+                }
+            }
+
             return list;
         }
         public virtual IEnumerable<T> GetAll(Expression<Func<T, bool>> predicate)
