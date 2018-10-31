@@ -8,8 +8,8 @@ namespace ThrowAwayDb
 
         public Car() : base()
         {
-            Make = "GM";
-            Model = "Default";
+            Make = null;
+            Model = null;
         }
     }
 }

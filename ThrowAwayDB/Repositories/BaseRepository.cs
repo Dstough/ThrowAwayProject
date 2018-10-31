@@ -1,25 +1,54 @@
 using System;
+using System.Reflection;
+using System.Data.SqlClient;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using ThrowAwayDb;
 namespace DataBase
 {
-     public class BaseRepository<T> : IRepository<T> 
-     where T : BaseObject, new()
-     {
+    public class BaseRepository<T> : IRepository<T>
+    where T : BaseObject, new()
+    {
+        private const string ConnString = "Server=localhost;Database=ThrowAwayDB;Trusted_Connection=True;";
+
         public virtual T GetById(int id)
         {
-            var item  = new T();
-            item.Id = id;
             //TODO: Select with reflection property generated SQL
+            var item = new T();
+            var tableName = item.GetType().Name;
+            var columnList = "";
+
+            using (var conn = new SqlConnection(ConnString))
+            using (var cmd = conn.CreateCommand())
+            {
+                foreach (var prop in item.GetType().GetProperties())
+                {
+                    columnList += prop.Name + ",";
+                }
+                cmd.CommandText = "SELECT TOP 1 " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE Id = @Id;";
+                cmd.Parameters.AddWithValue("@Id", id);
+
+                conn.Open();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (!reader.Read()) 
+                        return null;
+
+                    foreach (var prop in item.GetType().GetProperties().Where(e=>e.CanWrite))
+                    {
+                        prop.SetValue(item, reader[prop.Name], null);                       
+                    }
+                }
+            }
+
             return item;
         }
         public virtual IEnumerable<T> GetAll()
         {
             var list = new List<T>();
             //TODO: Select with reflection property generated SQL
-            for(int i = 0; i < 5; i++)
+            for (int i = 0; i < 5; i++)
             {
                 var t = new T();
                 t.Id = i;
@@ -33,7 +62,7 @@ namespace DataBase
             return new List<T>();
         }
         public virtual void Add(T entity)
-        {   
+        {
             //TODO: Insert with reflection property generated SQL
         }
         public virtual void Delete(T entity)
@@ -51,17 +80,17 @@ namespace DataBase
             var columnNames = "";
             var values = "";
 
-            foreach(var prop in entity.GetType().GetProperties().Where(e=>e.Name != "Id"))
+            foreach (var prop in entity.GetType().GetProperties().Where(e => e.Name != "Id"))
             {
                 var parameterName = "@" + prop.Name;
-                var parameterValue = prop.GetValue(entity,null);
+                var parameterValue = prop.GetValue(entity, null);
                 //TODO: cmd.paramiters.Add(parameterName, parameterValue);
 
                 columnNames += prop.Name + ",";
                 values += parameterName + ",";
             }
-            sql += "(" + columnNames.TrimEnd(',') + ")\nVALUES (" + values.TrimEnd(',') + ");" ;
+            sql += "(" + columnNames.TrimEnd(',') + ")\nVALUES (" + values.TrimEnd(',') + ");";
             return sql;
         }
-     }
+    }
 }

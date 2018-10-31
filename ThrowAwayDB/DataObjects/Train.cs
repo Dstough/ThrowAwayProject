@@ -5,13 +5,13 @@ namespace ThrowAwayDb
     {
         public string Name {get;set;}
         public string Cargo { get; set; }
-        public int Cars { get; set; }
+        public int? Cars { get; set; }
 
         public Train() : base()
         {
-            Name = "Pain Train";
-            Cargo = "Pain (double dose)";
-            Cars = 1;
+            Name = null;
+            Cargo = null;
+            Cars = null;
         }
     }
 }

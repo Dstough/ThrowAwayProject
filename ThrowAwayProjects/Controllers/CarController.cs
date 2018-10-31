@@ -29,7 +29,6 @@ namespace ThrowAwayControllers
             return HandleExceptions(() =>
             {
                 var car = unitOfWork.Cars.GetById(id);
-                car.Model = unitOfWork.Cars.TestSQL(car);
                 var viewModel = new CarViewModel(car);
                 return Modal("Partials/_Edit", viewModel);
             });
