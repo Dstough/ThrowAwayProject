@@ -12,7 +12,6 @@ namespace ThrowAwayControllers
         public CarController(ICompositeViewEngine viewEngine) : base(viewEngine)
         {  
         }
-
         public ActionResult Index()
         {
             return HandleExceptions(() =>
@@ -25,12 +24,13 @@ namespace ThrowAwayControllers
                 return View(list);
             });
         }
-
         public JsonResult Edit(int id)
         {
             return HandleExceptions(() =>
             {
-                var viewModel = new CarViewModel(unitOfWork.Cars.GetById(id));
+                var car = unitOfWork.Cars.GetById(id);
+                car.Model = unitOfWork.Cars.TestSQL(car);
+                var viewModel = new CarViewModel(car);
                 return Modal("Partials/_Edit", viewModel);
             });
         }

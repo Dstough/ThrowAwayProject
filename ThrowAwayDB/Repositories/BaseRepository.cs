@@ -50,14 +50,13 @@ namespace DataBase
             var columnNames = "";
             var values = "";
 
-            foreach(var prop in entity.GetType().GetProperties())
+            foreach(var prop in entity.GetType().GetProperties().Where(e=>e.Name != "Id"))
             {
                 columnNames += prop.Name + ",";
                 values += prop.GetValue(entity,null) + ",";
             }
-
+            sql += "(" + columnNames.TrimEnd(',') + ")\nVALUES (" + values.TrimEnd(',') + ");" ;
             return sql;
         }
-
      }
 }
