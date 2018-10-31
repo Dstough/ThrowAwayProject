@@ -39,7 +39,7 @@ namespace ThrowAwayControllers
         {
             return HandleExceptions(()=>
             {
-                return Index();
+                return RedirectToAction("Index");
             });
         }
     }

@@ -1,5 +1,5 @@
 @model CarViewModel;
-@using(Html.BeginForm("Edit","Car",FormMethod.Post))
+@using(Html.BeginForm("Edit","Car",FormMethod.Post, new { id = "FormEditCar" }))
 {
     <div class="modal-header bg-dark">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -21,7 +21,7 @@
             <div class="input-group-addon">
                 <div class="input-group-text">Model:</div>
             </div>
-            @Html.TextBoxFor(model => model.Model, new{@class="form-control"})
+            @Html.TextBoxFor(model => model.CarModel, new{@class="form-control"})
         </div>
 
     </div>
@@ -29,6 +29,14 @@
     <div class='modal-footer'>
         <button type="button" class="btn btn-danger pull-left">Delete</button>
         <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
-        <submit type="submit" class="btn btn-primary" data-dismiss="modal">Save changes</submit>
+        <input id="btnSubmit" type="submit" class="btn btn-primary" data-dismiss="modal" value="Save Changes" />
     </div>
+
+    <script>
+        $(function(){
+            $("#btnSubmit").on("click",function(){
+                $("#FormEditCar").submit();
+            });
+        });
+    </script>
 }

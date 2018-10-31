@@ -4,7 +4,7 @@ namespace ThrowAwayProjects.Models
     public class CarViewModel
     {
         public string Make { get; private set; }
-        public string Model { get; private set; }
+        public string CarModel { get; private set; }
         public int Id {get;set;}
         public CarViewModel() :this(new Car())
         {
@@ -14,7 +14,7 @@ namespace ThrowAwayProjects.Models
         {
             Id = _Car.Id ?? 0;
             Make = _Car.Make;
-            Model = _Car.Model;
+            CarModel = _Car.Model;
         }
     }
 }

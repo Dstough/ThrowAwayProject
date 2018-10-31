@@ -43,5 +43,21 @@ namespace DataBase
         {
 
         }
+
+        public string TestSQL(T entity)
+        {
+            var sql = "INSERT INTO " + entity.GetType().Name + " ";
+            var columnNames = "";
+            var values = "";
+
+            foreach(var prop in entity.GetType().GetProperties())
+            {
+                columnNames += prop.Name + ",";
+                values += prop.GetValue(entity,null) + ",";
+            }
+
+            return sql;
+        }
+
      }
 }
