@@ -3,8 +3,8 @@ namespace ThrowAwayProjects.Models
 {
     public class CarViewModel
     {
-        public string Make { get; private set; }
-        public string CarModel { get; private set; }
+        public string Make { get; set; }
+        public string Type { get; set; }
         public int Id {get;set;}
         public CarViewModel() : this(new Car())
         {
@@ -14,7 +14,7 @@ namespace ThrowAwayProjects.Models
         {
             Id = _Car.Id;
             Make = _Car.Make;
-            CarModel = _Car.Model;
+            Type = _Car.Model;
         }
     }
 }

@@ -1,5 +1,5 @@
 using ThrowAwayDb;
-namespace DataBase
+namespace ThrowAwayDbBackground
 {
     public class PlaneRepository : BaseRepository<Plane>
     {

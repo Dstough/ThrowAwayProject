@@ -1,4 +1,4 @@
-using DataBase;
+using ThrowAwayDbBackground;
 namespace ThrowAwayDb
 {
     public class Car : BaseObject

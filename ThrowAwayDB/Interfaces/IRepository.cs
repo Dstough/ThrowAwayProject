@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-namespace DataBase
+namespace ThrowAwayDbBackground
 {
     public interface IRepository<T> where T : BaseObject
     {
@@ -9,7 +9,7 @@ namespace DataBase
         IEnumerable<T> GetAll();
         IEnumerable<T> GetAll(Expression<Func<T, bool>> predicate);
         void Add(T entity);
-        void Delete(T entity);
+        void Delete(int id);
         void Edit(T entity);
     }
 }

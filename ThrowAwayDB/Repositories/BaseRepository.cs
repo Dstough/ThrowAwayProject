@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using ThrowAwayDb;
-namespace DataBase
+namespace ThrowAwayDbBackground
 {
     public class BaseRepository<T> : IRepository<T>
     where T : BaseObject, new()
@@ -45,7 +45,6 @@ namespace DataBase
         }
         public virtual IEnumerable<T> GetAll()
         {
-            //TODO: Select with reflection property generated SQL
             var list = new List<T>();
             var itemTemplate = new T();
             var tableName = itemTemplate.GetType().Name;
@@ -79,39 +78,71 @@ namespace DataBase
         }
         public virtual IEnumerable<T> GetAll(Expression<Func<T, bool>> predicate)
         {
-            //TODO: Select with reflection property generated SQL
-            return new List<T>();
+            //TODO: Fix this. It is lazy and incorrect in terms of how to handle a predicate function.
+            return GetAll();
         }
         public virtual void Add(T entity)
         {
-            //TODO: Insert with reflection property generated SQL
-        }
-        public virtual void Delete(T entity)
-        {
-            //TODO: Delete with reflection property generated SQL
+            var tableName = entity.GetType().Name;
+            var columns = "";
+            var paramiters = "";
+            
+            using (var conn = new SqlConnection(ConnString))
+            using (var cmd = conn.CreateCommand())
+            {
+                foreach (var prop in entity.GetType().GetProperties().Where(e=>e.Name != "Id"))
+                {
+                    columns += prop.Name + ",";
+                    paramiters += "@" + prop.Name + ",";
+                    cmd.Parameters.AddWithValue("@" + prop.Name, prop.GetValue(entity));
+                }
+
+                cmd.CommandText = "INSERT INTO " + tableName + " (" + columns.TrimEnd(',') + ")";
+                cmd.CommandText += "VALUES (" + paramiters.TrimEnd(',') + ");";
+                cmd.CommandText += "SELECT MAX (Id) FROM " + tableName + " AS Id;";
+                conn.Open();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if(!reader.Read()) 
+                        return;
+                    entity.Id = (int)(reader[0] ?? 0);
+                }
+            }
         }
         public virtual void Edit(T entity)
         {
-            //TODO: Edit with reflection property generated SQL
-        }
+            var tableName = entity.GetType().Name;
 
-        public string TestSQL(T entity)
-        {
-            var sql = "INSERT INTO " + entity.GetType().Name + " ";
-            var columnNames = "";
-            var values = "";
-
-            foreach (var prop in entity.GetType().GetProperties().Where(e => e.Name != "Id"))
+            using (var conn = new SqlConnection(ConnString))
+            using (var cmd = conn.CreateCommand())
             {
-                var parameterName = "@" + prop.Name;
-                var parameterValue = prop.GetValue(entity, null);
-                //TODO: cmd.paramiters.Add(parameterName, parameterValue);
+                cmd.CommandText = "UPDATE " + tableName + " SET ";
+                foreach (var prop in entity.GetType().GetProperties().Where(e=>e.Name != "Id"))
+                {
+                    cmd.CommandText += prop.Name + "=@" + prop.Name + ",";
+                    cmd.Parameters.AddWithValue("@" + prop.Name, prop.GetValue(entity));
+                }
+                cmd.CommandText = cmd.CommandText.TrimEnd(',') + " WHERE Id = @Id;";
+                cmd.Parameters.AddWithValue("@Id", entity.Id);
 
-                columnNames += prop.Name + ",";
-                values += parameterName + ",";
+                conn.Open();
+                cmd.ExecuteNonQuery();
             }
-            sql += "(" + columnNames.TrimEnd(',') + ")\nVALUES (" + values.TrimEnd(',') + ");";
-            return sql;
+        }
+        public virtual void Delete(int id)
+        {
+            var itemTemplate = new T();
+            var tableName = itemTemplate.GetType().Name;
+            
+            using (var conn = new SqlConnection(ConnString))
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "DELETE FROM " + tableName + " WHERE Id = @Id";
+                cmd.Parameters.AddWithValue("@Id", id);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
         }
     }
 }

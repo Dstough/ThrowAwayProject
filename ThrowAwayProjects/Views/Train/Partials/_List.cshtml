@@ -1,0 +1,32 @@
+@model List<TrainViewModel>;
+<table class="table table-hover">
+    <thead>
+        <tr>
+            @if(Model.Count > 0)
+            {
+                <th>Name</th>
+                <th>Cargo</th>
+                <th>Cars</th>
+            }
+            else
+            {
+                <th>No Records To Display</th>
+            }
+            <th> 
+                <button id="AddNew" class="btn btn-warning btn-xs" onclick='Modal("@Url.Action("AddEdit","Train")");'>Add New</button>
+            </th>
+           
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.Cargo</td>
+                <td>@item.Cars</td>
+                <td id="@item.Id" colspan='2' onclick='Modal("@Url.Action("AddEdit","Train",new{id=item.Id})");'><a class="edit"><span class="glyphicon glyphicon-pencil"></span></a></td>
+            </tr>
+        }
+    </tbody>
+</table>
