@@ -81,10 +81,10 @@ namespace ThrowAwayDbBackground
 
             return list;
         }
-        public virtual IEnumerable<T> GetAll(Expression<Func<T, bool>> predicate)
+        public virtual IEnumerable<T> Find(Func<T, bool> predicate)
         {
             //TODO: Fix this. It is lazy and incorrect in terms of how to handle a predicate function.
-            return GetAll();
+            return GetAll().Where(predicate);
         }
         public virtual void Add(T entity)
         {

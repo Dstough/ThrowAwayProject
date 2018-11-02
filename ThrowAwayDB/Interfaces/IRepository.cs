@@ -7,7 +7,7 @@ namespace ThrowAwayDbBackground
     {
         T GetById(int id);
         IEnumerable<T> GetAll();
-        IEnumerable<T> GetAll(Expression<Func<T, bool>> predicate);
+        IEnumerable<T> Find(Func<T, bool> predicate);
         void Add(T entity);
         void Delete(int id);
         void Edit(T entity);
