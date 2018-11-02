@@ -10,8 +10,13 @@ namespace ThrowAwayDbBackground
     public class BaseRepository<T> : IRepository<T>
     where T : BaseObject, new()
     {
-        private const string ConnString = "Server=localhost;Database=ThrowAwayDB;Trusted_Connection=True;";
+        private string ConnString {get;set;}
 
+        public BaseRepository():this("") { }
+        public BaseRepository(string _connectionString) 
+        {
+            ConnString = _connectionString;
+        }
         public virtual T GetById(int id)
         {
             var item = new T();

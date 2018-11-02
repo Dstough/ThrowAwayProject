@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
 using ThrowAwayDB;
 
 namespace ThrowAwayProjects.Controllers
@@ -14,10 +15,12 @@ namespace ThrowAwayProjects.Controllers
     {
         protected UnitOfWork unitOfWork;
         private ICompositeViewEngine viewEngine;
-        public BaseController(ICompositeViewEngine _viewEngine)
+        private IConfiguration configuration;
+        public BaseController(ICompositeViewEngine _viewEngine,IConfiguration _config)
         {
+            configuration = _config;
             viewEngine = _viewEngine;
-            unitOfWork = new UnitOfWork();
+            unitOfWork = new UnitOfWork(configuration.GetConnectionString("ThrowAwayDB"));
         }
         private string RenderViewToString(string viewName, object model)
         {
@@ -28,11 +31,11 @@ namespace ThrowAwayProjects.Controllers
             using (var writer = new StringWriter())
             {
                 ViewEngineResult viewResult = viewEngine.FindView(ControllerContext, viewName, false);
-                ViewContext viewContext = new ViewContext(ControllerContext,viewResult.View,ViewData,TempData,writer,new HtmlHelperOptions());
-                
+                ViewContext viewContext = new ViewContext(ControllerContext, viewResult.View, ViewData, TempData, writer, new HtmlHelperOptions());
+
                 var t = viewResult.View.RenderAsync(viewContext);
                 t.Wait();
-                
+
                 return writer.GetStringBuilder().ToString();
             }
         }
@@ -45,7 +48,7 @@ namespace ThrowAwayProjects.Controllers
             }
             catch (Exception ex)
             {
-                return View("Error",ex);
+                return View("Error", ex);
             }
         }
         public JsonResult HandleExceptions(Func<JsonResult> logic)
@@ -59,8 +62,9 @@ namespace ThrowAwayProjects.Controllers
                 return Modal("ModalError", ex);
             }
         }
-        protected JsonResult Modal(string viewName, object model){
-            return Json( new { message = RenderViewToString(viewName, model)});
+        protected JsonResult Modal(string viewName, object model)
+        {
+            return Json(new { message = RenderViewToString(viewName, model) });
         }
     }
 }

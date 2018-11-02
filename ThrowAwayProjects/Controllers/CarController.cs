@@ -4,13 +4,14 @@ using ThrowAwayProjects.Models;
 using ThrowAwayProjects.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.Extensions.Configuration;
 using ThrowAwayDb;
 
 namespace ThrowAwayProjects.Controllers
 {
     public class CarController : BaseController
     {
-        public CarController(ICompositeViewEngine viewEngine) : base(viewEngine)
+        public CarController(ICompositeViewEngine viewEngine,IConfiguration configuration) : base(viewEngine,configuration)
         {
         }
         public ActionResult Index()

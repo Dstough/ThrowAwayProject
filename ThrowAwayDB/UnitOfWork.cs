@@ -7,10 +7,12 @@ namespace ThrowAwayDB
         public CarRepository Cars {get;set;}
         public PlaneRepository Planes {get;set;}
 
-        public UnitOfWork()
+        public UnitOfWork(): this("") 
+        { }
+        public UnitOfWork(string ConnectionString)
         {
-            Cars = new CarRepository();
-            Planes = new PlaneRepository();
+            Cars = new CarRepository(ConnectionString);
+            Planes = new PlaneRepository(ConnectionString);
         }
     }
 }

@@ -4,13 +4,14 @@ using ThrowAwayProjects.Models;
 using ThrowAwayProjects.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.Extensions.Configuration;
 using ThrowAwayDb;
 
 namespace ThrowAwayProjects.Controllers
 {
     public class PlaneController : BaseController
     {
-        public PlaneController(ICompositeViewEngine viewEngine) : base(viewEngine)
+        public PlaneController(ICompositeViewEngine viewEngine,IConfiguration configuration) : base(viewEngine,configuration)
         {
         }
         public ActionResult Index()
