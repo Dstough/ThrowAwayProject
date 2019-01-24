@@ -1,6 +1,7 @@
 @model List<CarViewModel>;
-<table class="table table-hover">
-    <thead>
+
+<table>
+    <tbody>
         <tr>
             @if(Model.Count > 0)
             {
@@ -12,12 +13,10 @@
                 <th>No Records To Display</th>
             }
             <th> 
-                <button id="AddNew" class="btn btn-warning btn-xs" onclick='Modal("@Url.Action("AddEdit","Car")");'>Add New</button>
+                <span id="AddNew" onclick='Modal("@Url.Action("AddEdit","Car")");'>Add New</span>
             </th>
            
         </tr>
-    </thead>
-    <tbody>
         @foreach (var item in Model)
         {
             <tr>

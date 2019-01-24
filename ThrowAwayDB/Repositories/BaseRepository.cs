@@ -63,7 +63,7 @@ namespace ThrowAwayDbBackground
             using (var conn = new SqlConnection(ConnString))
             using (var cmd = conn.CreateCommand())
             {
-                cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + ";";
+                cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE Deleted = 0;";
                 conn.Open();
                 using (var reader = cmd.ExecuteReader())
                 {
@@ -142,7 +142,7 @@ namespace ThrowAwayDbBackground
             using (var conn = new SqlConnection(ConnString))
             using (var cmd = conn.CreateCommand())
             {
-                cmd.CommandText = "DELETE FROM " + tableName + " WHERE Id = @Id";
+                cmd.CommandText = "UPDATE " + tableName + " SET Deleted = 1 WHERE Id = @Id";
                 cmd.Parameters.AddWithValue("@Id", id);
 
                 conn.Open();
