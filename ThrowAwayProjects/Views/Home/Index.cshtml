@@ -1,7 +1,9 @@
-﻿@{
+﻿@model string;
+@{
     ViewData["Title"] = "Home Page";
 }
-<div class="shadowrunTableHeader">DOCWAGON CONTRACT</div>
+
+<div class="shadowrunTableHeader">@Model</div>
 <div class="shadowrunTable">
     <table>
         <tr>
