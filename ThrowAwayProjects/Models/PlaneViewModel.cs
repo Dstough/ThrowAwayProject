@@ -1,4 +1,4 @@
-using ThrowAwayDb;
+using ThrowAwayData;
 public class PlaneViewModel
 {
     public int Id{get;set;}

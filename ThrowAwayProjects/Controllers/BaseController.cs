@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
-using ThrowAwayDB;
+using ThrowAwayData;
 
 namespace ThrowAwayProjects.Controllers
 {
@@ -86,9 +86,7 @@ namespace ThrowAwayProjects.Controllers
                 python.Arguments += argument + " ";
             using (var process = Process.Start(python))
             using (var reader = process.StandardOutput)
-            {
                 return reader.ReadToEnd();
-            }
         }
     }
 }

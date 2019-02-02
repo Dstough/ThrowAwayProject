@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/ThrowAwayDB.csproj"
+                "${workspaceFolder}/ThrowAwayData.csproj"
             ],
             "problemMatcher": "$msCompile"
         }

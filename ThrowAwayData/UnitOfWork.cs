@@ -1,6 +1,6 @@
 ﻿using System;
-using ThrowAwayDbBackground;
-namespace ThrowAwayDB
+using ThrowAwayDataBackground;
+namespace ThrowAwayData
 {
     public class UnitOfWork
     {

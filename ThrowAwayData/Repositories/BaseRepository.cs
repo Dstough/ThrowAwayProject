@@ -1,19 +1,19 @@
 using System;
 using System.Reflection;
-using System.Data.SqlClient;
+using System.Data.SQLite;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using ThrowAwayDb;
-namespace ThrowAwayDbBackground
+using ThrowAwayData;
+namespace ThrowAwayDataBackground
 {
     public class BaseRepository<T> : IRepository<T>
     where T : BaseObject, new()
     {
-        private string ConnString {get;set;}
+        private string ConnString { get; set; }
 
-        public BaseRepository():this("") { }
-        public BaseRepository(string _connectionString) 
+        public BaseRepository() : this("") { }
+        public BaseRepository(string _connectionString)
         {
             ConnString = _connectionString;
         }
@@ -23,7 +23,7 @@ namespace ThrowAwayDbBackground
             var tableName = item.GetType().Name;
             var columnList = "";
 
-            using (var conn = new SqlConnection(ConnString))
+            using (var conn = new SQLiteConnection(ConnString))
             using (var cmd = conn.CreateCommand())
             {
                 foreach (var prop in item.GetType().GetProperties())
@@ -59,8 +59,8 @@ namespace ThrowAwayDbBackground
             {
                 columnList += prop.Name + ",";
             }
-            
-            using (var conn = new SqlConnection(ConnString))
+
+            using (var conn = new SQLiteConnection(ConnString))
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE Deleted = 0;";
@@ -91,11 +91,11 @@ namespace ThrowAwayDbBackground
             var tableName = entity.GetType().Name;
             var columns = "";
             var paramiters = "";
-            
-            using (var conn = new SqlConnection(ConnString))
+
+            using (var conn = new SQLiteConnection(ConnString))
             using (var cmd = conn.CreateCommand())
             {
-                foreach (var prop in entity.GetType().GetProperties().Where(e=>e.Name != "Id"))
+                foreach (var prop in entity.GetType().GetProperties().Where(e => e.Name != "Id"))
                 {
                     columns += prop.Name + ",";
                     paramiters += "@" + prop.Name + ",";
@@ -108,7 +108,7 @@ namespace ThrowAwayDbBackground
                 conn.Open();
                 using (var reader = cmd.ExecuteReader())
                 {
-                    if(!reader.Read()) 
+                    if (!reader.Read())
                         return;
                     entity.Id = (int)(reader[0] ?? 0);
                 }
@@ -118,11 +118,11 @@ namespace ThrowAwayDbBackground
         {
             var tableName = entity.GetType().Name;
 
-            using (var conn = new SqlConnection(ConnString))
+            using (var conn = new SQLiteConnection(ConnString))
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText = "UPDATE " + tableName + " SET ";
-                foreach (var prop in entity.GetType().GetProperties().Where(e=>e.Name != "Id"))
+                foreach (var prop in entity.GetType().GetProperties().Where(e => e.Name != "Id"))
                 {
                     cmd.CommandText += prop.Name + "=@" + prop.Name + ",";
                     cmd.Parameters.AddWithValue("@" + prop.Name, prop.GetValue(entity));
@@ -138,8 +138,8 @@ namespace ThrowAwayDbBackground
         {
             var itemTemplate = new T();
             var tableName = itemTemplate.GetType().Name;
-            
-            using (var conn = new SqlConnection(ConnString))
+
+            using (var conn = new SQLiteConnection(ConnString))
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText = "UPDATE " + tableName + " SET Deleted = 1 WHERE Id = @Id";

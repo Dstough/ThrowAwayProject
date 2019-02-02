@@ -1,5 +1,5 @@
 using System;
-namespace ThrowAwayDbBackground
+namespace ThrowAwayDataBackground
 {
     public abstract class BaseObject
     {

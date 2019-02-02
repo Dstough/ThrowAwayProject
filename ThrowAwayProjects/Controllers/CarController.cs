@@ -6,16 +6,17 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.Extensions.Configuration;
-using ThrowAwayDb;
+using ThrowAwayData;
 
 namespace ThrowAwayProjects.Controllers
 {
     public class CarController : BaseController
     {
-        public CarController(ICompositeViewEngine viewEngine,IConfiguration configuration, IHostingEnvironment environment):
+        public CarController(ICompositeViewEngine viewEngine, IConfiguration configuration, IHostingEnvironment environment) :
         base(viewEngine, configuration, environment)
         {
         }
+
         public ActionResult Index()
         {
             return HandleExceptions(() =>
@@ -39,7 +40,8 @@ namespace ThrowAwayProjects.Controllers
                 return Modal("Partials/_AddEdit", viewModel);
             });
         }
-        [HttpPost] public ActionResult AddEdit(CarViewModel viewModel, string action)
+        [HttpPost]
+        public ActionResult AddEdit(CarViewModel viewModel, string action)
         {
             return HandleExceptions(() =>
             {
@@ -60,7 +62,7 @@ namespace ThrowAwayProjects.Controllers
                     item.Model = viewModel.Type;
                     unitOfWork.Cars.Edit(item);
                 }
-                else if(action == "Delete")
+                else if (action == "Delete")
                 {
                     unitOfWork.Cars.Delete(viewModel.Id);
                 }

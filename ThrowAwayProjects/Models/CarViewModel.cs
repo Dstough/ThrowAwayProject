@@ -1,4 +1,4 @@
-using ThrowAwayDb;
+using ThrowAwayData;
 namespace ThrowAwayProjects.Models
 {
     public class CarViewModel

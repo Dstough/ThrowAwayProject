@@ -1,5 +1,5 @@
-using ThrowAwayDb;
-namespace ThrowAwayDbBackground
+using ThrowAwayData;
+namespace ThrowAwayDataBackground
 {
     public class CarRepository : BaseRepository<Car>
     {

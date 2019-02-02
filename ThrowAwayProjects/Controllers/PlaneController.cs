@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.Extensions.Configuration;
-using ThrowAwayDb;
+using ThrowAwayData;
 
 namespace ThrowAwayProjects.Controllers
 {

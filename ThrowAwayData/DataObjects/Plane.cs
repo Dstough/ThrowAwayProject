@@ -1,5 +1,5 @@
-using ThrowAwayDbBackground;
-namespace ThrowAwayDb
+using ThrowAwayDataBackground;
+namespace ThrowAwayData
 {
     public class Plane : BaseObject
     {
