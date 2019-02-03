@@ -10,7 +10,7 @@ public class PlaneViewModel
     }
     public PlaneViewModel(Plane _Plane)
     {
-        Id = _Plane.Id;
+        Id = (int)_Plane.Id;
         Name = _Plane.Name;
         Cabin = _Plane.Cabin;
         MaxPassengerCount = _Plane.MaxPassengerCount ?? 0;

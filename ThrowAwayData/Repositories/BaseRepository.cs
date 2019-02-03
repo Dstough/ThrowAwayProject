@@ -11,8 +11,9 @@ namespace ThrowAwayDataBackground
     where T : BaseObject, new()
     {
         private string ConnString { get; set; }
-
-        public BaseRepository() : this("") { }
+        public BaseRepository() : this("")
+        {
+        }
         public BaseRepository(string _connectionString)
         {
             ConnString = _connectionString;
@@ -27,13 +28,12 @@ namespace ThrowAwayDataBackground
             using (var cmd = conn.CreateCommand())
             {
                 foreach (var prop in item.GetType().GetProperties())
-                {
                     columnList += prop.Name + ",";
-                }
-                cmd.CommandText = "SELECT TOP 1 " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE Id = @Id;";
-                cmd.Parameters.AddWithValue("@Id", id);
 
+                cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE Id = @Id;";
+                cmd.Parameters.AddWithValue("@Id", id);
                 conn.Open();
+
                 using (var reader = cmd.ExecuteReader())
                 {
                     if (!reader.Read())
@@ -41,7 +41,10 @@ namespace ThrowAwayDataBackground
 
                     foreach (var prop in item.GetType().GetProperties().Where(e => e.CanWrite))
                     {
-                        prop.SetValue(item, reader[prop.Name], null);
+                        if (prop.Name == "Id")
+                            prop.SetValue(item, (int)reader[prop.Name], null);
+                        else
+                            prop.SetValue(item, reader[prop.Name], null);
                     }
                 }
             }
@@ -56,29 +59,36 @@ namespace ThrowAwayDataBackground
             var columnList = "";
 
             foreach (var prop in itemTemplate.GetType().GetProperties())
-            {
                 columnList += prop.Name + ",";
-            }
 
             using (var conn = new SQLiteConnection(ConnString))
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE Deleted = 0;";
                 conn.Open();
-                using (var reader = cmd.ExecuteReader())
+                try
                 {
-                    while (reader.Read())
+                    using (var reader = cmd.ExecuteReader())
                     {
-                        var item = new T();
-                        foreach (var prop in item.GetType().GetProperties().Where(e => e.CanWrite))
+                        while (reader.Read())
                         {
-                            prop.SetValue(item, reader[prop.Name], null);
+                            var item = new T();
+                            foreach (var prop in item.GetType().GetProperties().Where(e => e.CanWrite))
+                            {
+                                if (prop.Name == "Id")
+                                    prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
+                                else
+                                    prop.SetValue(item, reader[prop.Name], null);
+                            }
+                            list.Add(item);
                         }
-                        list.Add(item);
                     }
                 }
+                catch (SQLiteException)
+                {
+                    CreateTable(conn, tableName, itemTemplate.GetType().GetProperties());
+                }
             }
-
             return list;
         }
         public virtual IEnumerable<T> Find(Func<T, bool> predicate)
@@ -101,7 +111,6 @@ namespace ThrowAwayDataBackground
                     paramiters += "@" + prop.Name + ",";
                     cmd.Parameters.AddWithValue("@" + prop.Name, prop.GetValue(entity));
                 }
-
                 cmd.CommandText = "INSERT INTO " + tableName + " (" + columns.TrimEnd(',') + ")";
                 cmd.CommandText += "VALUES (" + paramiters.TrimEnd(',') + ");";
                 cmd.CommandText += "SELECT MAX (Id) FROM " + tableName + " AS Id;";
@@ -110,7 +119,7 @@ namespace ThrowAwayDataBackground
                 {
                     if (!reader.Read())
                         return;
-                    entity.Id = (int)(reader[0] ?? 0);
+                    entity.Id = Convert.ToInt32(reader[0] ?? 0);
                 }
             }
         }
@@ -144,8 +153,36 @@ namespace ThrowAwayDataBackground
             {
                 cmd.CommandText = "UPDATE " + tableName + " SET Deleted = 1 WHERE Id = @Id";
                 cmd.Parameters.AddWithValue("@Id", id);
-
                 conn.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+        protected void CreateTable(SQLiteConnection conn, string tableName, PropertyInfo[] propertyList)
+        {
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "Create Table " + tableName + "(";
+                foreach (var prop in propertyList)
+                {
+                    cmd.CommandText += prop.Name + " ";
+
+                    if (prop.Name == "Id")
+                        cmd.CommandText += "INTEGER PRIMARY KEY,";
+                    else
+                    {
+                        switch (prop.PropertyType.Name.ToLower())
+                        {
+                            case "int": cmd.CommandText += "int,"; break;
+                            case "string": cmd.CommandText += "varchar,"; break;
+                            case "boolean": cmd.CommandText += "bit,"; break;
+                            case "datetime": cmd.CommandText += "datetime,"; break;
+                            case "double": cmd.CommandText += "double,"; break;
+                            default: cmd.CommandText += "blob,"; break;
+                        }
+                    }
+                }
+                cmd.CommandText = cmd.CommandText.TrimEnd(',');
+                cmd.CommandText += ");";
                 cmd.ExecuteNonQuery();
             }
         }

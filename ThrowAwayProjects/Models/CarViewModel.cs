@@ -12,7 +12,7 @@ namespace ThrowAwayProjects.Models
         }
         public CarViewModel(Car _Car)
         {
-            Id = _Car.Id;
+            Id = (int)_Car.Id;
             Make = _Car.Make;
             Type = _Car.Model;
         }
