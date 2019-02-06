@@ -36,6 +36,7 @@ namespace ThrowAwayProjects.Controllers
                 RedirectStandardOutput = true,
             };
         }
+        
         private string RenderViewToString(string viewName, object model)
         {
             if (string.IsNullOrEmpty(viewName))
@@ -53,6 +54,7 @@ namespace ThrowAwayProjects.Controllers
                 return writer.GetStringBuilder().ToString();
             }
         }
+
         public ActionResult HandleExceptions(Func<ActionResult> logic)
         {
             try
@@ -64,6 +66,7 @@ namespace ThrowAwayProjects.Controllers
                 return View("Error", ex);
             }
         }
+
         public JsonResult HandleExceptions(Func<JsonResult> logic)
         {
             try
@@ -75,10 +78,12 @@ namespace ThrowAwayProjects.Controllers
                 return Modal("ModalError", ex);
             }
         }
+
         protected JsonResult Modal(string viewName, object model)
         {
             return Json(new { message = RenderViewToString(viewName, model) });
         }
+
         protected String RunPythonScrit(dynamic script)
         {
             python.Arguments = environment.WebRootPath + "\\" + configuration.GetValue<string>("ServerScriptFolder") + "\\" + script.name + " ";

@@ -8,11 +8,10 @@ namespace ThrowAwayProjects.Models
         public int Id {get;set;}
         public CarViewModel() : this(new Car())
         {
-
         }
         public CarViewModel(Car _Car)
         {
-            Id = (int)_Car.Id;
+            Id = _Car.Id ?? 0;
             Make = _Car.Make;
             Type = _Car.Model;
         }

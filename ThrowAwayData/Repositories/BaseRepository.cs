@@ -42,7 +42,7 @@ namespace ThrowAwayDataBackground
                     foreach (var prop in item.GetType().GetProperties().Where(e => e.CanWrite))
                     {
                         if (prop.Name == "Id")
-                            prop.SetValue(item, (int)reader[prop.Name], null);
+                            prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
                         else
                             prop.SetValue(item, reader[prop.Name], null);
                     }
@@ -170,8 +170,14 @@ namespace ThrowAwayDataBackground
                         cmd.CommandText += "INTEGER PRIMARY KEY,";
                     else
                     {
-                        switch (prop.PropertyType.Name.ToLower())
+                        var type = prop.PropertyType;
+
+                        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+                            type = type.GetGenericArguments()[0];
+
+                        switch (type.Name.ToLower())
                         {
+                            case "int32":
                             case "int": cmd.CommandText += "int,"; break;
                             case "string": cmd.CommandText += "varchar,"; break;
                             case "boolean": cmd.CommandText += "bit,"; break;
