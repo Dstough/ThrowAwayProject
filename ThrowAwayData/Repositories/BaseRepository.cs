@@ -11,13 +11,16 @@ namespace ThrowAwayDataBackground
     where T : BaseObject, new()
     {
         private string ConnString { get; set; }
+
         public BaseRepository() : this("")
         {
         }
+
         public BaseRepository(string _connectionString)
         {
             ConnString = _connectionString;
         }
+
         public virtual T GetById(int id)
         {
             var item = new T();
@@ -51,6 +54,7 @@ namespace ThrowAwayDataBackground
 
             return item;
         }
+
         public virtual IEnumerable<T> GetAll()
         {
             var list = new List<T>();
@@ -66,36 +70,32 @@ namespace ThrowAwayDataBackground
             {
                 cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE Deleted = 0;";
                 conn.Open();
-                try
+
+                using (var reader = cmd.ExecuteReader())
                 {
-                    using (var reader = cmd.ExecuteReader())
+                    while (reader.Read())
                     {
-                        while (reader.Read())
+                        var item = new T();
+                        foreach (var prop in item.GetType().GetProperties().Where(e => e.CanWrite))
                         {
-                            var item = new T();
-                            foreach (var prop in item.GetType().GetProperties().Where(e => e.CanWrite))
-                            {
-                                if (prop.Name == "Id")
-                                    prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
-                                else
-                                    prop.SetValue(item, reader[prop.Name], null);
-                            }
-                            list.Add(item);
+                            if (prop.Name == "Id")
+                                prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
+                            else
+                                prop.SetValue(item, reader[prop.Name], null);
                         }
+                        list.Add(item);
                     }
-                }
-                catch (SQLiteException)
-                {
-                    CreateTable(conn, tableName, itemTemplate.GetType().GetProperties());
                 }
             }
             return list;
         }
+
         public virtual IEnumerable<T> Find(Func<T, bool> predicate)
         {
             //TODO: Fix this. It is lazy and incorrect in terms of how to handle a predicate function.
             return GetAll().Where(predicate);
         }
+
         public virtual void Add(T entity)
         {
             var tableName = entity.GetType().Name;
@@ -123,6 +123,7 @@ namespace ThrowAwayDataBackground
                 }
             }
         }
+
         public virtual void Edit(T entity)
         {
             var tableName = entity.GetType().Name;
@@ -143,6 +144,7 @@ namespace ThrowAwayDataBackground
                 cmd.ExecuteNonQuery();
             }
         }
+
         public virtual void Delete(int id)
         {
             var itemTemplate = new T();
@@ -157,6 +159,7 @@ namespace ThrowAwayDataBackground
                 cmd.ExecuteNonQuery();
             }
         }
+
         protected void CreateTable(SQLiteConnection conn, string tableName, PropertyInfo[] propertyList)
         {
             using (var cmd = conn.CreateCommand())

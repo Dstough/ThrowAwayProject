@@ -1,7 +1,7 @@
 using System;
 namespace ThrowAwayDataBackground
 {
-    public abstract class BaseObject
+    public abstract class BaseObject : IObject
     {
         public int? Id { get; set; }
         public DateTime CreatedOn { get; set; }
