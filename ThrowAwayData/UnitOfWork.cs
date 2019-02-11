@@ -4,15 +4,21 @@ namespace ThrowAwayData
 {
     public class UnitOfWork
     {
-        public CarRepository Cars {get;set;}
-        public PlaneRepository Planes {get;set;}
+        FileRepository Files;
+        FileCategoryRepository FileCategories;
+        UserGroupRepository UserGroups;
+        UserIdentityRepository Users;
 
-        public UnitOfWork(): this("") 
-        { }
+        public UnitOfWork() : this("")
+        {
+        }
+
         public UnitOfWork(string ConnectionString)
         {
-            Cars = new CarRepository(ConnectionString);
-            Planes = new PlaneRepository(ConnectionString);
+            Files = new FileRepository();
+            FileCategories = new FileCategoryRepository();
+            UserGroups = new UserGroupRepository();
+            Users = new UserIdentityRepository();
         }
     }
 }
