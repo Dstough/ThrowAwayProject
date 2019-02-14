@@ -8,7 +8,7 @@
 
 create table UserGroup
 (
-	Id integer primary key,
+	Id INTEGER PRIMARY KEY,
 	CreatedOn datetime not null,
 	CreatedBy varchar not null,
 	Deleted bit not null,
@@ -18,41 +18,37 @@ create table UserGroup
 
 create table UserIdentity
 (
-	Id integer primary key,
+	Id INTEGER PRIMARY KEY,
 	CreatedOn datetime not null,
 	CreatedBy varchar not null,
 	Deleted bit not null,
 	GroupId integer not null,
 	Email varchar,
 	UserName varchar not null,
-	PassPhrase varchar not null,
-	foreign key(GroupId) references UserGroup(Id)
+	PassPhrase varchar not null
 );
 
 create table FileCategory
 (
-	Id integer primary key,
+	Id INTEGER PRIMARY KEY,
 	CreatedOn datetime not null,
 	CreatedBy integer not null,
 	Deleted bit not null,
 	Name varchar not null,
-	Description varchar,
-	foreign key(CreatedBy) references UserIdentity(Id)
-)
+	Description varchar
+);
 
 create table FileObject
 (
-	Id integer primary key,
+	Id INTEGER PRIMARY KEY,
 	CreatedOn datetime not null,
 	CreatedBy integer not null,
 	Deleted bit not null,
 	Category int not null,
 	Name varchar not null,
 	Extention varchar not null,
-	Bytes blob not null,
-	foreign key(CreatedBy) references UserIdentity(Id),
-	foreign key(Category) references FileCategory(Id)
+	Bytes blob not null
 );
 
-insert into UserGroup
-values(datetime('now'), 'System', 0, 'Admin', 'The primary group giving you access ');
+insert into UserGroup (CreatedOn,CreatedBy,Deleted,Name,Description)
+values(datetime('now'), 'System', 0, 'Admin', 'The primary group giving you access');

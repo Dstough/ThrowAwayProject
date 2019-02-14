@@ -7,6 +7,7 @@ namespace ThrowAwayDataBackground
         public DateTime CreatedOn { get; set; }
         public string CreatedBy { get; set; }
         public bool Deleted { get; set; }
+        
         public BaseObject()
         {
             Id = null;

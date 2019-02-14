@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
+using ThrowAwayProjects.Models;
 using ThrowAwayData;
 
 namespace ThrowAwayProjects.Controllers
@@ -26,7 +27,7 @@ namespace ThrowAwayProjects.Controllers
         {
             configuration = _config;
             viewEngine = _viewEngine;
-            environment = _environment;
+            environment = _environment;            
             unitOfWork = new UnitOfWork(configuration.GetConnectionString("ThrowAwayDB"));
             python = new ProcessStartInfo
             {
@@ -36,7 +37,65 @@ namespace ThrowAwayProjects.Controllers
                 RedirectStandardOutput = true,
             };
         }
-        
+
+        [HttpPost]
+        public ActionResult Authenticate(UserViewModel viewModel)
+        {
+            try
+            {
+                if (IsAuthenticated())
+                    return View();
+                else
+                    return View("LogIn", viewModel);
+            }
+            catch (Exception ex)
+            {
+                return View("Error", ex);
+            }
+        }
+
+        protected ActionResult HandleExceptions(Func<ActionResult> logic)
+        {
+            try
+            {
+                if (IsAuthenticated())
+                    return logic();
+                else
+                    return View("LogIn", new UserViewModel());
+            }
+            catch (Exception ex)
+            {
+                return View("Error", ex);
+            }
+        }
+
+        protected JsonResult HandleExceptions(Func<JsonResult> logic)
+        {
+            try
+            {
+                return logic();
+            }
+            catch (Exception ex)
+            {
+                return Modal("ModalError", ex);
+            }
+        }
+
+        protected JsonResult Modal(string viewName, object model)
+        {
+            return Json(new { message = RenderViewToString(viewName, model) });
+        }
+
+        protected string RunPythonScrit(dynamic script)
+        {
+            python.Arguments = environment.WebRootPath + "\\" + configuration.GetValue<string>("ServerScriptFolder") + "\\" + script.name + " ";
+            foreach (var argument in script.arguments)
+                python.Arguments += argument + " ";
+            using (var process = Process.Start(python))
+            using (var reader = process.StandardOutput)
+                return reader.ReadToEnd();
+        }
+
         private string RenderViewToString(string viewName, object model)
         {
             if (string.IsNullOrEmpty(viewName))
@@ -55,43 +114,10 @@ namespace ThrowAwayProjects.Controllers
             }
         }
 
-        public ActionResult HandleExceptions(Func<ActionResult> logic)
+        private bool IsAuthenticated()
         {
-            try
-            {
-                return logic();
-            }
-            catch (Exception ex)
-            {
-                return View("Error", ex);
-            }
-        }
-
-        public JsonResult HandleExceptions(Func<JsonResult> logic)
-        {
-            try
-            {
-                return logic();
-            }
-            catch (Exception ex)
-            {
-                return Modal("ModalError", ex);
-            }
-        }
-
-        protected JsonResult Modal(string viewName, object model)
-        {
-            return Json(new { message = RenderViewToString(viewName, model) });
-        }
-
-        protected String RunPythonScrit(dynamic script)
-        {
-            python.Arguments = environment.WebRootPath + "\\" + configuration.GetValue<string>("ServerScriptFolder") + "\\" + script.name + " ";
-            foreach (var argument in script.arguments)
-                python.Arguments += argument + " ";
-            using (var process = Process.Start(python))
-            using (var reader = process.StandardOutput)
-                return reader.ReadToEnd();
+            //TODO: check the passphrase of the user object in the session variable.
+            return true;
         }
     }
 }

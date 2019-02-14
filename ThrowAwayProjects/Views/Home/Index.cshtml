@@ -1,36 +1,10 @@
-﻿@model string;
+﻿@model SessionStateViewModel;
 @{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="shadowrunTableHeader">@Model</div>
-<div class="shadowrunTable">
-    <table>
-        <tr>
-            <th>DEVICE</th>
-            <th>AVAIL</th>
-            <th>COST</th>
-        </tr>
-        <tr>
-            <td>Basic</td>
-            <td>-</td>
-            <td>5,000¥ Per Year</td>
-        </tr>
-        <tr>
-            <td>Gold</td>
-            <td>-</td>
-            <td>25,000¥ Per Year</td>
-        </tr>
-        <tr>
-            <td>Platinum</td>
-            <td>-</td>
-            <td>50,000¥ Per Year</td>
-        </tr>
-        <tr>
-            <td>Super-Platinum</td>
-            <td>-</td>
-            <td>100,000¥ Per Year</td>
-        </tr>
-    </table>
-</div>
-<div class="shadowrunTableFooter"></div>
+<h1>Using Session State</h1>
+<p><b>Date Now</b></p>
+<p>@Model.Now</p>
+<p><b>Date Session Started</b></p>
+<p>@Model.DateSessionStarted</p>
