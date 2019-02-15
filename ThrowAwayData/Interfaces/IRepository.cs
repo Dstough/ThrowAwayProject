@@ -7,7 +7,7 @@ namespace ThrowAwayDataBackground
     {
         T GetById(int id);
         IEnumerable<T> GetAll();
-        IEnumerable<T> Find(Func<T, bool> predicate);
+        IEnumerable<T> Find(Dictionary<string,string> whereClause);
         void Add(T entity);
         void Delete(int id);
         void Edit(T entity);

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
 using ThrowAwayProjects.Models;
 using ThrowAwayData;
+using Newtonsoft.Json;
 
 namespace ThrowAwayProjects.Controllers
 {
@@ -27,7 +29,7 @@ namespace ThrowAwayProjects.Controllers
         {
             configuration = _config;
             viewEngine = _viewEngine;
-            environment = _environment;            
+            environment = _environment;
             unitOfWork = new UnitOfWork(configuration.GetConnectionString("ThrowAwayDB"));
             python = new ProcessStartInfo
             {
@@ -36,22 +38,6 @@ namespace ThrowAwayProjects.Controllers
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
             };
-        }
-
-        [HttpPost]
-        public ActionResult Authenticate(UserViewModel viewModel)
-        {
-            try
-            {
-                if (IsAuthenticated())
-                    return View();
-                else
-                    return View("LogIn", viewModel);
-            }
-            catch (Exception ex)
-            {
-                return View("Error", ex);
-            }
         }
 
         protected ActionResult HandleExceptions(Func<ActionResult> logic)
@@ -96,6 +82,28 @@ namespace ThrowAwayProjects.Controllers
                 return reader.ReadToEnd();
         }
 
+        protected bool IsAuthenticated()
+        {
+            var value = HttpContext.Session.GetString(configuration.GetValue<string>("UserKey"));
+
+            if (string.IsNullOrEmpty(value))
+                return false;
+
+            var user = JsonConvert.DeserializeObject<UserIdentity>(value);
+
+            if (user.Id == null)
+                return false;
+
+            var dbUserData = unitOfWork.Users.GetById(user.Id ?? 0);
+
+            //TODO: Salt this shit!
+            //It's just a placeholder I will fix it.
+            if (user.PassPhrase != dbUserData.PassPhrase)
+                return false;
+
+            return true;
+        }
+
         private string RenderViewToString(string viewName, object model)
         {
             if (string.IsNullOrEmpty(viewName))
@@ -112,12 +120,6 @@ namespace ThrowAwayProjects.Controllers
 
                 return writer.GetStringBuilder().ToString();
             }
-        }
-
-        private bool IsAuthenticated()
-        {
-            //TODO: check the passphrase of the user object in the session variable.
-            return true;
         }
     }
 }

@@ -4,10 +4,10 @@ namespace ThrowAwayData
 {
     public class UnitOfWork
     {
-        FileRepository Files;
-        FileCategoryRepository FileCategories;
-        UserGroupRepository UserGroups;
-        UserIdentityRepository Users;
+        public FileRepository Files { get; private set; }
+        public FileCategoryRepository FileCategories { get; private set; }
+        public UserGroupRepository UserGroups { get; private set; }
+        public UserIdentityRepository Users { get; private set; }
 
         public UnitOfWork() : this("")
         {

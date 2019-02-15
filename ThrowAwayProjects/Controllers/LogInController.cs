@@ -20,9 +20,20 @@ namespace ThrowAwayProjects.Controllers
         {
         }
 
-        public ActionResult Index()
+        [HttpPost]
+        public ActionResult Authenticate(UserViewModel viewModel)
         {
-            return View(new UserViewModel());
+            try
+            {
+                if (IsAuthenticated())
+                    return Redirect(viewModel.TargetUrl);
+                else
+                    return View("LogIn", viewModel);
+            }
+            catch (Exception ex)
+            {
+                return View("Error", ex);
+            }
         }
     }
 }

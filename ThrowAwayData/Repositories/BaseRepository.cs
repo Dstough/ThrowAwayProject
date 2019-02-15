@@ -90,10 +90,48 @@ namespace ThrowAwayDataBackground
             return list;
         }
 
-        public virtual IEnumerable<T> Find(Func<T, bool> predicate)
+        public virtual IEnumerable<T> Find(Dictionary<string, string> filters)
         {
-            //TODO: Fix this. It is lazy and incorrect in terms of how to handle a predicate function.
-            return GetAll().Where(predicate);
+            var list = new List<T>();
+            var itemTemplate = new T();
+            var tableName = itemTemplate.GetType().Name;
+            var columnList = "";
+            var whereClause = "Deleted = 0";
+
+            foreach (var prop in itemTemplate.GetType().GetProperties())
+                columnList += prop.Name + ",";
+
+            //This might not be the best way to do the filter.
+            //It shifts the responsiblily on the app to know when to use sql quotes for the filter values.
+            //Maybe find another way in the futre.
+            foreach (var filter in filters)
+                if (columnList.Contains(filter.Key))
+                    whereClause += " AND " + filter.Key + " = " + filter.Value;
+
+            using (var conn = new SQLiteConnection(ConnString))
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE " + whereClause + ";";
+                conn.Open();
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var item = new T();
+                        foreach (var prop in item.GetType().GetProperties().Where(e => e.CanWrite))
+                        {
+                            if (prop.Name == "Id")
+                                prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
+                            else
+                                prop.SetValue(item, reader[prop.Name], null);
+                        }
+                        list.Add(item);
+                    }
+                }
+            }
+
+            return list;
         }
 
         public virtual void Add(T entity)
@@ -156,42 +194,6 @@ namespace ThrowAwayDataBackground
                 cmd.CommandText = "UPDATE " + tableName + " SET Deleted = 1 WHERE Id = @Id";
                 cmd.Parameters.AddWithValue("@Id", id);
                 conn.Open();
-                cmd.ExecuteNonQuery();
-            }
-        }
-
-        protected void CreateTable(SQLiteConnection conn, string tableName, PropertyInfo[] propertyList)
-        {
-            using (var cmd = conn.CreateCommand())
-            {
-                cmd.CommandText = "Create Table " + tableName + "(";
-                foreach (var prop in propertyList)
-                {
-                    cmd.CommandText += prop.Name + " ";
-
-                    if (prop.Name == "Id")
-                        cmd.CommandText += "INTEGER PRIMARY KEY,";
-                    else
-                    {
-                        var type = prop.PropertyType;
-
-                        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
-                            type = type.GetGenericArguments()[0];
-
-                        switch (type.Name.ToLower())
-                        {
-                            case "int32":
-                            case "int": cmd.CommandText += "int,"; break;
-                            case "string": cmd.CommandText += "varchar,"; break;
-                            case "boolean": cmd.CommandText += "bit,"; break;
-                            case "datetime": cmd.CommandText += "datetime,"; break;
-                            case "double": cmd.CommandText += "double,"; break;
-                            default: cmd.CommandText += "blob,"; break;
-                        }
-                    }
-                }
-                cmd.CommandText = cmd.CommandText.TrimEnd(',');
-                cmd.CommandText += ");";
                 cmd.ExecuteNonQuery();
             }
         }

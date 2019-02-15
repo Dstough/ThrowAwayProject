@@ -29,7 +29,7 @@ namespace ThrowAwayProjects.Controllers
                 const string sessionKey = "FirstSeen";
                 DateTime dateFirstSeen;
                 var value = HttpContext.Session.GetString(sessionKey);
-                
+
                 if (string.IsNullOrEmpty(value))
                 {
                     dateFirstSeen = DateTime.Now;
