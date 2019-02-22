@@ -2,8 +2,10 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Diagnostics;
+using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -20,8 +22,8 @@ namespace ThrowAwayProjects.Controllers
     public class BaseController : Controller
     {
         protected UnitOfWork unitOfWork;
+        protected IConfiguration configuration;
         private ICompositeViewEngine viewEngine;
-        private IConfiguration configuration;
         private IHostingEnvironment environment;
         private ProcessStartInfo python;
 
@@ -47,7 +49,7 @@ namespace ThrowAwayProjects.Controllers
                 if (IsAuthenticated())
                     return logic();
                 else
-                    return View("LogIn", new UserViewModel());
+                    return RedirectToAction("LogIn", "Account");
             }
             catch (Exception ex)
             {
@@ -96,8 +98,6 @@ namespace ThrowAwayProjects.Controllers
 
             var dbUserData = unitOfWork.Users.GetById(user.Id ?? 0);
 
-            //TODO: Salt this shit!
-            //It's just a placeholder I will fix it.
             if (user.PassPhrase != dbUserData.PassPhrase)
                 return false;
 
@@ -119,6 +119,21 @@ namespace ThrowAwayProjects.Controllers
                 t.Wait();
 
                 return writer.GetStringBuilder().ToString();
+            }
+        }
+
+        protected static string Sha512(string input)
+        {
+            var bytes = Encoding.UTF8.GetBytes(input);
+            using (var hash = SHA512.Create())
+            {
+                var hashedInputBytes = hash.ComputeHash(bytes);
+                var hashedInputStringBuilder = new StringBuilder(128);
+
+                foreach (var b in hashedInputBytes)
+                    hashedInputStringBuilder.Append(b.ToString("X2"));
+
+                return hashedInputStringBuilder.ToString();
             }
         }
     }

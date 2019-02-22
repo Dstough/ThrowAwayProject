@@ -15,10 +15,10 @@ namespace ThrowAwayData
 
         public UnitOfWork(string ConnectionString)
         {
-            Files = new FileRepository();
-            FileCategories = new FileCategoryRepository();
-            UserGroups = new UserGroupRepository();
-            Users = new UserIdentityRepository();
+            Files = new FileRepository(ConnectionString);
+            FileCategories = new FileCategoryRepository(ConnectionString);
+            UserGroups = new UserGroupRepository(ConnectionString);
+            Users = new UserIdentityRepository(ConnectionString);
         }
     }
 }

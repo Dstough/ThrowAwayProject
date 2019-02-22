@@ -1,9 +1,9 @@
 using System;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Data.SQLite;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using ThrowAwayData;
 namespace ThrowAwayDataBackground
 {
@@ -44,7 +44,7 @@ namespace ThrowAwayDataBackground
 
                     foreach (var prop in item.GetType().GetProperties().Where(e => e.CanWrite))
                     {
-                        if (prop.Name == "Id")
+                        if (prop.PropertyType == typeof(int) || prop.Name == "Id")
                             prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
                         else
                             prop.SetValue(item, reader[prop.Name], null);
@@ -78,7 +78,7 @@ namespace ThrowAwayDataBackground
                         var item = new T();
                         foreach (var prop in item.GetType().GetProperties().Where(e => e.CanWrite))
                         {
-                            if (prop.Name == "Id")
+                            if (prop.PropertyType == typeof(int) || prop.Name == "Id")
                                 prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
                             else
                                 prop.SetValue(item, reader[prop.Name], null);
@@ -90,7 +90,7 @@ namespace ThrowAwayDataBackground
             return list;
         }
 
-        public virtual IEnumerable<T> Find(Dictionary<string, string> filters)
+        public virtual IEnumerable<T> Find(IEnumerable<Filter> filters)
         {
             var list = new List<T>();
             var itemTemplate = new T();
@@ -105,8 +105,8 @@ namespace ThrowAwayDataBackground
             //It shifts the responsiblily on the app to know when to use sql quotes for the filter values.
             //Maybe find another way in the futre.
             foreach (var filter in filters)
-                if (columnList.Contains(filter.Key))
-                    whereClause += " AND " + filter.Key + " = " + filter.Value;
+                if (columnList.Contains(filter.Column))
+                    whereClause += " AND " + filter.Column + " = " + filter.Value;
 
             using (var conn = new SQLiteConnection(ConnString))
             using (var cmd = conn.CreateCommand())
@@ -121,7 +121,7 @@ namespace ThrowAwayDataBackground
                         var item = new T();
                         foreach (var prop in item.GetType().GetProperties().Where(e => e.CanWrite))
                         {
-                            if (prop.Name == "Id")
+                            if (prop.PropertyType == typeof(int) || prop.Name == "Id")
                                 prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
                             else
                                 prop.SetValue(item, reader[prop.Name], null);

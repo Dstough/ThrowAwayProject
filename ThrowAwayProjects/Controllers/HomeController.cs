@@ -50,7 +50,7 @@ namespace ThrowAwayProjects.Controllers
                 var x = RunPythonScrit(new
                 {
                     name = "DiceRoll.py",
-                    arguments = new List<string>() { "1", "13" }
+                    arguments = new [] { "1", "13" }
                 });
 
                 return View(model);
