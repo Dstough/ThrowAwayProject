@@ -1,0 +1,17 @@
+.message-head {
+    font-size: 32pt;
+}
+
+.message-body {
+    font-size: 14pt;
+}
+
+.message-signature {
+    font-size: 10pt;
+    font-style: italic;
+    margin-top: 19px;
+}
+
+.admin-color {
+    color: #d8d800;
+}

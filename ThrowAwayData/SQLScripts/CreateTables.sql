@@ -25,7 +25,11 @@ create table UserIdentity
 	GroupId integer not null,
 	Email varchar,
 	UserName varchar not null,
-	PassPhrase varchar not null
+	PassPhrase varchar not null,
+	Authenticated bit not null,
+	CanPost bit not null,
+	Banned bit not null,
+	Dead bit not null
 );
 
 create table FileCategory
@@ -50,7 +54,8 @@ create table FileObject
 	Bytes blob not null
 );
 
-
-
 insert into UserGroup (CreatedOn,CreatedBy,Deleted,Name,Description)
 values(datetime('now'), 'System', 0, 'Admin', 'The primary group giving you access');
+
+insert into UserGroup (CreatedOn,CreatedBy,Deleted,Name,Description)
+values(datetime('now'), 'System', 0, 'User', 'The primary group for users to post');
