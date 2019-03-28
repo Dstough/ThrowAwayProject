@@ -1,36 +1,49 @@
 ﻿body {
     padding-top: 50px;
     padding-bottom: 20px;
+    font-family: "Consolas";
+    color: #afafaf;
+    text-shadow: 5px 5px 10px #000000;
+    background: linear-gradient(27deg, #151515 5px, transparent 5px) 0 5px, linear-gradient(207deg, #151515 5px, transparent 5px) 10px 0px, linear-gradient(27deg, #222 5px, transparent 5px) 0px 10px, linear-gradient(207deg, #222 5px, transparent 5px) 10px 5px, linear-gradient(90deg, #1b1b1b 10px, transparent 10px), linear-gradient(#1d1d1d 25%, #1a1a1a 25%, #1a1a1a 50%, transparent 50%, transparent 75%, #242424 75%, #242424);
+    background-color: #131313;
+    background-size: 20px 20px;
 }
 
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
-    margin-top: 15px;
+.navbar {
+    background: linear-gradient( #383838, #171717);
+    box-shadow: 0 0 7px black;
 }
 
-.carousel-caption p {
-    font-size: 20px;
-    line-height: 1.4;
+footer {
+    background: linear-gradient( #383838, #171717);
 }
 
-.carousel-inner .item img[src$=".svg"] {
-    width: 100%;
+.form-control {
+    background-color: #ababab;
+    box-shadow: inset 0 0 7px #000;
+    border: 0px;
+    color: #000;
 }
 
-#qrCode {
-    margin: 15px;
+input::placeholder {
+    color: #555 !important;
 }
 
-@media screen and (max-width: 767px) {
-    .carousel-caption {
-        display: none;
-    }
+.btn-primary {
+    color: #ccc;
+    box-shadow: 0 0 7px black;
+    border: 3px black;
+    background: linear-gradient( #4c4c4c, #1f1f1f);
 }
 
-.input-group{
-    padding-top: 10px;
+.btn-primary:hover {
+    background: linear-gradient( #6d6d6d, #1f1f1f);
 }
-.input-group-text{
-    font-weight: bold;
+
+hr {
+    border-color: #4c4c4c ;
+}
+
+.header-image{
+    padding: 7px;
 }

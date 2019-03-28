@@ -40,7 +40,7 @@ namespace ThrowAwayProjects.Controllers
         {
             try
             {
-                var model = new UserIdentity();
+                var model = new UserViewModel();
                 return View(model);
             }
             catch (Exception ex)

@@ -1,0 +1,29 @@
+@model UserViewModel;
+@{
+    Layout = "_LogIn";
+}
+<div class="col-sm-4"></div>
+<div class="col-sm-4">
+    <h2>Register</h2>
+    <h5><a asp-area="" asp-controller="Account" asp-action="Login">Back to Login page.</a></h5>
+    <hr/>
+    @using(Html.BeginForm("Register", "Account"))
+    {
+        <div class="form-group">
+            <input type="text" class="form-control" name="Email" placeholder="email">
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" name="UserName" placeholder="username">
+        </div>
+        <hr/>
+        <div class="form-group">
+            <input type="password" class="form-control" name="PassPhrase" placeholder="passphrase">
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-control" name="PassPhraseConfirm" placeholder="confirm">
+        </div>
+        <hr/>
+        <button type="submit" id="sendlogin" class="btn btn-primary" style="width:100%">Register</button>
+    }
+</div>
+<div class="col-sm-4"></div>

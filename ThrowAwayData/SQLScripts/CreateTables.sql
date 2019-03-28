@@ -50,5 +50,7 @@ create table FileObject
 	Bytes blob not null
 );
 
+
+
 insert into UserGroup (CreatedOn,CreatedBy,Deleted,Name,Description)
 values(datetime('now'), 'System', 0, 'Admin', 'The primary group giving you access');

@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ThrowAwayProjects</title>
+    <link rel="icon" href="~\Images\Jackpoint.svg" />
+    <title>@ViewData["Title"] - Jackpoint</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="~/css/site.css" />
@@ -33,14 +34,12 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand">ThrowAwayProjects</a>
+                <img src="\Images\Jackpoint.svg" class="navbar-brand header-image"/>
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">Jackpoint</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Car" asp-action="Index">Cars</a></li>    
-                    <li><a asp-area="" asp-controller="Plane" asp-action="Index">Planes</a></li>    
-                    <li><a asp-area="" asp-controller="Train" asp-action="Index">Trains</a></li>    
+                    <li><a asp-area="" asp-controller="Users" asp-action="Index">Users</a></li>  
                 </ul>
             </div>
         </div>
@@ -49,7 +48,7 @@
         @RenderBody()   
     </div>
     <footer class="navbar-fixed-bottom" style="background-color:#080808; color:#9d9d9d">
-        <div class="pl-3 text-center ">&nbsp;&copy; 2018 - ThrowAwayProjects</div>
+        <div class="pl-3 text-center ">&nbsp;&copy; @DateTime.Now.Year - Jackpoint</div>
     </footer>
 </body>
 </html>

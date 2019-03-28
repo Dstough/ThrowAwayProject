@@ -2,9 +2,10 @@
 @{
     Layout = "_LogIn";
 }
-<div class="col-sm-2"></div>
+<div class="col-sm-4"></div>
 <div class="col-sm-4">
     <h2>Log In</h2>
+    <h5><a asp-area="" asp-controller="Account" asp-action="Register">Don't Have an account?</a></h5>
     <hr/>
     @using(Html.BeginForm("LogIn", "Account"))
     {
@@ -18,26 +19,4 @@
         <button type="submit" id="sendlogin" class="btn btn-primary" style="width:100%">login</button>
     }
 </div>
-<div class="col-sm-4" style="border-left: 1px solid #eee">
-    <h2>Register</h2>
-    <hr/>
-    @using(Html.BeginForm("Register", "Account"))
-    {
-        <div class="form-group">
-            <input type="text" class="form-control" name="Email" placeholder="email">
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="UserName" placeholder="username">
-        </div>
-        <hr/>
-        <div class="form-group">
-            <input type="password" class="form-control" name="PassPhrase" placeholder="passphrase">
-        </div>
-        <div class="form-group">
-            <input type="password" class="form-control" name="PassPhraseConfirm" placeholder="confirm">
-        </div>
-        <hr/>
-        <button type="submit" id="sendlogin" class="btn btn-primary" style="width:100%">Register</button>
-    }
-</div>
-<div class="col-sm-2"></div>
+<div class="col-sm-4"></div>

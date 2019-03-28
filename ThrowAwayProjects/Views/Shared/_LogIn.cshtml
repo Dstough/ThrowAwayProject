@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ThrowAwayProjects</title>
+    <link rel="icon" type="image/svg" href="~\Images\Jackpoint.svg" />
+    <title>Jackpoint</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="~/css/site.css" />
@@ -25,9 +26,8 @@
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
-                <a class="navbar-brand">ThrowAwayProjects</a>
-            </div>
-            <div class="navbar-collapse collapse">
+                <img src="\Images\Jackpoint.svg" class="navbar-brand header-image"/>
+                <a class="navbar-brand">Jackpoint</a>
             </div>
         </div>
     </nav>
@@ -35,7 +35,7 @@
         @RenderBody()   
     </div>
     <footer class="navbar-fixed-bottom" style="background-color:#080808; color:#9d9d9d">
-        <div class="pl-3 text-center ">&copy; 2018 - ThrowAwayProjects</div>
+        <div class="pl-3 text-center ">&copy; @DateTime.Now.Year - Jackpoint</div>
     </footer>
 </body>
 </html>
