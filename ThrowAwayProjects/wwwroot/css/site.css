@@ -47,3 +47,7 @@ hr {
 .header-image{
     padding: 7px;
 }
+
+.right{
+    float: right;
+}

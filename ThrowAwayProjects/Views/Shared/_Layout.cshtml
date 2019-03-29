@@ -40,7 +40,13 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Users" asp-action="Index">Users</a></li>  
+                    <li><a asp-area="" asp-controller="Users" asp-action="Index">Users</a></li>
+                </ul>
+                <ul class="nav navbar-nav right">
+                    <li><a asp-area="" asp-controller="Users" asp-action="Index">
+                        <!--Put the username here, fucking somehow.-->
+                    </a></li>
+                    <li><a asp-area="" asp-controller="Users" asp-action="Logout">Logout</a></li>
                 </ul>
             </div>
         </div>

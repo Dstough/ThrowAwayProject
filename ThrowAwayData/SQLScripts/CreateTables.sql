@@ -26,8 +26,8 @@ create table UserIdentity
 	Email varchar,
 	UserName varchar not null,
 	PassPhrase varchar not null,
+	AuthenticationCode varchar not null,
 	Authenticated bit not null,
-	CanPost bit not null,
 	Banned bit not null,
 	Dead bit not null
 );
