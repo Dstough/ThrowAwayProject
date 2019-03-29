@@ -1,10 +1,26 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.Extensions.Configuration;
+@using Microsoft.AspNetCore.Http;
+@using Newtonsoft.Json;
+@using ThrowAwayData;
+@inject IConfiguration Configuration;
+@{    
+    var value = Context.Session.GetString(Configuration.GetValue<string>("UserKey"));
+    var admin = Context.Session.GetString("UserGroup") == "Admin";
+    var userName = "";
+    var loggedIn = false;
+    if (!string.IsNullOrEmpty(value))
+    {
+        userName = JsonConvert.DeserializeObject<UserIdentity>(value).UserName;
+        loggedIn = true;
+    }
+}
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="\Images\Logo.png" />
-    <title>@ViewData["Title"] - Jackpoint</title>
+    <title>Jackpoint</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="~/css/site.css" />
@@ -13,7 +29,6 @@
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> 
-    
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/Modal.js"></script>
 
@@ -39,15 +54,19 @@
                 <a class="navbar-brand" asp-controller="Home" asp-action="Index">Jackpoint</a>
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Users" asp-action="Index">Users</a></li>
-                </ul>
-                <ul class="nav navbar-nav right">
-                    <li><a asp-area="" asp-controller="Users" asp-action="Index">
-                        <!--Put the username here, fucking somehow.-->
-                    </a></li>
-                    <li><a asp-area="" asp-controller="Users" asp-action="Logout">Logout</a></li>
-                </ul>
+                @if(loggedIn)
+                {
+                    @if(admin)
+                    {
+                        <ul class="nav navbar-nav">
+                            <li><a asp-area="" asp-controller="User" asp-action="Index">Users</a></li>
+                        </ul>
+                    }
+                    <ul class="nav navbar-nav right">
+                        <li><a>@userName</a></li>
+                        <li><a asp-area="" asp-controller="Account" asp-action="LogOut">Logout</a></li>
+                    </ul>
+                }
             </div>
         </div>
     </nav>

@@ -1,0 +1,22 @@
+@model VerificationViewModel;
+<div class="col-sm-2"></div>
+<div class="col-sm-4">
+    <br/><br/>
+    <span class="message-body">We have sent you a verification code. Check your email and type in the code. Or you could just copy and paste it, like everyone else.</span>
+    <div class="message-signature admin-color">-- Fastjack</div>
+</div>
+<div class="col-sm-4">
+    <h2>Verify</h2>
+    <h5><a asp-area="" asp-controller="Account" asp-action="Login">Back to Login page.</a></h5>
+    <hr/>
+    @using(Html.BeginForm("Verify", "Account"))
+    {
+        <div class="form-group">
+            @Html.HiddenFor(m => m.UserId)
+            <input type="text" class="form-control" name="inputGuid" placeholder="code">
+        </div>
+        <!--@Model.dbGuid-->
+        <button type="submit" id="verify" class="btn btn-primary" style="width:100%">Verify</button>
+    }
+</div>
+<div class="col-sm-2"></div>

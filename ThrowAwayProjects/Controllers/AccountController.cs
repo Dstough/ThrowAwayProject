@@ -35,6 +35,59 @@ namespace ThrowAwayProjects.Controllers
             }
         }
 
+        [HttpPost]
+        public ActionResult LogIn(UserViewModel viewModel)
+        {
+            try
+            {
+                var dbUser = unitOfWork.Users.Find(new Filter[]
+                {
+                    new Filter()
+                    {
+                        Column = "UserName",
+                        Value = "'" + viewModel.UserName + "'"
+                    }
+                }).FirstOrDefault();
+                var dbUserGroup = unitOfWork.UserGroups.GetById(dbUser.GroupId)?.Name;
+
+                if (Sha512(viewModel.PassPhrase + dbUser.CreatedOn) == dbUser.PassPhrase)
+                {
+                    if (!dbUser.Authenticated)
+                    {
+                        //TODO: Send Auth Code to email.
+                        var model = new VerificationViewModel()
+                        {
+                            UserId = dbUser.Id,
+                            dbGuid = dbUser.VerificationCode
+                        };
+                        return View("Verify", model);
+                    }
+                    HttpContext.Session.SetString(configuration.GetValue<string>("UserKey"), JsonConvert.SerializeObject(dbUser));
+                    HttpContext.Session.SetString("UserGroup", dbUserGroup);
+                    return RedirectToAction(viewModel.TargetAction, viewModel.TargetController);
+                }
+                else
+                    return View("LogIn", viewModel);
+            }
+            catch (Exception ex)
+            {
+                return View("Error", ex);
+            }
+        }
+
+        public ActionResult LogOut()
+        {
+            try
+            {
+                HttpContext.Session.Clear();
+                return RedirectToAction("LogIn");
+            }
+            catch (Exception ex)
+            {
+                return View("Error", ex);
+            }
+        }
+
         public ActionResult Register()
         {
             try
@@ -49,26 +102,37 @@ namespace ThrowAwayProjects.Controllers
         }
 
         [HttpPost]
-        public ActionResult LogIn(UserViewModel viewModel)
+        public ActionResult Register(UserViewModel viewModel)
         {
             try
             {
-                var dbUser = unitOfWork.Users.Find(new Filter[]
+                var CreatedDate = DateTime.Now;
+                var defaultUserGroup = unitOfWork.UserGroups.Find(new Filter[]
                 {
                     new Filter()
                     {
-                        Column = "UserName",
-                        Value = "'" + viewModel.UserName + "'"
+                        Column = "Name",
+                        Value = "'User'"
                     }
                 }).FirstOrDefault();
-
-                if (Sha512(viewModel.PassPhrase + dbUser.CreatedOn) == dbUser.PassPhrase)
+                var user = new UserIdentity
                 {
-                    HttpContext.Session.SetString(configuration.GetValue<string>("UserKey"), JsonConvert.SerializeObject(dbUser));
-                    return RedirectToAction(viewModel.TargetAction, viewModel.TargetController);
-                }
-                else
-                    return View("LogIn", viewModel);
+                    GroupId = defaultUserGroup.Id ?? 0,
+                    UserName = viewModel.UserName,
+                    CreatedOn = CreatedDate,
+                    Email = viewModel.Email,
+                    PassPhrase = Sha512(viewModel.PassPhrase + CreatedDate),
+                    VerificationCode = Guid.NewGuid().ToString()
+                };
+                unitOfWork.Users.Add(user);
+
+                //TODO: Send Auth Code to email.
+                var model = new VerificationViewModel()
+                {
+                    UserId = user.Id,
+                    dbGuid = user.VerificationCode
+                };
+                return View("Verify", model);
             }
             catch (Exception ex)
             {
@@ -77,22 +141,20 @@ namespace ThrowAwayProjects.Controllers
         }
 
         [HttpPost]
-        public ActionResult Register(UserViewModel viewModel)
+        public ActionResult Verify(VerificationViewModel viewModel)
         {
             try
             {
-                var CreatedDate = DateTime.Now;
-                var user = new UserIdentity
+                var dbUser = unitOfWork.Users.GetById(viewModel.UserId ?? 0);
+                var dbUserGroup = unitOfWork.UserGroups.GetById(dbUser.GroupId)?.Name;
+                if (viewModel.inputGuid == dbUser.VerificationCode)
                 {
-                    UserName = viewModel.UserName,
-                    CreatedOn = CreatedDate,
-                    Email = viewModel.Email,
-                    PassPhrase = Sha512(viewModel.PassPhrase + CreatedDate)
-                };
-
-                unitOfWork.Users.Add(user);
-
-                //TODO: maybe auto log in when they register.
+                    dbUser.Authenticated = true;
+                    unitOfWork.Users.Edit(dbUser);
+                    HttpContext.Session.SetString(configuration.GetValue<string>("UserKey"), JsonConvert.SerializeObject(dbUser));
+                    HttpContext.Session.SetString("UserGroup", dbUserGroup);
+                    return RedirectToAction("Index", "Home");
+                }
                 return RedirectToAction("LogIn");
             }
             catch (Exception ex)
