@@ -1,1 +1,35 @@
 @model RecoveryViewModel
+<div class="col-sm-2"></div>
+<div class="col-sm-4">
+    <br/><br/>
+    <span class="message-body">
+        I will send you a verification code. 
+        It will give you access to your account.
+        As soon as you get in, change your passphrase! 
+        I can't keep doing this for you chummer.
+    </span>
+    <div class="message-signature admin-color">
+        -- Fastjack
+    </div>
+</div>
+<div class="col-sm-4">
+    <h2>Recovery</h2>
+    <h5><a asp-area="" asp-controller="Account" asp-action="Login">Back to Login page.</a></h5>
+    <hr/>
+    @using(Html.BeginForm("Recovery", "Account"))
+    {
+        <div class="form-group">
+            <input id="email" type="text" class="form-control" name="Email" placeholder="email">
+        </div>
+        <div class="form-group">
+            <input id="username" type="text" class="form-control" name="UserName" placeholder="username">
+        </div>
+        <button id="recover" type="submit" id="Recover" class="btn btn-primary" style="width:100%">Recover</button>
+    }
+</div>
+<div class="col-sm-2"></div>
+<script>
+    $(function(){
+        BindValidation(["email", "username"], "recover");
+    });
+</script>

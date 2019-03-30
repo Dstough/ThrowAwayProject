@@ -106,7 +106,7 @@ namespace ThrowAwayDataBackground
             //Maybe find another way in the futre.
             foreach (var filter in filters)
                 if (columnList.Contains(filter.Column))
-                    whereClause += " AND " + filter.Column + " = " + filter.Value;
+                    whereClause += " AND " + filter.Column.Replace("\'","\"") + " = " + filter.Value.Replace("\'","\"");
 
             using (var conn = new SQLiteConnection(ConnString))
             using (var cmd = conn.CreateCommand())

@@ -48,10 +48,10 @@ namespace ThrowAwayProjects.Controllers
                         Value = "'" + viewModel.UserName + "'"
                     }
                 }).FirstOrDefault();
-                var dbUserGroup = unitOfWork.UserGroups.GetById(dbUser.GroupId)?.Name;
-
-                if (Sha512(viewModel.PassPhrase + dbUser.CreatedOn) == dbUser.PassPhrase)
-                {
+                
+                if (dbUser != null && Sha512(viewModel.PassPhrase + dbUser.CreatedOn) == dbUser.PassPhrase)
+                { 
+                    var dbUserGroup = unitOfWork.UserGroups.GetById(dbUser.GroupId).Name;
                     if (!dbUser.Authenticated)
                     {
                         //TODO: Send Auth Code to email.
@@ -67,7 +67,7 @@ namespace ThrowAwayProjects.Controllers
                     return RedirectToAction(viewModel.TargetAction, viewModel.TargetController);
                 }
                 else
-                    return View("LogIn", viewModel);
+                    return View(viewModel);
             }
             catch (Exception ex)
             {
@@ -115,6 +115,7 @@ namespace ThrowAwayProjects.Controllers
                         Value = "'User'"
                     }
                 }).FirstOrDefault();
+                
                 var user = new UserIdentity
                 {
                     GroupId = defaultUserGroup.Id ?? 0,
@@ -127,6 +128,7 @@ namespace ThrowAwayProjects.Controllers
                 unitOfWork.Users.Add(user);
 
                 //TODO: Send Auth Code to email.
+                
                 var model = new VerificationViewModel()
                 {
                     UserId = user.Id,
@@ -156,6 +158,55 @@ namespace ThrowAwayProjects.Controllers
                     return RedirectToAction("Index", "Home");
                 }
                 return RedirectToAction("LogIn");
+            }
+            catch (Exception ex)
+            {
+                return View("Error", ex);
+            }
+        }
+
+        public ActionResult Recovery()
+        {
+            try
+            {
+                var viewModel = new RecoveryViewModel();
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                return View("Error", ex);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult Recovery(RecoveryViewModel viewModel)
+        {
+            try
+            {
+                var dbUser = unitOfWork.Users.Find(new Filter[]
+                {
+                    new Filter()
+                    {
+                        Column = "UserName",
+                        Value = "'" + viewModel.UserName + "'"
+                    }
+                }).FirstOrDefault();
+
+                if (dbUser.Email != viewModel.Email)
+                    return View(viewModel);
+
+                dbUser.Authenticated = false;
+                dbUser.VerificationCode = Guid.NewGuid().ToString();
+                unitOfWork.Users.Edit(dbUser);
+
+                //TODO: Send guid over email.
+                
+                var model = new VerificationViewModel()
+                {
+                    UserId = dbUser.Id,
+                    dbGuid = dbUser.VerificationCode
+                };
+                return View("Verify", model);
             }
             catch (Exception ex)
             {

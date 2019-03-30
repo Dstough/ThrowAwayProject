@@ -2,11 +2,21 @@
 <div class="col-sm-2"></div>
 <div class="col-sm-4" style="padding-top:25px;">
     <span class="message-head">Shadowrun</span> <span style="font-size:12pt;">>noun</span><br/>
-    <span class="message-body">Any movement, action, or series of such made in carrying out plans which are illegal or quasilegal.</span><br/>
-    <div class="message-signature">-- WorldWide WorldWatch, 2050 archive</div>
+    <span class="message-body">
+        Any movement, action, or series of such made in carrying out plans which are illegal or quasilegal.
+    </span>
+    <div class="message-signature">
+        -- WorldWide WorldWatch, 2050 archive
+    </div>
     <hr/>
-    <span class="message-body">Don't use any passphrase that you have used before. This is a host made for shadowrunners. If you are here, you know what we do best.</span>
-    <div class="message-signature admin-color">-- Fastjack</div>
+    <span class="message-body">
+        Pick a good handle chummer, you won't be able to change it!
+        Don't use any passphrase that you have used before.
+        This is a host made for shadowrunners.
+        If you are here, you know what we do best.</span>
+    <div class="message-signature admin-color">
+        -- Fastjack
+    </div>
 </div>
 <div class="col-sm-4">
     <h2>Register</h2>
@@ -15,20 +25,26 @@
     @using(Html.BeginForm("Register", "Account"))
     {
         <div class="form-group">
-            <input type="text" class="form-control" name="Email" placeholder="email">
+            <input id="email" type="text" class="form-control" name="Email" placeholder="email">
         </div>
         <div class="form-group">
-            <input type="text" class="form-control" name="UserName" placeholder="username">
+            <input id="username" type="text" class="form-control" name="UserName" placeholder="username">
         </div>
         <hr/>
         <div class="form-group">
-            <input type="password" class="form-control" name="PassPhrase" placeholder="passphrase">
+            <input id="passphrase" type="password" class="form-control" name="PassPhrase" placeholder="passphrase">
         </div>
         <div class="form-group">
-            <input type="password" class="form-control" name="PassPhraseConfirm" placeholder="confirm">
+            <input id="passphraseconfirm" type="password" class="form-control" name="PassPhraseConfirm" placeholder="confirm">
         </div>
         <hr/>
-        <button type="submit" id="sendlogin" class="btn btn-primary" style="width:100%">Register</button>
+        <button id="register" type="submit" id="sendlogin" class="btn btn-primary" style="width:100%">Register</button>
     }
 </div>
 <div class="col-sm-2"></div>
+
+<script>
+    $(function(){
+        BindValidation(["email", "username", "passphrase", "passphraseconfirm"], "register");
+    });
+</script>
