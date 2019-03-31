@@ -101,19 +101,23 @@ namespace ThrowAwayDataBackground
             foreach (var prop in itemTemplate.GetType().GetProperties())
                 columnList += prop.Name + ",";
 
-            //This might not be the best way to do the filter.
-            //It shifts the responsiblily on the app to know when to use sql quotes for the filter values.
-            //Maybe find another way in the futre.
-            foreach (var filter in filters)
-                if (columnList.Contains(filter.Column))
-                    whereClause += " AND " + filter.Column.Replace("\'","\"") + " = " + filter.Value.Replace("\'","\"");
-
             using (var conn = new SQLiteConnection(ConnString))
             using (var cmd = conn.CreateCommand())
             {
+                //This might not be the best way to do the filter.
+                //It shifts the responsiblily on the app to know when to use sql quotes for the filter values.
+                //Maybe find another way in the futre.
+                foreach (var filter in filters)
+                {
+                    if (columnList.Contains(filter.Column))
+                    {
+                        whereClause += " AND " + filter.Column + "=@" + filter.Column;
+                        cmd.Parameters.AddWithValue("@" + filter.Column, filter.Value);
+                    }
+                }
                 cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE " + whereClause + ";";
-                conn.Open();
 
+                conn.Open();
                 using (var reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())

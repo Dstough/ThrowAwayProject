@@ -45,7 +45,7 @@ namespace ThrowAwayProjects.Controllers
                     new Filter()
                     {
                         Column = "UserName",
-                        Value = "'" + viewModel.UserName + "'"
+                        Value = viewModel.UserName
                     }
                 }).FirstOrDefault();
 
@@ -112,7 +112,7 @@ namespace ThrowAwayProjects.Controllers
                     new Filter()
                     {
                         Column = "Name",
-                        Value = "'User'"
+                        Value = "User"
                     }
                 }).FirstOrDefault();
 
@@ -220,6 +220,20 @@ namespace ThrowAwayProjects.Controllers
             {
                 var viewModel = new ChangePassphraseViewModel();
                 return Modal("ChangePassphrase", viewModel);
+            });
+        }
+
+        [HttpPost]
+        public ActionResult ChangePassphrase(ChangePassphraseViewModel viewModel)
+        {
+            return HandleExceptions(() =>
+            {
+                if (viewModel.NewPassphrase != viewModel.ConfirmPassphrase)
+                    throw new Exception("The passphrases that you specified did not match.");
+                
+                //unitOfWork.Users.
+
+                return RedirectToAction("Index", "Home");
             });
         }
     }
