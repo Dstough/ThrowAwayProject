@@ -48,9 +48,9 @@ namespace ThrowAwayProjects.Controllers
                         Value = "'" + viewModel.UserName + "'"
                     }
                 }).FirstOrDefault();
-                
+
                 if (dbUser != null && Sha512(viewModel.PassPhrase + dbUser.CreatedOn) == dbUser.PassPhrase)
-                { 
+                {
                     var dbUserGroup = unitOfWork.UserGroups.GetById(dbUser.GroupId).Name;
                     if (!dbUser.Authenticated)
                     {
@@ -115,7 +115,7 @@ namespace ThrowAwayProjects.Controllers
                         Value = "'User'"
                     }
                 }).FirstOrDefault();
-                
+
                 var user = new UserIdentity
                 {
                     GroupId = defaultUserGroup.Id ?? 0,
@@ -128,7 +128,7 @@ namespace ThrowAwayProjects.Controllers
                 unitOfWork.Users.Add(user);
 
                 //TODO: Send Auth Code to email.
-                
+
                 var model = new VerificationViewModel()
                 {
                     UserId = user.Id,
@@ -200,7 +200,7 @@ namespace ThrowAwayProjects.Controllers
                 unitOfWork.Users.Edit(dbUser);
 
                 //TODO: Send guid over email.
-                
+
                 var model = new VerificationViewModel()
                 {
                     UserId = dbUser.Id,
@@ -212,6 +212,15 @@ namespace ThrowAwayProjects.Controllers
             {
                 return View("Error", ex);
             }
+        }
+
+        public JsonResult ChangePassphrase()
+        {
+            return HandleExceptions(() =>
+            {
+                var viewModel = new ChangePassphraseViewModel();
+                return Modal("ChangePassphrase", viewModel);
+            });
         }
     }
 }

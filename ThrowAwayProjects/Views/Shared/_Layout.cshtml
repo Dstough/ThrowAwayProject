@@ -63,7 +63,7 @@
                         </ul>
                     }
                     <ul class="nav navbar-nav right">
-                        <li><a>@userName</a></li>
+                        <li><a onclick='Modal("@Url.Action("ChangePassphrase","Account")");'>@userName</a></li>
                         <li><a asp-area="" asp-controller="Account" asp-action="LogOut">Logout</a></li>
                     </ul>
                 }
