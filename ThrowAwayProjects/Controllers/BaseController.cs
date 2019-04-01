@@ -65,13 +65,13 @@ namespace ThrowAwayProjects.Controllers
             }
             catch (Exception ex)
             {
-                return Modal("ModalError", ex);
+                return Json(new {result = "error", message = ex.Message });
             }
         }
 
         protected JsonResult Modal(string viewName, object model)
         {
-            return Json(new { message = RenderViewToString(viewName, model) });
+            return Json(new {result = "modal", message = RenderViewToString(viewName, model) });
         }
 
         protected string RunPythonScrit(dynamic script)

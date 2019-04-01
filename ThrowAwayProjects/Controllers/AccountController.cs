@@ -116,6 +116,39 @@ namespace ThrowAwayProjects.Controllers
                     }
                 }).FirstOrDefault();
 
+                var userNameCheck = unitOfWork.Users.Find(new Filter[]
+                {
+                    new Filter()
+                    {
+                        Column = "UserName",
+                        Value = viewModel.UserName
+                    }
+                }).FirstOrDefault();
+
+                var emailCheck = unitOfWork.Users.Find(new Filter[]
+                {
+                    new Filter()
+                    {
+                        Column = "Email",
+                        Value = viewModel.Email
+                    }
+                }).FirstOrDefault();
+
+                if(defaultUserGroup == null)
+                    viewModel.ErrorMessage = "We can't let you do that Omae.";
+
+                if (emailCheck != null)
+                    viewModel.ErrorMessage = "That email is already in use.";
+
+                if (userNameCheck != null)
+                    viewModel.ErrorMessage = "That username is already taken.";
+
+                if(viewModel.PassPhrase != viewModel.PassPhraseConfirm)
+                    viewModel.ErrorMessage = "Your passphrases didn't match.";
+                
+                if(viewModel.ErrorMessage != null)
+                    return View(viewModel);
+
                 var user = new UserIdentity
                 {
                     GroupId = defaultUserGroup.Id ?? 0,
@@ -128,7 +161,6 @@ namespace ThrowAwayProjects.Controllers
                 unitOfWork.Users.Add(user);
 
                 //TODO: Send Auth Code to email.
-
                 var model = new VerificationViewModel()
                 {
                     UserId = user.Id,
@@ -188,7 +220,7 @@ namespace ThrowAwayProjects.Controllers
                     new Filter()
                     {
                         Column = "UserName",
-                        Value = "'" + viewModel.UserName + "'"
+                        Value = viewModel.UserName
                     }
                 }).FirstOrDefault();
 
@@ -214,27 +246,75 @@ namespace ThrowAwayProjects.Controllers
             }
         }
 
-        public JsonResult ChangePassphrase()
+        public JsonResult Update()
         {
             return HandleExceptions(() =>
             {
-                var viewModel = new ChangePassphraseViewModel();
-                return Modal("ChangePassphrase", viewModel);
+                var dbUser = GetSessionUserFromDb();
+                var viewModel = new UpdateViewModel()
+                {
+                    UserName = dbUser.UserName,
+                    Email = dbUser.Email
+                };
+                return Modal("Update", viewModel);
             });
         }
 
         [HttpPost]
-        public ActionResult ChangePassphrase(ChangePassphraseViewModel viewModel)
+        public ActionResult Update(UpdateViewModel viewModel)
         {
             return HandleExceptions(() =>
             {
-                if (viewModel.NewPassphrase != viewModel.ConfirmPassphrase)
-                    throw new Exception("The passphrases that you specified did not match.");
-                
-                //unitOfWork.Users.
+                var dbUser = GetSessionUserFromDb();
 
-                return RedirectToAction("Index", "Home");
+                if (dbUser.UserName != viewModel.UserName)
+                {
+                    var userNameCheck = unitOfWork.Users.Find(new Filter[]
+                    {
+                        new Filter()
+                        {
+                            Column = "UserName",
+                            Value = viewModel.UserName
+                        }
+                    }).FirstOrDefault();
+
+                    if (userNameCheck != null)
+                        return Json(new { message = "That username is already in use chummer. Nothing was updated. Sorry." });
+
+                    dbUser.UserName = viewModel.UserName;
+                }
+
+                if (dbUser.Email != viewModel.Email)
+                {
+                    var emailCheck = unitOfWork.Users.Find(new Filter[]
+                    {
+                        new Filter()
+                        {
+                            Column = "Email",
+                            Value = viewModel.Email
+                        }
+                    }).FirstOrDefault();
+
+                    if (emailCheck != null)
+                        return Json(new { message = "That email is already in use chummer. Nothing was updated. Sorry." });
+
+                    dbUser.Email = viewModel.Email;
+                }
+
+                if (viewModel.NewPassphrase != null && viewModel.ConfirmPassphrase != null && viewModel.NewPassphrase == viewModel.ConfirmPassphrase)
+                    dbUser.PassPhrase = Sha512(viewModel.NewPassphrase + dbUser.CreatedOn);
+
+                unitOfWork.Users.Edit(dbUser);
+                HttpContext.Session.SetString(configuration.GetValue<string>("UserKey"), JsonConvert.SerializeObject(dbUser));
+                return Json(new { message = "Your account has been uptated chummer, Have fun with your new SIN." });
             });
+        }
+
+        private UserIdentity GetSessionUserFromDb()
+        {
+            var userKey = configuration.GetValue<string>("UserKey");
+            var user = JsonConvert.DeserializeObject<UserIdentity>(HttpContext.Session.GetString(userKey));
+            return unitOfWork.Users.GetById(user.Id ?? 0);
         }
     }
 }

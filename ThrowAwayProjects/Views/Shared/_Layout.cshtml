@@ -41,6 +41,10 @@
             </div>
         </div>
     </div>
+    <div id="message" class="message">
+        <span class='message-body'>A quick message for you chummer.</span>
+        <div class='message-signature admin-color'>-- Fastjack</div>
+    </div>
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
@@ -63,7 +67,8 @@
                         </ul>
                     }
                     <ul class="nav navbar-nav right">
-                        <li><a onclick='Modal("@Url.Action("ChangePassphrase","Account")");'>@userName</a></li>
+                        @{var action = Url.Action("Update","Account");}
+                        <li><a onclick='Modal("@action");'>@userName</a></li>
                         <li><a asp-area="" asp-controller="Account" asp-action="LogOut">Logout</a></li>
                     </ul>
                 }

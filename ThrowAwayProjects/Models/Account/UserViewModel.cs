@@ -9,6 +9,7 @@ namespace ThrowAwayProjects.Models
         public string Email { get; set; }
         public string TargetAction { get; set; }
         public string TargetController { get; set; }
+        public string ErrorMessage { get; set; }
 
         public UserViewModel() : this(new UserIdentity())
         {

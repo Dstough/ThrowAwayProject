@@ -9,11 +9,16 @@
         -- WorldWide WorldWatch, 2050 archive
     </div>
     <hr/>
-    <span class="message-body">
-        Pick a good handle chummer, you won't be able to change it!
-        Don't use any passphrase that you have used before.
-        This is a host made for shadowrunners.
-        If you are here, you know what we do best.</span>
+    @{
+        var message = "Don't use any passphrase that you have used before." +
+                        "This is a host made for shadowrunners. "+
+                        "If you are here, you know what we do best.";
+        if(Model.ErrorMessage != null)
+        {
+            message = Model.ErrorMessage;
+        }
+    }
+    <span class="message-body">@message</span>
     <div class="message-signature admin-color">
         -- Fastjack
     </div>
