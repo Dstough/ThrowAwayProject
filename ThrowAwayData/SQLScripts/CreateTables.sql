@@ -32,6 +32,6 @@ create table UserIdentity
 insert into UserGroup (CreatedOn,CreatedBy,Deleted,Name,Description)
 values(datetime('now'), 'System', 0, 'Admin', 'The primary group giving you access');
 insert into UserGroup (CreatedOn,CreatedBy,Deleted,Name,Description)
-values(datetime('now'), 'System', 0, 'StoryUser', 'The group used for story characters');
+values(datetime('now'), 'System', 0, 'Guest', 'The group used for a default user who cannot post');
 insert into UserGroup (CreatedOn,CreatedBy,Deleted,Name,Description)
 values(datetime('now'), 'System', 0, 'User', 'The primary group for users to post');

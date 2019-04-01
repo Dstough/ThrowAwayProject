@@ -11,7 +11,7 @@ var Modal = function (action) {
     });
 }
 
-var Submit = function (action, data) {
+var Submit = function (action, data, tag = "") {
     $.ajax({
         url: action,
         method: 'POST',
@@ -30,6 +30,9 @@ var Submit = function (action, data) {
                     $("#message").css("display", "none");
                 });
             }, 3000);
+            if (tag !== "" && result["html"] !== undefined) {
+                $("#" + tag).html(result["html"]);
+            }
         }
     });
 }

@@ -35,12 +35,13 @@
 <script>
     function UpdateAccount() {
         var action = '@Url.Action("Update","Account")';
+        var tag = "userLabel";
         var model = {
             UserName : $('#UserName').val(),
             Email : $('#Email').val(),
             NewPassphrase : $('#NewPassphrase').val(),
             ConfirmPassphrase : $('#ConfirmPassphrase').val()
         };
-        Submit(action, model);
+        Submit(action, model, tag);
     }
 </script>

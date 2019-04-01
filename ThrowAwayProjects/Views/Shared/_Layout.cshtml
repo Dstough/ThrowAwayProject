@@ -68,7 +68,7 @@
                     }
                     <ul class="nav navbar-nav right">
                         @{var action = Url.Action("Update","Account");}
-                        <li><a onclick='Modal("@action");'>@userName</a></li>
+                        <li><a id="userLabel" onclick='Modal("@action");'>@userName</a></li>
                         <li><a asp-area="" asp-controller="Account" asp-action="LogOut">Logout</a></li>
                     </ul>
                 }

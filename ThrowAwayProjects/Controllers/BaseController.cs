@@ -42,7 +42,7 @@ namespace ThrowAwayProjects.Controllers
             };
         }
 
-        protected ActionResult HandleExceptions(Func<ActionResult> logic)
+        protected virtual ActionResult HandleExceptions(Func<ActionResult> logic)
         {
             try
             {
@@ -57,7 +57,7 @@ namespace ThrowAwayProjects.Controllers
             }
         }
 
-        protected JsonResult HandleExceptions(Func<JsonResult> logic)
+        protected virtual JsonResult HandleExceptions(Func<JsonResult> logic)
         {
             try
             {

@@ -24,21 +24,17 @@ namespace ThrowAwayProjects.Controllers
 
         public ActionResult LogIn()
         {
-            try
+            return HandleExceptions(() =>
             {
                 var model = new UserViewModel();
                 return View(model);
-            }
-            catch (Exception ex)
-            {
-                return View("Error", ex);
-            }
+            });
         }
 
         [HttpPost]
         public ActionResult LogIn(UserViewModel viewModel)
         {
-            try
+            return HandleExceptions(() =>
             {
                 var dbUser = unitOfWork.Users.Find(new Filter[]
                 {
@@ -68,43 +64,31 @@ namespace ThrowAwayProjects.Controllers
                 }
                 else
                     return View(viewModel);
-            }
-            catch (Exception ex)
-            {
-                return View("Error", ex);
-            }
+            });
         }
 
         public ActionResult LogOut()
         {
-            try
+            return HandleExceptions(() =>
             {
                 HttpContext.Session.Clear();
                 return RedirectToAction("LogIn");
-            }
-            catch (Exception ex)
-            {
-                return View("Error", ex);
-            }
+            });
         }
 
         public ActionResult Register()
         {
-            try
+            return HandleExceptions(() =>
             {
                 var model = new UserViewModel();
                 return View(model);
-            }
-            catch (Exception ex)
-            {
-                return View("Error", ex);
-            }
+            });
         }
 
         [HttpPost]
         public ActionResult Register(UserViewModel viewModel)
         {
-            try
+            return HandleExceptions(() =>
             {
                 var CreatedDate = DateTime.Now;
                 var defaultUserGroup = unitOfWork.UserGroups.Find(new Filter[]
@@ -134,7 +118,7 @@ namespace ThrowAwayProjects.Controllers
                     }
                 }).FirstOrDefault();
 
-                if(defaultUserGroup == null)
+                if (defaultUserGroup == null)
                     viewModel.ErrorMessage = "We can't let you do that Omae.";
 
                 if (emailCheck != null)
@@ -143,10 +127,10 @@ namespace ThrowAwayProjects.Controllers
                 if (userNameCheck != null)
                     viewModel.ErrorMessage = "That username is already taken.";
 
-                if(viewModel.PassPhrase != viewModel.PassPhraseConfirm)
+                if (viewModel.PassPhrase != viewModel.PassPhraseConfirm)
                     viewModel.ErrorMessage = "Your passphrases didn't match.";
-                
-                if(viewModel.ErrorMessage != null)
+
+                if (viewModel.ErrorMessage != null)
                     return View(viewModel);
 
                 var user = new UserIdentity
@@ -167,17 +151,13 @@ namespace ThrowAwayProjects.Controllers
                     dbGuid = user.VerificationCode
                 };
                 return View("Verify", model);
-            }
-            catch (Exception ex)
-            {
-                return View("Error", ex);
-            }
+            });
         }
 
         [HttpPost]
         public ActionResult Verify(VerificationViewModel viewModel)
         {
-            try
+            return HandleExceptions(() =>
             {
                 var dbUser = unitOfWork.Users.GetById(viewModel.UserId ?? 0);
                 var dbUserGroup = unitOfWork.UserGroups.GetById(dbUser.GroupId)?.Name;
@@ -190,30 +170,22 @@ namespace ThrowAwayProjects.Controllers
                     return RedirectToAction("Index", "Home");
                 }
                 return RedirectToAction("LogIn");
-            }
-            catch (Exception ex)
-            {
-                return View("Error", ex);
-            }
+            });
         }
 
         public ActionResult Recovery()
         {
-            try
+            return HandleExceptions(() =>
             {
                 var viewModel = new RecoveryViewModel();
                 return View(viewModel);
-            }
-            catch (Exception ex)
-            {
-                return View("Error", ex);
-            }
+            });
         }
 
         [HttpPost]
         public ActionResult Recovery(RecoveryViewModel viewModel)
         {
-            try
+            return HandleExceptions(() =>
             {
                 var dbUser = unitOfWork.Users.Find(new Filter[]
                 {
@@ -239,11 +211,7 @@ namespace ThrowAwayProjects.Controllers
                     dbGuid = dbUser.VerificationCode
                 };
                 return View("Verify", model);
-            }
-            catch (Exception ex)
-            {
-                return View("Error", ex);
-            }
+            });
         }
 
         public JsonResult Update()
@@ -261,7 +229,7 @@ namespace ThrowAwayProjects.Controllers
         }
 
         [HttpPost]
-        public ActionResult Update(UpdateViewModel viewModel)
+        public JsonResult Update(UpdateViewModel viewModel)
         {
             return HandleExceptions(() =>
             {
@@ -306,8 +274,24 @@ namespace ThrowAwayProjects.Controllers
 
                 unitOfWork.Users.Edit(dbUser);
                 HttpContext.Session.SetString(configuration.GetValue<string>("UserKey"), JsonConvert.SerializeObject(dbUser));
-                return Json(new { message = "Your account has been uptated chummer, Have fun with your new SIN." });
+                return Json(new
+                {
+                    message = "Your account has been uptated chummer, Have fun with your new SIN.",
+                    html = dbUser.UserName
+                });
             });
+        }
+
+        protected override ActionResult HandleExceptions(Func<ActionResult> logic)
+        {
+            try
+            {
+                return logic();
+            }
+            catch (Exception ex)
+            {
+                return View("Error", ex);
+            }
         }
 
         private UserIdentity GetSessionUserFromDb()

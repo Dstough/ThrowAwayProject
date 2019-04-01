@@ -94,7 +94,8 @@ a {
 
 .message {
     display: none;
-    float:right;
-    max-width: 350px;
-    padding: 20px;
+    max-width: 15%;
+    position: absolute;
+    right: 5px;
+    top:80px;
 }
