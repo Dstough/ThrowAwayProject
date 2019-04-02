@@ -9,7 +9,7 @@ create table UserGroup
 (
 	Id INTEGER PRIMARY KEY,
 	CreatedOn datetime not null,
-	CreatedBy varchar not null,
+	CreatedBy integer not null,
 	Deleted bit not null,
 	Name varchar not null,
 	Description varhcar not null
@@ -18,7 +18,7 @@ create table UserIdentity
 (
 	Id INTEGER PRIMARY KEY,
 	CreatedOn datetime not null,
-	CreatedBy varchar not null,
+	CreatedBy integer not null,
 	Deleted bit not null,
 	GroupId integer not null,
 	Email varchar,
@@ -29,9 +29,21 @@ create table UserIdentity
 	Banned bit not null,
 	Dead bit not null
 );
+create table Post
+(
+	Id INTEGER PRIMARY KEY,
+	CreatedOn datetime not null,
+	CreatedBy integer not null,
+	Deleted bit not null,
+	ParentId integer,
+	Title varchar,
+	Body varchar not null,
+	Tags varchar,
+	Closed bit not null
+);
 insert into UserGroup (CreatedOn,CreatedBy,Deleted,Name,Description)
-values(datetime('now'), 'System', 0, 'Admin', 'The primary group giving you access');
+values(datetime('now'), 0, 0, 'Admin', 'The primary group giving you access');
 insert into UserGroup (CreatedOn,CreatedBy,Deleted,Name,Description)
-values(datetime('now'), 'System', 0, 'Guest', 'The group used for a default user who cannot post');
+values(datetime('now'), 0, 0, 'SuperUser', 'The group for people who can post on closed topics');
 insert into UserGroup (CreatedOn,CreatedBy,Deleted,Name,Description)
-values(datetime('now'), 'System', 0, 'User', 'The primary group for users to post');
+values(datetime('now'), 0, 0, 'User', 'The primary group for users to post');

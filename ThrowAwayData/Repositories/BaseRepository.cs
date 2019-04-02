@@ -90,6 +90,45 @@ namespace ThrowAwayDataBackground
             return list;
         }
 
+        public virtual IEnumerable<T> GetPage(int page, int size)
+        {
+            var list = new List<T>();
+            var itemTemplate = new T();
+            var tableName = itemTemplate.GetType().Name;
+            var columnList = "";
+            var lowBound = (page - 1) * size;
+            var highBound = (page * size) - 1;
+
+            foreach (var prop in itemTemplate.GetType().GetProperties())
+                columnList += prop.Name + ",";
+
+            using (var conn = new SQLiteConnection(ConnString))
+            using (var cmd = conn.CreateCommand())
+            {
+
+                cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE Id BETWEEN " + lowBound + " AND " + highBound + " AND Deleted = 0;";
+                conn.Open();
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var item = new T();
+                        foreach (var prop in item.GetType().GetProperties().Where(e => e.CanWrite))
+                        {
+                            if (prop.PropertyType == typeof(int) || prop.Name == "Id")
+                                prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
+                            else
+                                prop.SetValue(item, reader[prop.Name], null);
+                        }
+                        list.Add(item);
+                    }
+                }
+            }
+
+            return list;
+        }
+
         public virtual IEnumerable<T> Find(IEnumerable<Filter> filters)
         {
             var list = new List<T>();
@@ -200,6 +239,46 @@ namespace ThrowAwayDataBackground
                 conn.Open();
                 cmd.ExecuteNonQuery();
             }
+        }
+
+        public virtual int Count(IEnumerable<Filter> filters = null)
+        {
+            var count = 0;
+            var itemTemplate = new T();
+            var tableName = itemTemplate.GetType().Name;
+            var whereClause = "Deleted = 0";
+            var columnList = "";
+
+            foreach (var prop in itemTemplate.GetType().GetProperties())
+                columnList += prop.Name + ",";
+
+            using (var conn = new SQLiteConnection(ConnString))
+            using (var cmd = conn.CreateCommand())
+            {
+                //This might not be the best way to do the filter.
+                //It shifts the responsiblily on the app to know when to use sql quotes for the filter values.
+                //Maybe find another way in the futre.
+                if (filters != null)
+                {
+                    foreach (var filter in filters)
+                    {
+                        if (columnList.Contains(filter.Column))
+                        {
+                            whereClause += " AND " + filter.Column + "=@" + filter.Column;
+                            cmd.Parameters.AddWithValue("@" + filter.Column, filter.Value);
+                        }
+                    }
+                }
+
+                cmd.CommandText = "SELECT COUNT(*) as count FROM " + tableName + " WHERE " + whereClause + ";";
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                        count = Convert.ToInt32(reader["count"]);
+                }
+            }
+            return count;
         }
     }
 }

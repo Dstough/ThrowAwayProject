@@ -61,7 +61,10 @@ namespace ThrowAwayProjects.Controllers
         {
             try
             {
-                return logic();
+                if(IsAuthenticated())
+                    return logic();
+                else
+                    return Json(new {message = "You got disconnected. You will need to log in before you can continue."});
             }
             catch (Exception ex)
             {
