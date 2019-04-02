@@ -63,7 +63,10 @@ namespace ThrowAwayProjects.Controllers
                     return RedirectToAction(viewModel.TargetAction, viewModel.TargetController);
                 }
                 else
+                {
+                    viewModel.ErrorMessage = "Couldn't find your login information.";
                     return View(viewModel);
+                }
             });
         }
 
@@ -169,7 +172,8 @@ namespace ThrowAwayProjects.Controllers
                     HttpContext.Session.SetString("UserGroup", dbUserGroup);
                     return RedirectToAction("Index", "Home");
                 }
-                return RedirectToAction("LogIn");
+                viewModel.ErrorMessage = "The verification code was not input correctly.";
+                return View(viewModel);
             });
         }
 
@@ -196,8 +200,11 @@ namespace ThrowAwayProjects.Controllers
                     }
                 }).FirstOrDefault();
 
-                if (dbUser.Email != viewModel.Email)
+                if (dbUser == null || dbUser.Email != viewModel.Email)
+                {
+                    viewModel.ErrorMessage = "I couldn't find your account information.";
                     return View(viewModel);
+                }
 
                 dbUser.Authenticated = false;
                 dbUser.VerificationCode = Guid.NewGuid().ToString();

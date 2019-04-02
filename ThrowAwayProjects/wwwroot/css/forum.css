@@ -1,5 +1,6 @@
 .message-head {
     font-size: 32pt;
+    border-bottom: 1px solid #afafaf;
 }
 
 .message-body {
@@ -10,8 +11,9 @@
     font-size: 10pt;
     font-style: italic;
     margin-top: 19px;
+    color: #fff;
 }
 
 .admin-color {
-    color: #d8d800;
+    color: #ff0;
 }

@@ -1,6 +1,6 @@
 namespace ThrowAwayProjects.Models
 {
-    public class UpdateViewModel
+    public class UpdateViewModel : BaseViewModel
     {
         public string UserName { get; set; }
         public string Email { get; set; }

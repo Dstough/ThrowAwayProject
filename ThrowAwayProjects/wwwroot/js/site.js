@@ -17,4 +17,9 @@
             }
         });
     }
+    setTimeout(function () {
+        $("#errorMessage").fadeOut(1000, function () {
+            $("#errorMessage").css("display", "none");
+        });
+    }, 3000);
 });

@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
 using ThrowAwayProjects.Models;
 using Newtonsoft.Json;
+using ThrowAwayData;
 
 namespace ThrowAwayProjects.Controllers
 {
@@ -26,33 +27,20 @@ namespace ThrowAwayProjects.Controllers
         {
             return HandleExceptions(() =>
             {
-                const string sessionKey = "FirstSeen";
-                DateTime dateFirstSeen;
-                var value = HttpContext.Session.GetString(sessionKey);
-
-                if (string.IsNullOrEmpty(value))
-                {
-                    dateFirstSeen = DateTime.Now;
-                    var serialisedDate = JsonConvert.SerializeObject(dateFirstSeen);
-                    HttpContext.Session.SetString(sessionKey, serialisedDate);
-                }
+                var date = DateTime.Now;
+                if (string.IsNullOrEmpty(HttpContext.Session.GetString("FirstSeen")))
+                    HttpContext.Session.SetString("FirstSeen", JsonConvert.SerializeObject(date));
                 else
-                {
-                    dateFirstSeen = JsonConvert.DeserializeObject<DateTime>(value);
-                }
+                    date = JsonConvert.DeserializeObject<DateTime>(HttpContext.Session.GetString("FirstSeen"));
+
+                var user = JsonConvert.DeserializeObject<UserIdentity>(HttpContext.Session.GetString(configuration.GetValue<string>("UserKey")));
 
                 var model = new SessionStateViewModel
                 {
-                    DateSessionStarted = dateFirstSeen,
-                    Now = DateTime.Now
+                    DateSessionStarted = date,
+                    Now = DateTime.Now,
+                    AccountAge = (int)(DateTime.Now - user.CreatedOn).TotalDays
                 };
-
-                var x = RunPythonScrit(new
-                {
-                    name = "DiceRoll.py",
-                    arguments = new [] { "1", "13" }
-                });
-
                 return View(model);
             });
         }

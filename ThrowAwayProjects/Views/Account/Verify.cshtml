@@ -10,6 +10,14 @@
     <div class="message-signature admin-color">
         -- Fastjack
     </div>
+    @if(@Model.ErrorMessage != null)
+    {
+        <div id="errorMessage">
+            <hr/>
+            <span class="message-body">@Model.ErrorMessage</span>
+            <div class="message-signature admin-color">-- Fastjack</div>
+        </div>
+    }
 </div>
 <div class="col-sm-4">
     <h2>Verify</h2>

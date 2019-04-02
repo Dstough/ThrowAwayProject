@@ -1,12 +1,21 @@
 ﻿@model SessionStateViewModel;
 <div class="col-sm-8">
-    <h1>Connection Established.</h1>
+    <h1>Welcome back to JackPoint, omae;</h1>
+    <h2>-- Your account is @Model.AccountAge days old.</h2>
+    @if(@Model.AccountAge <= 7)
+    {
+        <h2>-- You cannot post yet, be patient.</h2>
+    }
+    else
+    {
+        <h2>-- You are allowed to post.</h2>
+    }
+    
 </div>
 <div class="col-sm-4">
-    <h2>Session State</h2>
-    <p><b>Date Now</b></p>
-    <p>@Model.Now</p>
-    <br/>
-    <p><b>Date Session Started</b></p>
-    <p>@Model.DateSessionStarted</p>
+    <h2>Connection Status:</h2>
+    <p>...Identity Spoofed</p>
+    <p>...Encryption Keys Generated</p>
+    <p>...Connected to Onion Routers</p>
+    <p><b>...Connected:</b> @Model.DateSessionStarted.AddYears(60)</p>
 </div>
