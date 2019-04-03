@@ -27,7 +27,7 @@
     {
         <div class="form-group">
             @Html.HiddenFor(m => m.UserId)
-            <input id="code" type="text" class="form-control" name="inputGuid" placeholder="code">
+            <input id="code" type="text" class="form-control" name="inputGuid" placeholder="code" autocomplete="off">
         </div>
         <!--@Model.dbGuid-->
         <button id="verify" type="submit" id="verify" class="btn btn-primary" style="width:100%">Verify</button>

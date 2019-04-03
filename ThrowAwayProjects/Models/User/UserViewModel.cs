@@ -24,9 +24,9 @@ namespace ThrowAwayProjects.Models
             GroupId = user.GroupId;
             Email = user.Email;
             UserName = user.UserName;
-            Authenticated = false;
-            Banned = false;
-            Dead = false;
+            Authenticated = user.Authenticated;
+            Banned = user.Banned;
+            Dead = user.Dead;
             GroupOptions = new List<string>();
             GroupName = "";
         }

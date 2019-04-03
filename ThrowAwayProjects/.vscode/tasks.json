@@ -9,6 +9,21 @@
                 "build",
                 "${workspaceFolder}/ThrowAwayProjects.csproj"
             ],
+            "group": "build",
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publish to prod",
+            "type": "process",
+            "command": "dotnet",
+            "args": [
+                "publish", 
+                "--force",
+                "-c", "Release",
+                "-r", "linux-arm",
+                "-o", "./bin/prod/"
+            ],
+            "group": "build",
             "problemMatcher": "$msCompile"
         }
     ]

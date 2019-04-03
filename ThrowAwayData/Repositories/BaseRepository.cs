@@ -96,8 +96,7 @@ namespace ThrowAwayDataBackground
             var itemTemplate = new T();
             var tableName = itemTemplate.GetType().Name;
             var columnList = "";
-            var lowBound = (page - 1) * size;
-            var highBound = (page * size) - 1;
+            var pageNumber = (page - 1) * size;
 
             foreach (var prop in itemTemplate.GetType().GetProperties())
                 columnList += prop.Name + ",";
@@ -105,8 +104,7 @@ namespace ThrowAwayDataBackground
             using (var conn = new SQLiteConnection(ConnString))
             using (var cmd = conn.CreateCommand())
             {
-
-                cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE Id BETWEEN " + lowBound + " AND " + highBound + " AND Deleted = 0;";
+                cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " ORDER BY Id LIMIT " + size + " OFFSET " + pageNumber + ";";
                 conn.Open();
 
                 using (var reader = cmd.ExecuteReader())
