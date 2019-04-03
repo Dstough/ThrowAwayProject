@@ -1,0 +1,15 @@
+.table thead tr th {
+    font-size: 18pt;
+    font-weight: normal;
+    border-bottom: 0;
+}
+
+.table tbody tr td {
+    font-size: 14pt;
+    border-top: 1px solid #777;
+}
+
+.table tbody tr:hover {
+    background:linear-gradient( #383838, #171717);
+    cursor: pointer;
+}

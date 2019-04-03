@@ -18,7 +18,8 @@ namespace ThrowAwayProjects.Controllers
 {
     public class AccountController : BaseController
     {
-        public AccountController(ICompositeViewEngine viewEngine, IConfiguration configuration, IHostingEnvironment environment) : base(viewEngine, configuration, environment)
+        public AccountController(ICompositeViewEngine viewEngine, IConfiguration configuration, IHostingEnvironment environment) : 
+        base(viewEngine, configuration, environment)
         {
         }
 
@@ -26,13 +27,13 @@ namespace ThrowAwayProjects.Controllers
         {
             return HandleExceptions(() =>
             {
-                var model = new UserViewModel();
+                var model = new AccountViewModel();
                 return View(model);
             });
         }
 
         [HttpPost]
-        public ActionResult LogIn(UserViewModel viewModel)
+        public ActionResult LogIn(AccountViewModel viewModel)
         {
             return HandleExceptions(() =>
             {
@@ -83,13 +84,13 @@ namespace ThrowAwayProjects.Controllers
         {
             return HandleExceptions(() =>
             {
-                var model = new UserViewModel();
+                var model = new AccountViewModel();
                 return View(model);
             });
         }
 
         [HttpPost]
-        public ActionResult Register(UserViewModel viewModel)
+        public ActionResult Register(AccountViewModel viewModel)
         {
             return HandleExceptions(() =>
             {

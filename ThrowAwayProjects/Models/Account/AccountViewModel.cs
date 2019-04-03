@@ -1,7 +1,7 @@
 using ThrowAwayData;
 namespace ThrowAwayProjects.Models
 {
-    public class UserViewModel : BaseViewModel
+    public class AccountViewModel : BaseViewModel
     {
         public string UserName { get; set; }
         public string PassPhrase { get; set; }
@@ -10,11 +10,11 @@ namespace ThrowAwayProjects.Models
         public string TargetAction { get; set; }
         public string TargetController { get; set; }
 
-        public UserViewModel() : this(new UserIdentity())
+        public AccountViewModel() : this(new UserIdentity())
         {
         }
 
-        public UserViewModel(UserIdentity user)
+        public AccountViewModel(UserIdentity user)
         {
             UserName = user.UserName;
             PassPhrase = user.PassPhrase;

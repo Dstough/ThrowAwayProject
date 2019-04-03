@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
@@ -12,20 +13,26 @@ namespace ThrowAwayProjects.Controllers
 {
     public class UserController : BaseController
     {
-        public UserController(ICompositeViewEngine viewEngine, IConfiguration configuration, IHostingEnvironment environment) : base(viewEngine, configuration, environment)
+        public UserController(ICompositeViewEngine viewEngine, IConfiguration configuration, IHostingEnvironment environment) :
+        base(viewEngine, configuration, environment)
         {
         }
 
-        public ActionResult Index()
+        public ActionResult Index(int id)
         {
             return HandleExceptions(() =>
             {
-                var dbUsers = unitOfWork.Users.GetAll();
+                var dbUsers = unitOfWork.Users.GetPage(id, 50);
                 var viewModel = new List<UserViewModel>();
+
                 foreach (var user in dbUsers)
                 {
-                    viewModel.Add(new UserViewModel(user));
+                    viewModel.Add(new UserViewModel(user)
+                    {
+                        GroupName = unitOfWork.UserGroups.GetById(user.GroupId).Name
+                    });
                 }
+
                 return View(viewModel);
             });
         }

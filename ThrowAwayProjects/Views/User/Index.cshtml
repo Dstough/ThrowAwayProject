@@ -1,1 +1,38 @@
 @model List<UserViewModel>;
+<h1>Users</h1>
+<br/>
+<table class="table">
+    <thead>
+        <tr>
+            @if(Model.Count > 0)
+            {
+                <th>Group Name</th>
+                <th>UserName</th>
+                <th>Email</th>
+                <th>Authenticated</th>
+                <th>Banned</th>
+                <th>Dead</th>
+                <th><button class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-plus"></span></button></th>
+            }
+            else
+            {
+                <th>There are no records to display</th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model)
+        {
+            var css = item.GroupName == "Admin" ? "admin-color": "";
+            <tr onclick="">
+                <td class='@css'>@item.GroupName</td>
+                <td class='@css'>@item.UserName</td>
+                <td class='@css'>@item.Email</td>
+                <td>@item.Authenticated</td>
+                <td>@item.Banned</td>
+                <td>@item.Dead</td>
+                <td><a><span class="glyphicon glyphicon-pencil"></span></a></td>
+            </tr>
+        }
+    </tbody>
+</table>
