@@ -5,6 +5,7 @@
 
 .message-body {
     font-size: 14pt;
+    text-align: justify;
 }
 
 .message-signature {

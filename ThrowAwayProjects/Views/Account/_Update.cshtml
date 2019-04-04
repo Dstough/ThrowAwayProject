@@ -33,6 +33,7 @@
     <button data-dismiss="modal" id="submit" onclick='UpdateAccount()' class="btn btn-primary">Update Account Info</button>
 </div>
 <script>
+    //TODO: fix this to use ModalValidation.
     function UpdateAccount() {
         var action = '@Url.Action("Update","Account")';
         var tag = "userLabel";

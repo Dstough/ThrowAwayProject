@@ -1,26 +1,50 @@
-﻿BindValidation = function (formControl, targetControls, submitControl, failureCriteria = [""]) {
+﻿BindModalValidation = function (formControl, targetControls, submitControl, failureCriteria = [""]) {
     $("#" + submitControl).on("click", function (e) {
+
         var pass = true;
+
         for (i in targetControls) {
             for (j in failureCriteria) {
                 if ($("#" + targetControls[i]).val() == failureCriteria[j]) {
                     e.preventDefault();
+                    AddRedGlow(targetControls[i])
                     pass = false;
-                    $("#" + targetControls[i]).css("box-shadow", "0 0 10px red");
-                    $("#" + targetControls[i]).on("focus", function () {
-                        $(this).css("box-shadow", "inset 0 0 7px #000");
-                    });
-                    $("#" + targetControls[i]).on("mouseover", function () {
-                        $(this).css("box-shadow", "inset 0 0 7px #000");
-                    });
                 }
             }
         }
-        if(pass){
-            $("#modal").fadeOut(300, function(){
+
+        if (pass) {
+            $("#modal").fadeOut(300, function () {
                 $("#" + formControl).submit();
             });
         }
+    });
+}
+
+BindValidation = function(targetControls, submitControl, failureCriteria = [""]){
+    $("#" + submitControl).on("click", function (e) {
+
+        for (i in targetControls) {
+            for (j in failureCriteria) {
+                if ($("#" + targetControls[i]).val() == failureCriteria[j]) {
+                    e.preventDefault();
+                    AddRedGlow(targetControls[i]);
+                }
+            }
+        }
+    });
+}
+
+var AddRedGlow = function (targetControl) {
+
+    $("#" + targetControl).css("box-shadow", "0 0 10px red");
+
+    $("#" + targetControl).on("focus", function () {
+        $(this).css("box-shadow", "inset 0 0 7px #000");
+    });
+
+    $("#" + targetControl).on("mouseover", function () {
+        $(this).css("box-shadow", "inset 0 0 7px #000");
     });
 }
 
