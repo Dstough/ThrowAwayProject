@@ -66,13 +66,13 @@ namespace ThrowAwayProjects.Controllers
                     };
                     return View("../Home/Index", model);
                 }
-                
+
                 SetSessionUser(dbUser);
 
                 if (!dbUser.Authenticated)
                 {
                     //TODO: Send Auth Code to email.
-                    return RedirectToAction("Verify");
+                    return RedirectToAction("Verify", "Account");
                 }
 
                 return RedirectToAction("Index", "Home");

@@ -1,4 +1,9 @@
 ﻿@model SessionStateViewModel;
+@if(Model.ErrorMessage != null)
+{
+    <script>DisplayMessage("@Model.ErrorMessage");</script>
+    Model.ErrorMessage = null;
+}
 
 <div class="col-sm-4">
     <h2>Connection Status:</h2>
@@ -6,12 +11,11 @@
 </div>
 
 <div class="col-sm-8">
-    <h1>Welcome back to JackPoint, omae;</h1>
+    <br/>
+    <span class="message-body">
+        Welcome back to Jackpoint, omae.
+    </span>
+    <div class="message-signature admin-color">
+        -- Fastjack
+    </div>
 </div>
-
-@if(Model.ErrorMessage != null)
-{
-    <script>
-        DisplayMessage("@Model.ErrorMessage");
-    </script>
-}

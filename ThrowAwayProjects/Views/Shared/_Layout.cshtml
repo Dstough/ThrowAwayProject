@@ -69,9 +69,13 @@
                 }
                 <ul class="nav navbar-nav right">
                     <li><a id="userLabel" onclick='Modal("@action");'>@userName</a></li>
-                    @if(userName != "Log In")
+                    @if(key != null)
                     {
                         <li><a asp-area="" asp-controller="Account" asp-action="LogOut">Logout</a></li>
+                    }
+                    else
+                    {
+                        <li><a asp-area="" asp-controller="Account" asp-action="Register">Sign Up</a></li>
                     }
                 </ul>
             </div>

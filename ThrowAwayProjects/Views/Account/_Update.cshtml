@@ -4,6 +4,7 @@
     <span type="button" class="close" data-dismiss="modal">&times;</span>
     <h4 class="modal-title">Account Information</h4>
 </div>
+
 <div class="modal-body">    
     <div style="display:inline-block; width:49%;">
         <div class="form-group">    
@@ -29,20 +30,23 @@
     </span>
     <div class='message-signature admin-color'>-- Fastjack</div>
 </div>
+
 <div class="modal-footer">
-    <button data-dismiss="modal" id="submit" onclick='UpdateAccount()' class="btn btn-primary">Update Account Info</button>
+    <button id="submit" class="btn btn-primary">Update Account Info</button>
 </div>
+
 <script>
-    //TODO: fix this to use ModalValidation.
-    function UpdateAccount() {
-        var action = '@Url.Action("Update","Account")';
-        var tag = "userLabel";
-        var model = {
-            UserName : $('#UserName').val(),
-            Email : $('#Email').val(),
-            NewPassphrase : $('#NewPassphrase').val(),
-            ConfirmPassphrase : $('#ConfirmPassphrase').val()
-        };
-        Submit(action, model, tag);
-    }
+    $(function () {
+        BindModalValidation("update", ["UserName", "Email"], "submit", function() {
+            var action = '@Url.Action("Update","Account")';
+            var tag = "userLabel";
+            var model = {
+                UserName : $('#UserName').val(),
+                Email : $('#Email').val(),
+                NewPassphrase : $('#NewPassphrase').val(),
+                ConfirmPassphrase : $('#ConfirmPassphrase').val()
+            };
+            Submit(action, model, tag);
+        });
+    });
 </script>

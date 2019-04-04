@@ -1,4 +1,4 @@
-﻿BindModalValidation = function (formControl, targetControls, submitControl, failureCriteria = [""]) {
+﻿BindModalValidation = function (formControl, targetControls, submitControl, submitCommand, failureCriteria = [""]) {
     $("#" + submitControl).on("click", function (e) {
 
         var pass = true;
@@ -15,13 +15,16 @@
 
         if (pass) {
             $("#modal").fadeOut(300, function () {
-                $("#" + formControl).submit();
+                if (submitCommand !== undefined)
+                    submitCommand();
+                else
+                    $("#" + formControl).submit();
             });
         }
     });
 }
 
-BindValidation = function(targetControls, submitControl, failureCriteria = [""]){
+BindValidation = function (targetControls, submitControl, failureCriteria = [""]) {
     $("#" + submitControl).on("click", function (e) {
 
         for (i in targetControls) {

@@ -1,4 +1,9 @@
 @model VerificationViewModel;
+@if(Model.ErrorMessage != null)
+{
+    <script>DisplayMessage("@Model.ErrorMessage");</script>
+    Model.ErrorMessage = null;
+}
 <div class="col-sm-2"></div>
 <div class="col-sm-4">
     <br/><br/>
@@ -10,18 +15,10 @@
     <div class="message-signature admin-color">
         -- Fastjack
     </div>
-    @if(@Model.ErrorMessage != null)
-    {
-        <div id="errorMessage">
-            <hr/>
-            <span class="message-body">@Model.ErrorMessage</span>
-            <div class="message-signature admin-color">-- Fastjack</div>
-        </div>
-    }
 </div>
 <div class="col-sm-4">
     <h2>Verify</h2>
-    <h5><a asp-area="" asp-controller="Account" asp-action="Login">Back to Login page.</a></h5>
+    <h5><a asp-area="" asp-controller="Home" asp-action="Index">Back to home page.</a></h5>
     <hr/>
     <form asp-controller="Account" asp-action="Verify" method="post" id="VerifyForm" role="form">
         <div class="form-group">
@@ -29,7 +26,7 @@
             <input id="code" type="text" class="form-control" name="inputGuid" placeholder="code" autocomplete="off">
         </div>
         <!--@Model.dbGuid-->
-        <span id="verify" id="verify" class="btn btn-primary" style="width:100%">Verify</span>
+        <button id="verify" id="verify" class="btn btn-primary" style="width:100%">Verify</button>
     </form>
 </div>
 <div class="col-sm-2"></div>

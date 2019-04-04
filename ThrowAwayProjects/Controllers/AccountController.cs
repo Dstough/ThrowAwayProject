@@ -119,6 +119,9 @@ namespace ThrowAwayProjects.Controllers
         {
             return HandleExceptions(() =>
             {
+                if (HttpContext.Session.GetString("UserKey") == null)
+                    return RedirectToAction("Index", "Home");
+
                 var user = GetSessionUser();
                 var model = new VerificationViewModel()
                 {

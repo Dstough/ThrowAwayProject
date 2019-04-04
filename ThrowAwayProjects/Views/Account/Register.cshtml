@@ -1,54 +1,54 @@
 @model AccountViewModel
+@if(Model.ErrorMessage != null)
+{
+    <script>DisplayMessage("@Model.ErrorMessage");</script>
+    Model.ErrorMessage = null;
+}
 <div class="col-sm-2"></div>
 <div class="col-sm-4" style="padding-top:25px;">
-    <span class="message-head">Shadowrun</span> <span style="font-size:12pt;">>noun</span><br/>
+    <span class="message-head">Shadowrun</span> <span style="font-size:12pt;">>noun</span><br />
     <span class="message-body">
         Any movement, action, or series of such made in carrying out plans which are illegal or quasilegal.
     </span>
     <div class="message-signature">
         -- WorldWide WorldWatch, 2050 archive
     </div>
-    <hr/>
-    @{
-        var message = "Don't use any passphrase that you have used before." +
-                        "This is a host made for shadowrunners. "+
-                        "If you are here, you know what we do best.";
-        if(Model.ErrorMessage != null)
-        {
-            message = Model.ErrorMessage;
-        }
-    }
-    <span class="message-body">@message</span>
+    <hr />
+    <span class="message-body">
+        Don't use any passphrase that you have used before. 
+        This is a host made for shadowrunners. 
+        If you are here, you know what we do best.
+    </span>
     <div class="message-signature admin-color">
         -- Fastjack
     </div>
 </div>
 <div class="col-sm-4">
     <h2>Register</h2>
-    <h5><a asp-area="" asp-controller="Account" asp-action="Login">Back to Login page.</a></h5>
-    <hr/>
-     <form asp-controller="Account" asp-action="Register" method="post" id="RegisterForm" role="form">
+    <h5><a asp-area="" asp-controller="Home" asp-action="Index">Back to home page.</a></h5>
+    <hr />
+    <form asp-controller="Account" asp-action="Register" method="post" id="RegisterForm" role="form">
         <div class="form-group">
             <input id="email" type="text" class="form-control" name="Email" placeholder="email" autocomplete="off">
         </div>
         <div class="form-group">
             <input id="username" type="text" class="form-control" name="UserName" placeholder="username" autocomplete="off">
         </div>
-        <hr/>
+        <hr />
         <div class="form-group">
             <input id="passphrase" type="password" class="form-control" name="PassPhrase" placeholder="passphrase">
         </div>
         <div class="form-group">
             <input id="passphraseconfirm" type="password" class="form-control" name="PassPhraseConfirm" placeholder="confirm">
         </div>
-        <hr/>
-        <span id="register" id="sendlogin" class="btn btn-primary" style="width:100%">Register</span>
+        <hr />
+        <button id="register" id="sendlogin" class="btn btn-primary" style="width:100%">Register</button>
     </form>
 </div>
 <div class="col-sm-2"></div>
 
 <script>
-    $(function(){
+    $(function () {
         BindValidation(["email", "username", "passphrase", "passphraseconfirm"], "register");
     });
 </script>

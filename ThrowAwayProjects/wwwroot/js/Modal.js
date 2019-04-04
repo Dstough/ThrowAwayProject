@@ -20,6 +20,8 @@ var Submit = function (action, data, tag = "") {
         method: 'POST',
         data: data,
         success: function (result) {
+            $('#modal').modal('hide');
+
             var signature = result["signature"];
 
             DisplayMessage(result["message"], signature);
