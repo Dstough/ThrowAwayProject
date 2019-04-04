@@ -28,21 +28,62 @@ namespace ThrowAwayProjects.Controllers
             return HandleExceptions(() =>
             {
                 var date = DateTime.Now;
+                var model = new SessionStateViewModel
+                {
+                    DateSessionStarted = date,
+                    Now = DateTime.Now
+                };
+
                 if (string.IsNullOrEmpty(HttpContext.Session.GetString("FirstSeen")))
                     HttpContext.Session.SetString("FirstSeen", JsonConvert.SerializeObject(date));
                 else
                     date = JsonConvert.DeserializeObject<DateTime>(HttpContext.Session.GetString("FirstSeen"));
 
-                var user = JsonConvert.DeserializeObject<UserIdentity>(HttpContext.Session.GetString(configuration.GetValue<string>("UserKey")));
 
-                var model = new SessionStateViewModel
-                {
-                    DateSessionStarted = date,
-                    Now = DateTime.Now,
-                    AccountAge = (int)(DateTime.Now - user.CreatedOn).TotalDays
-                };
                 return View(model);
             });
+        }
+
+        [HttpPost]
+        public ActionResult Index(AccountViewModel viewModel)
+        {
+            return HandleExceptions(() =>
+            {
+                var dbUser = unitOfWork.Users.Find(new Filter[]
+                {
+                    new Filter()
+                    {
+                        Column = "UserName",
+                        Value = viewModel.UserName
+                    }
+                }).FirstOrDefault();
+
+                if (dbUser == null || Sha512(viewModel.PassPhrase + dbUser.CreatedOn) != dbUser.PassPhrase)
+                {
+                    var model = new SessionStateViewModel()
+                    {
+                        ErrorMessage = "I couldn't find your account information. You eather had the wrong username or passphrase."
+                    };
+                    return View("../Home/Index", model);
+                }
+                
+                SetSessionUser(dbUser);
+
+                if (!dbUser.Authenticated)
+                {
+                    //TODO: Send Auth Code to email.
+                    return RedirectToAction("Verify");
+                }
+
+                return RedirectToAction("Index", "Home");
+            });
+        }
+
+        private void SetSessionUser(UserIdentity user)
+        {
+            var dbUserGroup = unitOfWork.UserGroups.GetById(user.GroupId).Name;
+            HttpContext.Session.SetString("UserKey", JsonConvert.SerializeObject(user));
+            HttpContext.Session.SetString("UserGroup", dbUserGroup);
         }
     }
 }

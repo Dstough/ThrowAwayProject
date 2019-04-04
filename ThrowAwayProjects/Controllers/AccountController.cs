@@ -18,56 +18,17 @@ namespace ThrowAwayProjects.Controllers
 {
     public class AccountController : BaseController
     {
-        public AccountController(ICompositeViewEngine viewEngine, IConfiguration configuration, IHostingEnvironment environment) : 
+        public AccountController(ICompositeViewEngine viewEngine, IConfiguration configuration, IHostingEnvironment environment) :
         base(viewEngine, configuration, environment)
         {
         }
 
-        public ActionResult LogIn()
+        public JsonResult LogIn()
         {
             return HandleExceptions(() =>
             {
                 var model = new AccountViewModel();
-                return View(model);
-            });
-        }
-
-        [HttpPost]
-        public ActionResult LogIn(AccountViewModel viewModel)
-        {
-            return HandleExceptions(() =>
-            {
-                var dbUser = unitOfWork.Users.Find(new Filter[]
-                {
-                    new Filter()
-                    {
-                        Column = "UserName",
-                        Value = viewModel.UserName
-                    }
-                }).FirstOrDefault();
-
-                if (dbUser != null && Sha512(viewModel.PassPhrase + dbUser.CreatedOn) == dbUser.PassPhrase)
-                {
-                    var dbUserGroup = unitOfWork.UserGroups.GetById(dbUser.GroupId).Name;
-                    if (!dbUser.Authenticated)
-                    {
-                        //TODO: Send Auth Code to email.
-                        var model = new VerificationViewModel()
-                        {
-                            UserId = dbUser.Id,
-                            dbGuid = dbUser.VerificationCode
-                        };
-                        return View("Verify", model);
-                    }
-                    HttpContext.Session.SetString(configuration.GetValue<string>("UserKey"), JsonConvert.SerializeObject(dbUser));
-                    HttpContext.Session.SetString("UserGroup", dbUserGroup);
-                    return RedirectToAction(viewModel.TargetAction, viewModel.TargetController);
-                }
-                else
-                {
-                    viewModel.ErrorMessage = "Couldn't find your login information.";
-                    return View(viewModel);
-                }
+                return Modal("_LogIn", model);
             });
         }
 
@@ -76,7 +37,7 @@ namespace ThrowAwayProjects.Controllers
             return HandleExceptions(() =>
             {
                 HttpContext.Session.Clear();
-                return RedirectToAction("LogIn");
+                return RedirectToAction("Index", "Home");
             });
         }
 
@@ -147,14 +108,24 @@ namespace ThrowAwayProjects.Controllers
                     VerificationCode = Guid.NewGuid().ToString()
                 };
                 unitOfWork.Users.Add(user);
+                SetSessionUser(user);
 
                 //TODO: Send Auth Code to email.
+                return RedirectToAction("Verify");
+            });
+        }
+
+        public ActionResult Verify()
+        {
+            return HandleExceptions(() =>
+            {
+                var user = GetSessionUser();
                 var model = new VerificationViewModel()
                 {
                     UserId = user.Id,
                     dbGuid = user.VerificationCode
                 };
-                return View("Verify", model);
+                return View(model);
             });
         }
 
@@ -169,8 +140,7 @@ namespace ThrowAwayProjects.Controllers
                 {
                     dbUser.Authenticated = true;
                     unitOfWork.Users.Edit(dbUser);
-                    HttpContext.Session.SetString(configuration.GetValue<string>("UserKey"), JsonConvert.SerializeObject(dbUser));
-                    HttpContext.Session.SetString("UserGroup", dbUserGroup);
+                    SetSessionUser(dbUser);
                     return RedirectToAction("Index", "Home");
                 }
                 viewModel.ErrorMessage = "The verification code was not input correctly.";
@@ -210,15 +180,10 @@ namespace ThrowAwayProjects.Controllers
                 dbUser.Authenticated = false;
                 dbUser.VerificationCode = Guid.NewGuid().ToString();
                 unitOfWork.Users.Edit(dbUser);
+                SetSessionUser(dbUser);
 
                 //TODO: Send guid over email.
-
-                var model = new VerificationViewModel()
-                {
-                    UserId = dbUser.Id,
-                    dbGuid = dbUser.VerificationCode
-                };
-                return View("Verify", model);
+                return RedirectToAction("Verify");
             });
         }
 
@@ -232,7 +197,7 @@ namespace ThrowAwayProjects.Controllers
                     UserName = dbUser.UserName,
                     Email = dbUser.Email
                 };
-                return Modal("Update", viewModel);
+                return Modal("_Update", viewModel);
             });
         }
 
@@ -281,7 +246,8 @@ namespace ThrowAwayProjects.Controllers
                     dbUser.PassPhrase = Sha512(viewModel.NewPassphrase + dbUser.CreatedOn);
 
                 unitOfWork.Users.Edit(dbUser);
-                HttpContext.Session.SetString(configuration.GetValue<string>("UserKey"), JsonConvert.SerializeObject(dbUser));
+                SetSessionUser(dbUser);
+
                 return Json(new
                 {
                     message = "Your account has been uptated chummer, Have fun with your new SIN.",
@@ -290,22 +256,24 @@ namespace ThrowAwayProjects.Controllers
             });
         }
 
-        protected override ActionResult HandleExceptions(Func<ActionResult> logic)
+        private void SetSessionUser(UserIdentity user)
         {
-            try
-            {
-                return logic();
-            }
-            catch (Exception ex)
-            {
-                return View("Error", ex);
-            }
+            var dbUserGroup = unitOfWork.UserGroups.GetById(user.GroupId).Name;
+            HttpContext.Session.SetString("UserKey", JsonConvert.SerializeObject(user));
+            HttpContext.Session.SetString("UserGroup", dbUserGroup);
+        }
+
+        private UserIdentity GetSessionUser()
+        {
+            var jsonString = HttpContext.Session.GetString("UserKey");
+            if (jsonString == null)
+                throw new Exception("User session var is not set.");
+            return JsonConvert.DeserializeObject<UserIdentity>(jsonString);
         }
 
         private UserIdentity GetSessionUserFromDb()
         {
-            var userKey = configuration.GetValue<string>("UserKey");
-            var user = JsonConvert.DeserializeObject<UserIdentity>(HttpContext.Session.GetString(userKey));
+            var user = GetSessionUser();
             return unitOfWork.Users.GetById(user.Id ?? 0);
         }
     }

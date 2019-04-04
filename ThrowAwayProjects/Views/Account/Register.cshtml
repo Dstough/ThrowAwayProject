@@ -27,8 +27,7 @@
     <h2>Register</h2>
     <h5><a asp-area="" asp-controller="Account" asp-action="Login">Back to Login page.</a></h5>
     <hr/>
-    @using(Html.BeginForm("Register", "Account"))
-    {
+     <form asp-controller="Account" asp-action="Register" method="post" id="RegisterForm" role="form">
         <div class="form-group">
             <input id="email" type="text" class="form-control" name="Email" placeholder="email" autocomplete="off">
         </div>
@@ -43,13 +42,13 @@
             <input id="passphraseconfirm" type="password" class="form-control" name="PassPhraseConfirm" placeholder="confirm">
         </div>
         <hr/>
-        <button id="register" type="submit" id="sendlogin" class="btn btn-primary" style="width:100%">Register</button>
-    }
+        <span id="register" id="sendlogin" class="btn btn-primary" style="width:100%">Register</span>
+    </form>
 </div>
 <div class="col-sm-2"></div>
 
 <script>
     $(function(){
-        BindValidation(["email", "username", "passphrase", "passphraseconfirm"], "register");
+        BindValidation("RegisterForm", ["email", "username", "passphrase", "passphraseconfirm"], "register");
     });
 </script>

@@ -4,14 +4,17 @@
 @using ThrowAwayData;
 @inject IConfiguration Configuration;
 @{    
-    var value = Context.Session.GetString(Configuration.GetValue<string>("UserKey"));
-    var admin = Context.Session.GetString("UserGroup") == "Admin";
-    var userName = "";
-    var loggedIn = false;
-    if (!string.IsNullOrEmpty(value))
+    var key = Context.Session.GetString("UserKey");
+    var action = Url.Action("LogIn","Account");
+    var userName = "Log In";
+    var admin = false;
+
+    if (key != null)
     {
-        userName = JsonConvert.DeserializeObject<UserIdentity>(value).UserName;
-        loggedIn = true;
+        var user = JsonConvert.DeserializeObject<UserIdentity>(key);
+        userName = user.UserName;
+        admin = Context.Session.GetString("UserGroup") == "Admin";
+        action = Url.Action("Update","Account");
     }
 }
 <!DOCTYPE html>
@@ -26,14 +29,13 @@
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/css/forum.css" />
     <link rel="stylesheet" href="~/css/table.css"/>
+    <link rel="stylesheet" href="~/css/modal.css"/>
     <link rel="stylesheet" href="~/css/ShadowrunTable.css" />
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> 
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/Modal.js"></script>
-
-    @RenderSection("Scripts", required: false)
 </head>
 <body>
     <div id="modal" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
@@ -59,20 +61,19 @@
                 <a class="navbar-brand" asp-controller="Home" asp-action="Index">Jackpoint</a>
             </div>
             <div class="navbar-collapse collapse">
-                @if(loggedIn)
+                @if(admin)
                 {
-                    @if(admin)
-                    {
-                        <ul class="nav navbar-nav">
-                            <li><a asp-area="" asp-controller="User" asp-action="Index">Users</a></li>
-                        </ul>
-                    }
-                    <ul class="nav navbar-nav right">
-                        @{var action = Url.Action("Update","Account");}
-                        <li><a id="userLabel" onclick='Modal("@action");'>@userName</a></li>
-                        <li><a asp-area="" asp-controller="Account" asp-action="LogOut">Logout</a></li>
+                    <ul class="nav navbar-nav">
+                        <li><a asp-area="" asp-controller="User" asp-action="Index">Users</a></li>
                     </ul>
                 }
+                <ul class="nav navbar-nav right">
+                    <li><a id="userLabel" onclick='Modal("@action");'>@userName</a></li>
+                    @if(userName != "Log In")
+                    {
+                        <li><a asp-area="" asp-controller="Account" asp-action="LogOut">Logout</a></li>
+                    }
+                </ul>
             </div>
         </div>
     </nav>

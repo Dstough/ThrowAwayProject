@@ -23,19 +23,18 @@
     <h2>Verify</h2>
     <h5><a asp-area="" asp-controller="Account" asp-action="Login">Back to Login page.</a></h5>
     <hr/>
-    @using(Html.BeginForm("Verify", "Account"))
-    {
+    <form asp-controller="Account" asp-action="Verify" method="post" id="VerifyForm" role="form">
         <div class="form-group">
             @Html.HiddenFor(m => m.UserId)
             <input id="code" type="text" class="form-control" name="inputGuid" placeholder="code" autocomplete="off">
         </div>
         <!--@Model.dbGuid-->
-        <button id="verify" type="submit" id="verify" class="btn btn-primary" style="width:100%">Verify</button>
-    }
+        <span id="verify" id="verify" class="btn btn-primary" style="width:100%">Verify</span>
+    </form>
 </div>
 <div class="col-sm-2"></div>
 <script>
     $(function(){
-        BindValidation(["code"], "verify");
+        BindValidation("VerifyForm", ["code"], "verify");
     });
 </script>

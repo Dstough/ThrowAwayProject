@@ -46,10 +46,7 @@ namespace ThrowAwayProjects.Controllers
         {
             try
             {
-                if (IsAuthenticated())
-                    return logic();
-                else
-                    return RedirectToAction("LogIn", "Account");
+                return logic();
             }
             catch (Exception ex)
             {
@@ -61,10 +58,7 @@ namespace ThrowAwayProjects.Controllers
         {
             try
             {
-                if(IsAuthenticated())
-                    return logic();
-                else
-                    return Json(new {message = "You got disconnected. You will need to log in before you can continue."});
+                return logic();
             }
             catch (Exception ex)
             {

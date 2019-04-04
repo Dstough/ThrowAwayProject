@@ -1,0 +1,46 @@
+@model AccountViewModel;
+
+<div class="modal-header">
+    <span type="button" class="close" data-dismiss="modal">&times;</span>
+    <h4 class="modal-title">Log In</h4>
+</div>
+
+<form asp-controller="Home" asp-action="Index" method="post" id="logInForm" role="form">
+    
+    <div class="modal-body"> 
+        <div style="display:inline-block; width:49%;">
+            <span class="message-head">Shadowrun</span> <span style="font-size:12pt;">>noun</span><br/>
+            <span class="message-body">
+                Any movement, action, or series of such made in carrying out plans which are illegal or quasilegal.
+            </span><br/>
+            <div class="message-signature">
+                -- WorldWide WorldWatch, 2050 archive
+            </div>
+        </div>
+        <div style="display:inline-block; width:49%;">
+            <h2>Log In</h2>
+            <h5>
+                <a asp-area="" asp-controller="Account" asp-action="Register">Need an account?</a> | 
+                <a asp-area="" asp-controller="Account" asp-action="Recovery">Forgot your passphrase?</a>
+            </h5>
+            <hr/>
+            <div class="form-group">
+                <input id="username" type="text" class="form-control" name="UserName" placeholder="username" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <input id="passphrase" type="password" class="form-control" name="PassPhrase" placeholder="passphrase">
+            </div> 
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <span id="login" class="btn btn-primary">Log In</span>
+    </div>
+
+</form>
+
+<script>
+    $(function() {
+        BindValidation("logInForm", ["username","passphrase"], "login");
+    });
+</script>

@@ -1,0 +1,18 @@
+.modal-header {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    background: linear-gradient( #383838, #0f0f0f);
+    border-bottom: 0;
+}
+
+.modal-content {
+    box-shadow: 0 0 15px #000;
+    border-radius: 15px;
+}
+
+.modal-footer {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    background: linear-gradient( #383838, #171717);
+    border-top: 0;
+}

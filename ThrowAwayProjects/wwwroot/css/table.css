@@ -13,3 +13,8 @@
     background:linear-gradient( #383838, #171717);
     cursor: pointer;
 }
+
+
+.glyphicon-plus {
+    color: #080;
+}
