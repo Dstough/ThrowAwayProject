@@ -84,3 +84,10 @@ a {
     right: 10px;
     top: 80px;
 }
+
+@media screen and (max-width: 767px) {
+    .navbar-collapse ul {
+        float: none;
+        text-align: center;
+    }
+}

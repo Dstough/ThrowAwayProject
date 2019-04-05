@@ -10,11 +10,16 @@
 }
 
 .table tbody tr:hover {
-    background:linear-gradient( #383838, #171717);
+    background: linear-gradient( #383838, #171717);
     cursor: pointer;
 }
 
-
 .glyphicon-plus {
     color: #080;
+}
+
+@media screen and (max-width: 992px) {
+    .table td:not(:first-child), .table th:not(:first-child) {
+        display: none;
+    }
 }

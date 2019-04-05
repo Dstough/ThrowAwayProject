@@ -40,12 +40,32 @@ namespace ThrowAwayProjects.Controllers
                 return View("Error", ex);
             }
         }
+        protected override JsonResult HandleExceptions(Func<JsonResult> logic)
+        {
+            try
+            {
+                if (!IsAuthenticated())
+                    return Json(new { result = "error", message = "Stop poking around where you shouldn't be omae." });
+
+                var key = HttpContext.Session.GetString("UserKey");
+                var user = JsonConvert.DeserializeObject<UserIdentity>(key);
+
+                if (unitOfWork.UserGroups.GetById(user.GroupId).Name != "Admin")
+                    return Json(new { result = "error", message = "Stop poking around where you shouldn't be omae." });
+
+                return logic();
+            }
+            catch (Exception ex)
+            {
+                return Json(new { result = "error", message = ex.Message });
+            }
+        }
 
         public ActionResult Index(int id)
         {
             return HandleExceptions(() =>
             {
-                var dbUsers = unitOfWork.Users.GetPage(id+1, 50);
+                var dbUsers = unitOfWork.Users.GetPage(id + 1, 50);
                 var viewModel = new List<UserViewModel>();
 
                 foreach (var user in dbUsers)
@@ -64,6 +84,17 @@ namespace ThrowAwayProjects.Controllers
         {
             return HandleExceptions(() =>
             {
+                var dbUser = unitOfWork.Users.GetById(Id);
+                var group = unitOfWork.UserGroups.GetById(dbUser.GroupId);
+                var groups = unitOfWork.UserGroups.GetAll();
+                var viewModel = new UserViewModel(dbUser)
+                {
+                    PassPhrase = null
+                };
+
+                foreach (var item in groups)
+                    viewModel.GroupOptions.Add(new SelectListItem(group.Name, group.Id.ToString(), group.Id == item.Id));
+
                 return Modal("_AddEdit", new UserViewModel());
             });
         }

@@ -5,8 +5,31 @@
     <h4 class="modal-title">Add or edit user</h4>
 </div>
 
-<div class="modal-body" style="padding-top: 0px;">
-
+<div class="modal-body">
+    <div class="form-group">
+        <label id="Id" name="Id" placeholder="Id" value="@Model.Id">
+    </div>
+    <div class="form-group">
+        <input id="UserName" class="form-control" name="UserName" placeholder="Name" value="@Model.UserName">
+    </div>
+    <div class="form-group">
+        <input id="Email" type="email" class="form-control" name="Email" placeholder="Name" value="@Model.Email">
+    </div>
+    <div class="form-group">
+        <select asp-for="GroupId" asp-items="Model.GroupOptions" class="form-control" ></select>
+    </div>
+    <div class="form-group">
+        <input id="PassPhrase" class="form-control" name="PassPhrase" placeholder="PassPhrase" value="@Model.PassPhrase">
+    </div>
+    <div class="form-group">
+        <input type="checkbox" id="Authenticated" class="form-control" name="Authenticated" placeholder="Authenticated" value="@Model.Authenticated">
+    </div>
+    <div class="form-group">
+        <input type="checkbox" id="Banned" class="form-control" name="Banned" placeholder="Banned" value="@Model.Banned">
+    </div>
+    <div class="form-group">
+        <input type="checkbox" id="Dead" class="form-control" name="Dead" placeholder="Dead" value="@Model.Dead">
+    </div>
 </div>
 
 <div class="modal-footer">

@@ -1,5 +1,6 @@
 using ThrowAwayData;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Rendering;
 namespace ThrowAwayProjects.Models
 {
     public class UserViewModel : BaseViewModel
@@ -11,9 +12,9 @@ namespace ThrowAwayProjects.Models
         public bool Authenticated { get; set; }
         public bool Banned { get; set; }
         public bool Dead { get; set; }
-        public List<string> GroupOptions { get; set; }
+        public List<SelectListItem> GroupOptions { get; set; }
         public int GroupId { get; set; }
-        public string GroupName {get;set;}
+        public string GroupName { get; set; }
 
         public UserViewModel() : this(new UserIdentity())
         {
@@ -27,7 +28,7 @@ namespace ThrowAwayProjects.Models
             Authenticated = user.Authenticated;
             Banned = user.Banned;
             Dead = user.Dead;
-            GroupOptions = new List<string>();
+            GroupOptions = new List<SelectListItem>();
             GroupName = "";
         }
     }

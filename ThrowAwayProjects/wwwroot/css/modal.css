@@ -20,3 +20,24 @@
     background: linear-gradient( #383838, #171717);
     border-top: 0;
 }
+
+.modal-collumn {
+    display: inline-block;
+    width: 49%;
+}
+
+.modal-collumn:nth-child(1) {
+    display: inline-block;
+    width: 47%;
+    margin-left: 1%;
+}
+
+@media screen and (max-width: 767px) {
+    .hide-when-small {
+        display: none !important;
+    }
+    .modal-collumn {
+        width: 100%;
+        margin-left: 0;
+    }
+}

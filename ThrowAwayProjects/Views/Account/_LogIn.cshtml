@@ -8,7 +8,7 @@
 <form asp-controller="Home" asp-action="Index" method="post" id="logInForm" role="form">
 
     <div class="modal-body" style="padding-top: 0px;">
-        <div style="display:inline-block; width:49%;">
+        <div class="hide-when-small modal-collumn">
             <span class="message-head"  style="margin-top: 0px;">Shadowrun</span> <span style="font-size:12pt;">>noun</span><br />
             <span class="message-body">
                 Any movement, action, or series of such made in carrying out plans which are illegal or quasilegal.
@@ -17,7 +17,7 @@
                 -- WorldWide WorldWatch, 2050 archive
             </div>
         </div>
-        <div style="display:inline-block; width:49%;">
+        <div class="modal-collumn">
             <h2>Log In</h2>
             <h5>
                 <a asp-area="" asp-controller="Account" asp-action="Register">Need an account?</a> |
