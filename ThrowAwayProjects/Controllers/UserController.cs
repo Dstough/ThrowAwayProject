@@ -20,11 +20,32 @@ namespace ThrowAwayProjects.Controllers
         {
         }
 
+        protected override ActionResult HandleExceptions(Func<ActionResult> logic)
+        {
+            try
+            {
+                if (!IsAuthenticated())
+                    return RedirectToAction("Index", "Home");
+
+                var key = HttpContext.Session.GetString("UserKey");
+                var user = JsonConvert.DeserializeObject<UserIdentity>(key);
+
+                if (unitOfWork.UserGroups.GetById(user.GroupId).Name != "Admin")
+                    return RedirectToAction("Index", "Home");
+
+                return logic();
+            }
+            catch (Exception ex)
+            {
+                return View("Error", ex);
+            }
+        }
+
         public ActionResult Index(int id)
         {
             return HandleExceptions(() =>
             {
-                var dbUsers = unitOfWork.Users.GetPage(id, 50);
+                var dbUsers = unitOfWork.Users.GetPage(id+1, 50);
                 var viewModel = new List<UserViewModel>();
 
                 foreach (var user in dbUsers)
@@ -39,32 +60,26 @@ namespace ThrowAwayProjects.Controllers
             });
         }
 
-        public JsonResult AddEdit()
+        public JsonResult AddEdit(int Id)
         {
             return HandleExceptions(() =>
             {
-                return Modal("AddEdit", new UserViewModel());
+                return Modal("_AddEdit", new UserViewModel());
             });
         }
 
-        protected override ActionResult HandleExceptions(Func<ActionResult> logic)
+        [HttpPost]
+        public JsonResult AddEdit(UserViewModel viewModel)
         {
-            try
+            return HandleExceptions(() =>
             {
-                if (!IsAuthenticated())
-                    return RedirectToAction("Index", "Home");
-
-                var user = JsonConvert.DeserializeObject<UserIdentity>(configuration.GetValue<string>("UserKey"));
-
-                if (unitOfWork.UserGroups.GetById(user.GroupId).Name != "Admin")
-                    return RedirectToAction("Index", "Home");
-                
-                return logic();
-            }
-            catch (Exception ex)
-            {
-                return View("Error", ex);
-            }
+                //TODO: add html string to update row.
+                return Json(new
+                {
+                    message = "The user info has been saved.",
+                    html = ""
+                });
+            });
         }
     }
 }

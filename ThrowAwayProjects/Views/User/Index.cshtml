@@ -12,7 +12,7 @@
                 <th>Authenticated</th>
                 <th>Banned</th>
                 <th>Dead</th>
-                <th><button class="btn btn-sm btn-primary"><span class="glyphicon glyphicon-plus"></span></button></th>
+                <th><span class="btn btn-sm btn-primary" onclick='Modal("@Url.Action("AddEdit","User")")'><span class="glyphicon glyphicon-plus"></span></span></th>
             }
             else
             {
@@ -24,7 +24,7 @@
         @foreach(var item in Model)
         {
             var css = item.GroupName == "Admin" ? "admin-color": "";
-            <tr onclick="">
+            <tr onclick='Modal("@Url.Action("AddEdit","User", new{Id=item.Id})")'>
                 <td class='@css'>@item.GroupName</td>
                 <td class='@css'>@item.UserName</td>
                 <td class='@css'>@item.Email</td>

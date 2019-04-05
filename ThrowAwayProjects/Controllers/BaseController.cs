@@ -83,7 +83,7 @@ namespace ThrowAwayProjects.Controllers
 
         protected bool IsAuthenticated()
         {
-            var value = HttpContext.Session.GetString(configuration.GetValue<string>("UserKey"));
+            var value = HttpContext.Session.GetString("UserKey");
 
             if (string.IsNullOrEmpty(value))
                 return false;

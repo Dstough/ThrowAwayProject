@@ -49,7 +49,7 @@ namespace ThrowAwayProjects
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id=1}");
+                    template: "{controller=Home}/{action=Index}/{id=0}");
             });
         }
     }
