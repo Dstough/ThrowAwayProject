@@ -58,11 +58,11 @@ namespace ThrowAwayProjects.Controllers
                     }
                 }).FirstOrDefault();
 
-                if (dbUser == null || Sha512(viewModel.PassPhrase + dbUser.CreatedOn) != dbUser.PassPhrase)
+                if (dbUser == null || Sha512(viewModel.Passphrase + dbUser.CreatedOn) != dbUser.Passphrase)
                 {
                     var model = new SessionStateViewModel()
                     {
-                        ErrorMessage = "I couldn't find your account information. You eather had the wrong username or passphrase."
+                        ErrorMessage = "I couldn't find your account information. You eather had the wrong username or Passphrase."
                     };
                     return View("../Home/Index", model);
                 }

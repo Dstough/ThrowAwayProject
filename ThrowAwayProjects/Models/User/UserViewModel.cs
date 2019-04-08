@@ -8,7 +8,7 @@ namespace ThrowAwayProjects.Models
         public int Id { get; set; }
         public string Email { get; set; }
         public string UserName { get; set; }
-        public string PassPhrase { get; set; }
+        public string Passphrase { get; set; }
         public bool Authenticated { get; set; }
         public bool Banned { get; set; }
         public bool Dead { get; set; }

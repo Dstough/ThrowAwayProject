@@ -85,6 +85,14 @@ a {
     top: 80px;
 }
 
+.lbl{
+    text-decoration: underline; 
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 14pt;
+}
+
+
 @media screen and (max-width: 767px) {
     .navbar-collapse ul {
         float: none;

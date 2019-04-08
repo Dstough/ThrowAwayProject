@@ -89,7 +89,7 @@ namespace ThrowAwayProjects.Controllers
                 var groups = unitOfWork.UserGroups.GetAll();
                 var viewModel = new UserViewModel(dbUser)
                 {
-                    PassPhrase = null
+                    Passphrase = null
                 };
 
                 foreach (var item in groups)

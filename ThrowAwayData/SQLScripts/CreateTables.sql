@@ -23,7 +23,7 @@ create table UserIdentity
 	GroupId integer not null,
 	Email varchar,
 	UserName varchar not null,
-	PassPhrase varchar not null,
+	Passphrase varchar not null,
 	VerificationCode varchar not null,
 	Authenticated bit not null,
 	Banned bit not null,

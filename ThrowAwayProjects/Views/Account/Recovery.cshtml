@@ -8,10 +8,10 @@
 <div class="col-sm-4 hide-when-small">
     <br/><br/>
     <span class="message-body">
-        I will send you a verification code. 
-        It will give you access to your account.
-        As soon as you get in, change your passphrase! 
-        I can't keep doing this for you chummer.
+        Your original verification code will give you access to your account.
+        I hope you saved it like the email said.
+        As soon as you get in, change your Passphrase! 
+        I can't keep doing this for you.
     </span>
     <div class="message-signature admin-color">
         -- Fastjack
@@ -23,17 +23,17 @@
     <hr/>
     <form asp-controller="Account" asp-action="Recovery" method="post" id="RecoveryForm" role="form">
         <div class="form-group">
-            <input id="email" type="text" class="form-control" name="Email" placeholder="email" autocomplete="off">
+            <input id="email" type="email" class="form-control" name="Email" placeholder="email" autocomplete="off">
         </div>
         <div class="form-group">
-            <input id="username" type="text" class="form-control" name="UserName" placeholder="username" autocomplete="off">
+            <input id="verificationCode" type="text" class="form-control" name="VerificationCode" placeholder="verification code" autocomplete="off">
         </div>
-        <span id="recover" id="Recover" class="btn btn-primary" style="width:100%">Recover</span>
+        <button id="recover" id="Recover" class="btn btn-primary" style="width:100%">Recover</button>
     </form>
 </div>
 <div class="col-sm-2"></div>
 <script>
     $(function(){
-        BindValidation(["email", "username"], "recover");
+        BindValidation(["email", "verificationCode"], "recover");
     });
 </script>

@@ -95,7 +95,7 @@ namespace ThrowAwayProjects.Controllers
 
             var dbUserData = unitOfWork.Users.GetById(user.Id ?? 0);
 
-            if (user.PassPhrase != dbUserData.PassPhrase)
+            if (user.Passphrase != dbUserData.Passphrase)
                 return false;
 
             return true;

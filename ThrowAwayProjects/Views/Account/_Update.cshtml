@@ -8,23 +8,24 @@
 <div class="modal-body">    
     <div class="modal-collumn">
         <div class="form-group">    
-            <input id="UserName" class="form-control" name="UserName" placeholder="username" value="@Model.UserName" autocomplete="off">
+            <span class="lbl">@Model.Email</span>
+            <span>[<a href='@Url.Action("ChangeEmail","Account")'>change</a>]</span>
         </div>
         <div class="form-group">    
-            <input id="Email" class="form-control" name="Email" placeholder="email" value="@Model.Email" autocomplete="off">
+            <input id="UserName" class="form-control" name="UserName" placeholder="username" value="@Model.UserName" autocomplete="off">
         </div>
     </div>
     <div class="modal-collumn">
         <div class="form-group">
-            <input id="NewPassphrase" type="password" class="form-control" name="NewPassphrase" placeholder="new passphrase">
+            <input id="NewPassphrase" type="password" class="form-control" name="NewPassphrase" placeholder="new Passphrase">
         </div>
         <div class="form-group">
-            <input id="ConfirmPassphrase" type="password" class="form-control" name="ConfirmPassphrase" placeholder="confirm passphrase">
+            <input id="ConfirmPassphrase" type="password" class="form-control" name="ConfirmPassphrase" placeholder="confirm Passphrase">
         </div>
     </div>
     <br/><br/>
     <span class='message-body'>
-        You can update your handle, passphrase, or email address.
+        You can update your handle, Passphrase, or email address.
         It won't hide you or erase your previous posts.
         Your name will be updated on them.
     </span>

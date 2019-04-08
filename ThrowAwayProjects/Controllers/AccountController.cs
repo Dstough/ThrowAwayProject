@@ -84,7 +84,7 @@ namespace ThrowAwayProjects.Controllers
                 }).FirstOrDefault();
 
                 if (defaultUserGroup == null)
-                    viewModel.ErrorMessage = "We can't let you do that Omae.";
+                    viewModel.ErrorMessage = "Something went horribly wrong chummer. Try clearing your cache and re-lode the page.";
 
                 if (emailCheck != null)
                     viewModel.ErrorMessage = "That email is already in use.";
@@ -92,8 +92,8 @@ namespace ThrowAwayProjects.Controllers
                 if (userNameCheck != null)
                     viewModel.ErrorMessage = "That username is already taken.";
 
-                if (viewModel.PassPhrase != viewModel.PassPhraseConfirm)
-                    viewModel.ErrorMessage = "Your passphrases didn't match.";
+                if (viewModel.Passphrase != viewModel.PassphraseConfirm)
+                    viewModel.ErrorMessage = "Your Passphrases didn't match.";
 
                 if (viewModel.ErrorMessage != null)
                     return View(viewModel);
@@ -104,12 +104,11 @@ namespace ThrowAwayProjects.Controllers
                     UserName = viewModel.UserName,
                     CreatedOn = CreatedDate,
                     Email = viewModel.Email,
-                    PassPhrase = Sha512(viewModel.PassPhrase + CreatedDate),
+                    Passphrase = Sha512(viewModel.Passphrase + CreatedDate),
                     VerificationCode = Guid.NewGuid().ToString()
                 };
                 unitOfWork.Users.Add(user);
                 SetSessionUser(user);
-
                 //TODO: Send Auth Code to email.
                 return RedirectToAction("Verify");
             });
@@ -123,9 +122,12 @@ namespace ThrowAwayProjects.Controllers
                     return RedirectToAction("Index", "Home");
 
                 var user = GetSessionUser();
+
+                if (user.Authenticated)
+                    return RedirectToAction("Index", "Home");
+
                 var model = new VerificationViewModel()
                 {
-                    UserId = user.Id,
                     dbGuid = user.VerificationCode
                 };
                 return View(model);
@@ -137,17 +139,15 @@ namespace ThrowAwayProjects.Controllers
         {
             return HandleExceptions(() =>
             {
-                var dbUser = unitOfWork.Users.GetById(viewModel.UserId ?? 0);
-                var dbUserGroup = unitOfWork.UserGroups.GetById(dbUser.GroupId)?.Name;
-                if (viewModel.inputGuid == dbUser.VerificationCode)
-                {
-                    dbUser.Authenticated = true;
-                    unitOfWork.Users.Edit(dbUser);
-                    SetSessionUser(dbUser);
-                    return RedirectToAction("Index", "Home");
-                }
-                viewModel.ErrorMessage = "The verification code was not input correctly.";
-                return View(viewModel);
+                var dbUser = GetSessionUserFromDb();
+
+                if (viewModel.inputGuid != dbUser.VerificationCode)
+                    return View(viewModel.ErrorMessage = "The verification code was not correct.");
+
+                dbUser.Authenticated = true;
+                unitOfWork.Users.Edit(dbUser);
+                SetSessionUser(dbUser);
+                return RedirectToAction("Index", "Home");
             });
         }
 
@@ -169,22 +169,24 @@ namespace ThrowAwayProjects.Controllers
                 {
                     new Filter()
                     {
-                        Column = "UserName",
-                        Value = viewModel.UserName
+                        Column = "Email",
+                        Value = viewModel.Email
                     }
                 }).FirstOrDefault();
 
-                if (dbUser == null || dbUser.Email != viewModel.Email)
-                {
+                if (dbUser == null)
                     viewModel.ErrorMessage = "I couldn't find your account information.";
+
+                if (dbUser.VerificationCode != viewModel.VerificationCode)
+                    viewModel.ErrorMessage = "The verification code was not correct.";
+
+                if (viewModel.ErrorMessage != null)
                     return View(viewModel);
-                }
 
                 dbUser.Authenticated = false;
                 dbUser.VerificationCode = Guid.NewGuid().ToString();
                 unitOfWork.Users.Edit(dbUser);
                 SetSessionUser(dbUser);
-
                 //TODO: Send guid over email.
                 return RedirectToAction("Verify");
             });
@@ -195,6 +197,13 @@ namespace ThrowAwayProjects.Controllers
             return HandleExceptions(() =>
             {
                 var dbUser = GetSessionUserFromDb();
+
+                if (!dbUser.Authenticated) return Json(new
+                {
+                    result = "error",
+                    message = "You must verify your email address before you can update your account."
+                });
+
                 var viewModel = new UpdateViewModel()
                 {
                     UserName = dbUser.UserName,
@@ -210,6 +219,11 @@ namespace ThrowAwayProjects.Controllers
             return HandleExceptions(() =>
             {
                 var dbUser = GetSessionUserFromDb();
+                if (!dbUser.Authenticated) return Json(new
+                {
+                    result = "error",
+                    message = "You must verify your email address before you can update your account."
+                });
 
                 if (dbUser.UserName != viewModel.UserName)
                 {
@@ -222,31 +236,25 @@ namespace ThrowAwayProjects.Controllers
                         }
                     }).FirstOrDefault();
 
-                    if (userNameCheck != null)
-                        return Json(new { message = "That username is already in use chummer. Nothing was updated. Sorry." });
+                    if (userNameCheck != null) return Json(new
+                    {
+                        result = "error",
+                        message = "That username is already in use chummer. Nothing was updated. Sorry."
+                    });
 
                     dbUser.UserName = viewModel.UserName;
                 }
 
-                if (dbUser.Email != viewModel.Email)
+                if (viewModel.NewPassphrase != null)
                 {
-                    var emailCheck = unitOfWork.Users.Find(new Filter[]
-                    {
-                        new Filter()
+                    if (viewModel.NewPassphrase != viewModel.ConfirmPassphrase)
+                        return Json(new
                         {
-                            Column = "Email",
-                            Value = viewModel.Email
-                        }
-                    }).FirstOrDefault();
-
-                    if (emailCheck != null)
-                        return Json(new { message = "That email is already in use chummer. Nothing was updated. Sorry." });
-
-                    dbUser.Email = viewModel.Email;
+                            result = "error",
+                            message = "The new passphrase didn't match. Nothing was updated. Sorry."
+                        });
+                    dbUser.Passphrase = Sha512(viewModel.NewPassphrase + dbUser.CreatedOn);
                 }
-
-                if (viewModel.NewPassphrase != null && viewModel.ConfirmPassphrase != null && viewModel.NewPassphrase == viewModel.ConfirmPassphrase)
-                    dbUser.PassPhrase = Sha512(viewModel.NewPassphrase + dbUser.CreatedOn);
 
                 unitOfWork.Users.Edit(dbUser);
                 SetSessionUser(dbUser);
@@ -256,6 +264,45 @@ namespace ThrowAwayProjects.Controllers
                     message = "Your account has been uptated chummer, Have fun with your new SIN.",
                     html = dbUser.UserName
                 });
+            });
+        }
+
+        public ActionResult ChangeEmail()
+        {
+            return HandleExceptions(() =>
+            {
+                var dbUser = GetSessionUserFromDb();
+                var viewModel = new ChangeEmailViewModel(dbUser);
+                return View(viewModel);
+            });
+        }
+
+        [HttpPost]
+        public ActionResult ChangeEmail(ChangeEmailViewModel viewModel)
+        {
+            return HandleExceptions(() =>
+            {
+                var dbUser = GetSessionUserFromDb();
+
+                if (viewModel.NewEmail == null)
+                    viewModel.ErrorMessage = "You have to type a new email for me to change it omae.";
+
+                if (viewModel.AuthenticationCode == null || viewModel.AuthenticationCode != dbUser.VerificationCode)
+                    viewModel.ErrorMessage = "Your authentication code wasn't valid chummer, try again.";
+
+                if (viewModel.Passphrase == null || Sha512(viewModel.Passphrase + dbUser.CreatedOn) != dbUser.Passphrase)
+                    viewModel.ErrorMessage = "Your passphrase didn't match chummer, try again.";
+
+                if (viewModel.ErrorMessage != null)
+                    return View(viewModel);
+
+                dbUser.Email = viewModel.NewEmail;
+                dbUser.Authenticated = false;
+                dbUser.VerificationCode = Guid.NewGuid().ToString();
+                unitOfWork.Users.Edit(dbUser);
+                SetSessionUser(dbUser);
+                //TODO: Send code to new email.
+                return RedirectToAction("Verify", "Account");
             });
         }
 
@@ -270,7 +317,7 @@ namespace ThrowAwayProjects.Controllers
         {
             var jsonString = HttpContext.Session.GetString("UserKey");
             if (jsonString == null)
-                throw new Exception("User session var is not set.");
+                throw new Exception("You will have to log in to continue.");
             return JsonConvert.DeserializeObject<UserIdentity>(jsonString);
         }
 

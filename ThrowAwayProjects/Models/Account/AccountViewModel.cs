@@ -4,8 +4,8 @@ namespace ThrowAwayProjects.Models
     public class AccountViewModel : BaseViewModel
     {
         public string UserName { get; set; }
-        public string PassPhrase { get; set; }
-        public string PassPhraseConfirm { get; set; }
+        public string Passphrase { get; set; }
+        public string PassphraseConfirm { get; set; }
         public string Email { get; set; }
         public string TargetAction { get; set; }
         public string TargetController { get; set; }
@@ -17,7 +17,7 @@ namespace ThrowAwayProjects.Models
         public AccountViewModel(UserIdentity user)
         {
             UserName = user.UserName;
-            PassPhrase = user.PassPhrase;
+            Passphrase = user.Passphrase;
             Email = user.Email;
             TargetAction = "Index";
             TargetController = "Home";

@@ -6,7 +6,7 @@ namespace ThrowAwayData
         public int GroupId { get; set; }
         public string Email { get; set; }
         public string UserName { get; set; }
-        public string PassPhrase { get; set; }
+        public string Passphrase { get; set; }
         public string VerificationCode { get; set; }
         public bool Authenticated { get; set; }
         public bool Banned { get; set; }
@@ -16,7 +16,7 @@ namespace ThrowAwayData
             GroupId = 0;
             Email = "";
             UserName = "";
-            PassPhrase = "";
+            Passphrase = "";
             VerificationCode = "";
             Authenticated = false;
             Banned = false;

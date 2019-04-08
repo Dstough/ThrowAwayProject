@@ -15,7 +15,7 @@
     </div>
     <hr />
     <span class="message-body">
-        Don't use any passphrase that you have used before. 
+        Don't use any Passphrase that you have used before. 
         This is a host made for shadowrunners. 
         If you are here, you know what we do best.
     </span>
@@ -29,17 +29,17 @@
     <hr />
     <form asp-controller="Account" asp-action="Register" method="post" id="RegisterForm" role="form">
         <div class="form-group">
-            <input id="email" type="text" class="form-control" name="Email" placeholder="email" autocomplete="off">
+            <input id="email" type="email" class="form-control" name="Email" placeholder="email" autocomplete="off">
         </div>
         <div class="form-group">
             <input id="username" type="text" class="form-control" name="UserName" placeholder="username" autocomplete="off">
         </div>
         <hr />
         <div class="form-group">
-            <input id="passphrase" type="password" class="form-control" name="PassPhrase" placeholder="passphrase">
+            <input id="Passphrase" type="password" class="form-control" name="Passphrase" placeholder="Passphrase">
         </div>
         <div class="form-group">
-            <input id="passphraseconfirm" type="password" class="form-control" name="PassPhraseConfirm" placeholder="confirm">
+            <input id="PassphraseConfirm" type="password" class="form-control" name="PassphraseConfirm" placeholder="confirm">
         </div>
         <hr />
         <button id="register" id="sendlogin" class="btn btn-primary" style="width:100%">Register</button>
@@ -49,6 +49,6 @@
 
 <script>
     $(function () {
-        BindValidation(["email", "username", "passphrase", "passphraseconfirm"], "register");
+        BindValidation(["email", "username", "Passphrase", "PassphraseConfirm"], "register");
     });
 </script>

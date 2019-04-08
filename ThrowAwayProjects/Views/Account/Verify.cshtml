@@ -8,7 +8,7 @@
 <div class="col-sm-4 hide-when-small">
     <br/><br/>
     <span class="message-body">
-        I have sent you a verification code.
+        I have sent you a new verification code.
         Check your email and type in the code.
         Or you could just copy and paste it, like everyone else.
     </span>
@@ -22,7 +22,6 @@
     <hr/>
     <form asp-controller="Account" asp-action="Verify" method="post" id="VerifyForm" role="form">
         <div class="form-group">
-            @Html.HiddenFor(m => m.UserId)
             <input id="code" type="text" class="form-control" name="inputGuid" placeholder="code" autocomplete="off">
         </div>
         <!--@Model.dbGuid-->
