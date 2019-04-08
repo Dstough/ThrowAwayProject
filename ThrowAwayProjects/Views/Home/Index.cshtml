@@ -1,22 +1,82 @@
-﻿@model SessionStateViewModel;
+﻿@model HomeViewModel;
 @if(Model.ErrorMessage != null)
 {
     <script>DisplayMessage("@Model.ErrorMessage");</script>
     Model.ErrorMessage = null;
 }
-
-<div class="col-sm-4">
-    <h2>Connection Status:</h2>
-    <p><b>...Privilege:</b> @Model.DateSessionStarted.AddYears(60)</p>
-    <p><b>...Connected:</b> @Model.DateSessionStarted.AddYears(60)</p>
+<div style="min-height: 175px; max-height: 175px;">    
+    <div class="col-sm-5" style="font-size: 8pt;">
+        <h2>Connection:</h2>
+        <p><b>...Status:</b> @Model.AccountStatus</p>
+        <p><b>...Privilege:</b> @Model.Privilege</p>
+        <p><b>...Connected:</b> @Model.DateSessionStarted.AddYears(60)</p>
+    </div>
+    <div class="col-sm-7 hide-when-small">
+        <br/>
+        <span class="message-body">
+            Welcome back to Jackpoint, omae.
+        </span>
+        <div class="message-signature admin-color">
+            -- Fastjack
+        </div>
+    </div>
 </div>
 
-<div class="col-sm-8">
-    <br/>
-    <span class="message-body">
-        Welcome back to Jackpoint, omae.
-    </span>
-    <div class="message-signature admin-color">
-        -- Fastjack
+<div>
+
+    <div class="col-sm-4">
+        <table class="table">
+            <thead>
+                <tr><th>News Broadcasts</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Headline 1 Title</td></tr>
+                <tr><td>Headline 2 Title</td></tr>
+                <tr><td>Headline 3 Title</td></tr>
+            </tbody>
+        </table>
     </div>
+
+    <div class="col-sm-4">
+        <table class="table">
+            <thead>
+                <tr><th>Fixer Jobs</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Job 1 Header</td></tr>
+                <tr><td>Job 2 Header</td></tr>
+                <tr><td>Job 3 Header</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-sm-4">
+        <table class="table">
+            <thead>
+                <tr><th>Run Archives</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Run 1 Transcripts</td></tr>
+                <tr><td>Run 2 Transcripts</td></tr>
+                <tr><td>Run 3 Transcripts</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-sm-12">
+        <table class="table">
+            <thead>
+                <tr><th>User Posts</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>Post 0</td></tr>
+                <tr><td>Post 1</td></tr>
+                <tr><td>Post 2</td></tr>
+                <tr><td>Post 3</td></tr>
+                <tr><td>Post 4</td></tr>
+                <tr><td>Post 5</td></tr>
+            </tbody>
+        </table>
+    </div>
+
 </div>

@@ -1,12 +1,20 @@
-﻿body, .modal-body {
+﻿body {
     padding-top: 50px;
     padding-bottom: 20px;
     font-family: "Consolas";
     color: #afafaf;
     text-shadow: 5px 5px 10px #000000;
-    background: linear-gradient(27deg, #151515 5px, transparent 5px) 0 5px, linear-gradient(207deg, #151515 5px, transparent 5px) 10px 0px, linear-gradient(27deg, #222 5px, transparent 5px) 0px 10px, linear-gradient(207deg, #222 5px, transparent 5px) 10px 5px, linear-gradient(90deg, #1b1b1b 10px, transparent 10px), linear-gradient(#1d1d1d 25%, #1a1a1a 25%, #1a1a1a 50%, transparent 50%, transparent 75%, #242424 75%, #242424);
-    background-color: #131313;
-    background-size: 20px 20px;
+    background-color: rgb(32, 32, 32);
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0) 20%, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 1)), linear-gradient(45deg, black 25%, transparent 25%, transparent 75%, black 75%, black), linear-gradient(45deg, black 25%, transparent 25%, transparent 75%, black 75%, black), linear-gradient(to bottom, rgb(8, 8, 8), rgb(32, 32, 32));
+    background-size: 100% 100%, 10px 10px, 10px 10px, 10px 5px;
+    background-position: 0px 0px, 0px 0px, 5px 5px, 0px 0px;
+}
+
+.modal-body {
+    background-color: rgb(32, 32, 32);
+    background-image: linear-gradient(45deg, black 25%, transparent 25%, transparent 75%, black 75%, black), linear-gradient(45deg, black 25%, transparent 25%, transparent 75%, black 75%, black), linear-gradient(to bottom, rgb(8, 8, 8), rgb(32, 32, 32));
+    background-size: 10px 10px, 10px 10px, 10px 5px;
+    background-position: 0px 0px, 5px 5px, 0px 0px;
 }
 
 .modal-body {
@@ -15,13 +23,14 @@
 
 .navbar {
     background-color: #131313;
-    background: linear-gradient( #383838, #171717);
+    color: #eee !important;
+    background: linear-gradient( #444, #000);
     border-bottom: 0;
     box-shadow: 0 0 7px black;
 }
 
 footer {
-    background: linear-gradient( #383838, #171717);
+    background: linear-gradient( #444, #000);
     border-top: 0;
 }
 
@@ -79,23 +88,26 @@ a {
 
 .message {
     display: none;
+    z-index: 1;
     max-width: 15%;
     position: absolute;
     right: 10px;
     top: 80px;
 }
 
-.lbl{
-    text-decoration: underline; 
+.lbl {
+    text-decoration: underline;
     text-overflow: ellipsis;
     overflow: hidden;
     font-size: 14pt;
 }
 
-
 @media screen and (max-width: 767px) {
     .navbar-collapse ul {
         float: none;
         text-align: center;
+    }
+    .message {
+        background: #000;
     }
 }
