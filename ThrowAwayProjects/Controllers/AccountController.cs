@@ -142,7 +142,10 @@ namespace ThrowAwayProjects.Controllers
                 var dbUser = GetSessionUserFromDb();
 
                 if (viewModel.inputGuid != dbUser.VerificationCode)
-                    return View(viewModel.ErrorMessage = "The verification code was not correct.");
+                    viewModel.ErrorMessage = "The verification code was not correct.";
+
+                if (viewModel.ErrorMessage != null)
+                    return View(viewModel);
 
                 dbUser.Authenticated = true;
                 unitOfWork.Users.Edit(dbUser);

@@ -27,20 +27,14 @@ namespace ThrowAwayProjects.Controllers
         {
             return HandleExceptions(() =>
             {
-                var date = DateTime.Now;
-                var model = new SessionStateViewModel
-                {
-                    DateSessionStarted = date,
-                    Now = DateTime.Now
-                };
+                var viewModel = new HomeViewModel();
 
-                if (string.IsNullOrEmpty(HttpContext.Session.GetString("FirstSeen")))
-                    HttpContext.Session.SetString("FirstSeen", JsonConvert.SerializeObject(date));
+                if (HttpContext.Session.GetString("FirstSeen") == null)
+                    HttpContext.Session.SetString("FirstSeen", JsonConvert.SerializeObject(viewModel.DateSessionStarted));
                 else
-                    date = JsonConvert.DeserializeObject<DateTime>(HttpContext.Session.GetString("FirstSeen"));
+                    viewModel.DateSessionStarted = JsonConvert.DeserializeObject<DateTime>(HttpContext.Session.GetString("FirstSeen"));
 
-
-                return View(model);
+                return View(viewModel);
             });
         }
 
@@ -60,7 +54,7 @@ namespace ThrowAwayProjects.Controllers
 
                 if (dbUser == null || Sha512(viewModel.Passphrase + dbUser.CreatedOn) != dbUser.Passphrase)
                 {
-                    var model = new SessionStateViewModel()
+                    var model = new HomeViewModel()
                     {
                         ErrorMessage = "I couldn't find your account information. You eather had the wrong username or Passphrase."
                     };
