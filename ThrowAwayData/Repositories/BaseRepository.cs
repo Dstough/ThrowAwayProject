@@ -11,6 +11,7 @@ namespace ThrowAwayDataBackground
     where T : BaseObject, new()
     {
         private string ConnString { get; set; }
+        private List<string> IncludeFields { get; set; }
 
         public BaseRepository() : this("")
         {
@@ -19,6 +20,14 @@ namespace ThrowAwayDataBackground
         public BaseRepository(string _connectionString)
         {
             ConnString = _connectionString;
+            IncludeFields = new List<string>();
+        }
+
+        public virtual IRepository<T> Include(string name)
+        {
+            if (Array.IndexOf(typeof(T).GetProperties(), name) != -1)
+                IncludeFields.Add(name);
+            return this;
         }
 
         public virtual T GetById(int id)
@@ -30,7 +39,7 @@ namespace ThrowAwayDataBackground
             using (var conn = new SQLiteConnection(ConnString))
             using (var cmd = conn.CreateCommand())
             {
-                foreach (var prop in item.GetType().GetProperties())
+                foreach (var prop in item.GetType().GetProperties().Where(t => !t.GetType().IsSubclassOf(typeof(BaseObject))))
                     columnList += prop.Name + ",";
 
                 cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE Id = @Id;";
@@ -50,6 +59,7 @@ namespace ThrowAwayDataBackground
                             prop.SetValue(item, reader[prop.Name], null);
                     }
                 }
+                //TODO: factor in the IncludeFields into the property setting.
             }
 
             return item;
