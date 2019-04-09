@@ -2,16 +2,16 @@
 using ThrowAwayDataBackground;
 namespace ThrowAwayData
 {
-    public class UnitOfWork
+    public class Database
     {
         public UserGroupRepository UserGroups { get; private set; }
         public UserIdentityRepository Users { get; private set; }
 
-        public UnitOfWork() : this("")
+        public Database() : this("")
         {
         }
 
-        public UnitOfWork(string ConnectionString)
+        public Database(string ConnectionString)
         {
             UserGroups = new UserGroupRepository(ConnectionString);
             Users = new UserIdentityRepository(ConnectionString);

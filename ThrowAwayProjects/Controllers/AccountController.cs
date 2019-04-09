@@ -56,7 +56,7 @@ namespace ThrowAwayProjects.Controllers
             return HandleExceptions(() =>
             {
                 var CreatedDate = DateTime.Now;
-                var defaultUserGroup = unitOfWork.UserGroups.Find(new Filter[]
+                var defaultUserGroup = database.UserGroups.Find(new Filter[]
                 {
                     new Filter()
                     {
@@ -65,7 +65,7 @@ namespace ThrowAwayProjects.Controllers
                     }
                 }).FirstOrDefault();
 
-                var userNameCheck = unitOfWork.Users.Find(new Filter[]
+                var userNameCheck = database.Users.Find(new Filter[]
                 {
                     new Filter()
                     {
@@ -74,7 +74,7 @@ namespace ThrowAwayProjects.Controllers
                     }
                 }).FirstOrDefault();
 
-                var emailCheck = unitOfWork.Users.Find(new Filter[]
+                var emailCheck = database.Users.Find(new Filter[]
                 {
                     new Filter()
                     {
@@ -107,7 +107,7 @@ namespace ThrowAwayProjects.Controllers
                     Passphrase = Sha512(viewModel.Passphrase + CreatedDate),
                     VerificationCode = Guid.NewGuid().ToString()
                 };
-                unitOfWork.Users.Add(user);
+                database.Users.Add(user);
                 SetSessionUser(user);
                 //TODO: Send Auth Code to email.
                 return RedirectToAction("Verify");
@@ -148,7 +148,7 @@ namespace ThrowAwayProjects.Controllers
                     return View(viewModel);
 
                 dbUser.Authenticated = true;
-                unitOfWork.Users.Edit(dbUser);
+                database.Users.Edit(dbUser);
                 SetSessionUser(dbUser);
                 return RedirectToAction("Index", "Home");
             });
@@ -168,7 +168,7 @@ namespace ThrowAwayProjects.Controllers
         {
             return HandleExceptions(() =>
             {
-                var dbUser = unitOfWork.Users.Find(new Filter[]
+                var dbUser = database.Users.Find(new Filter[]
                 {
                     new Filter()
                     {
@@ -188,7 +188,7 @@ namespace ThrowAwayProjects.Controllers
 
                 dbUser.Authenticated = false;
                 dbUser.VerificationCode = Guid.NewGuid().ToString();
-                unitOfWork.Users.Edit(dbUser);
+                database.Users.Edit(dbUser);
                 SetSessionUser(dbUser);
                 //TODO: Send guid over email.
                 return RedirectToAction("Verify");
@@ -230,7 +230,7 @@ namespace ThrowAwayProjects.Controllers
 
                 if (dbUser.UserName != viewModel.UserName)
                 {
-                    var userNameCheck = unitOfWork.Users.Find(new Filter[]
+                    var userNameCheck = database.Users.Find(new Filter[]
                     {
                         new Filter()
                         {
@@ -259,7 +259,7 @@ namespace ThrowAwayProjects.Controllers
                     dbUser.Passphrase = Sha512(viewModel.NewPassphrase + dbUser.CreatedOn);
                 }
 
-                unitOfWork.Users.Edit(dbUser);
+                database.Users.Edit(dbUser);
                 SetSessionUser(dbUser);
 
                 return Json(new
@@ -302,7 +302,7 @@ namespace ThrowAwayProjects.Controllers
                 dbUser.Email = viewModel.NewEmail;
                 dbUser.Authenticated = false;
                 dbUser.VerificationCode = Guid.NewGuid().ToString();
-                unitOfWork.Users.Edit(dbUser);
+                database.Users.Edit(dbUser);
                 SetSessionUser(dbUser);
                 //TODO: Send code to new email.
                 return RedirectToAction("Verify", "Account");
@@ -311,7 +311,7 @@ namespace ThrowAwayProjects.Controllers
 
         private void SetSessionUser(UserIdentity user)
         {
-            var dbUserGroup = unitOfWork.UserGroups.GetById(user.GroupId).Name;
+            var dbUserGroup = database.UserGroups.GetById(user.GroupId).Name;
             HttpContext.Session.SetString("UserKey", JsonConvert.SerializeObject(user));
             HttpContext.Session.SetString("UserGroup", dbUserGroup);
         }
@@ -327,7 +327,7 @@ namespace ThrowAwayProjects.Controllers
         private UserIdentity GetSessionUserFromDb()
         {
             var user = GetSessionUser();
-            return unitOfWork.Users.GetById(user.Id ?? 0);
+            return database.Users.GetById(user.Id ?? 0);
         }
     }
 }

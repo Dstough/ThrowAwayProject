@@ -43,7 +43,7 @@ namespace ThrowAwayProjects.Controllers
         {
             return HandleExceptions(() =>
             {
-                var dbUser = unitOfWork.Users.Find(new Filter[]
+                var dbUser = database.Users.Find(new Filter[]
                 {
                     new Filter()
                     {
@@ -75,7 +75,7 @@ namespace ThrowAwayProjects.Controllers
 
         private void SetSessionUser(UserIdentity user)
         {
-            var dbUserGroup = unitOfWork.UserGroups.GetById(user.GroupId).Name;
+            var dbUserGroup = database.UserGroups.GetById(user.GroupId).Name;
             HttpContext.Session.SetString("UserKey", JsonConvert.SerializeObject(user));
             HttpContext.Session.SetString("UserGroup", dbUserGroup);
         }

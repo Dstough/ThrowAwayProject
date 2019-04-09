@@ -21,7 +21,7 @@ namespace ThrowAwayProjects.Controllers
 {
     public class BaseController : Controller
     {
-        protected UnitOfWork unitOfWork;
+        protected Database database;
         protected IConfiguration configuration;
         private ICompositeViewEngine viewEngine;
         private IHostingEnvironment environment;
@@ -32,7 +32,7 @@ namespace ThrowAwayProjects.Controllers
             configuration = _config;
             viewEngine = _viewEngine;
             environment = _environment;
-            unitOfWork = new UnitOfWork(configuration.GetConnectionString("ThrowAwayDB"));
+            database = new Database(configuration.GetConnectionString("ThrowAwayDB"));
             python = new ProcessStartInfo
             {
                 FileName = "Python",
@@ -62,13 +62,13 @@ namespace ThrowAwayProjects.Controllers
             }
             catch (Exception ex)
             {
-                return Json(new {result = "error", message = ex.Message });
+                return Json(new { result = "error", message = ex.Message });
             }
         }
 
         protected JsonResult Modal(string viewName, object model)
         {
-            return Json(new {result = "modal", message = RenderViewToString(viewName, model) });
+            return Json(new { result = "modal", message = RenderViewToString(viewName, model) });
         }
 
         protected string RunPythonScrit(dynamic script)
@@ -93,7 +93,7 @@ namespace ThrowAwayProjects.Controllers
             if (user.Id == null)
                 return false;
 
-            var dbUserData = unitOfWork.Users.GetById(user.Id ?? 0);
+            var dbUserData = database.Users.GetById(user.Id ?? 0);
 
             if (user.Passphrase != dbUserData.Passphrase)
                 return false;
