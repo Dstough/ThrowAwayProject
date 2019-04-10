@@ -8,6 +8,7 @@ namespace ThrowAwayDataBackground
         public string Body { get; set; }
         public string Tags { get; set; }
         public bool Closed { get; set; }
+        
         public Post() : base()
         {
             ParentId = null;

@@ -39,7 +39,7 @@ namespace ThrowAwayDataBackground
             using (var conn = new SQLiteConnection(ConnString))
             using (var cmd = conn.CreateCommand())
             {
-                foreach (var prop in item.GetType().GetProperties().Where(t => !t.GetType().IsSubclassOf(typeof(BaseObject))))
+                foreach (var prop in item.GetType().GetProperties().Where(t => !t.GetType().IsSubclassOf(typeof(BaseObject)) && t.GetType() != typeof(IEnumerable<>)))
                     columnList += prop.Name + ",";
 
                 cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE Id = @Id;";
@@ -60,8 +60,33 @@ namespace ThrowAwayDataBackground
                     }
                 }
                 //TODO: factor in the IncludeFields into the property setting.
-            }
+                //If its an id and obj combo then we need to find the parent off of the id.
+                //If its an Ienumerable then we need to find the children based off of this id.
+                if (IncludeFields.Count() > 0)
+                {
+                    cmd.Parameters.Clear();
+                    cmd.CommandText = "";
+                    columnList = "";
 
+                    foreach (var field in IncludeFields)
+                    {
+                        var prop = typeof(T).GetProperties().Where(p => p.Name == field).FirstOrDefault();
+
+                        if (prop == null)
+                            throw new Exception("The property was not found in the data object.");
+
+                        if (prop.GetType() != typeof(IEnumerable<>))
+                        {
+
+                        }
+                        else
+                        {
+
+                        }
+                    }
+                }
+            }
+            IncludeFields.Clear();
             return item;
         }
 
@@ -72,7 +97,7 @@ namespace ThrowAwayDataBackground
             var tableName = itemTemplate.GetType().Name;
             var columnList = "";
 
-            foreach (var prop in itemTemplate.GetType().GetProperties())
+            foreach (var prop in itemTemplate.GetType().GetProperties().Where(t => !t.GetType().IsSubclassOf(typeof(BaseObject)) && t.GetType() != typeof(IEnumerable<>)))
                 columnList += prop.Name + ",";
 
             using (var conn = new SQLiteConnection(ConnString))
@@ -108,7 +133,7 @@ namespace ThrowAwayDataBackground
             var columnList = "";
             var pageNumber = (page - 1) * size;
 
-            foreach (var prop in itemTemplate.GetType().GetProperties())
+            foreach (var prop in itemTemplate.GetType().GetProperties().Where(t => !t.GetType().IsSubclassOf(typeof(BaseObject)) && t.GetType() != typeof(IEnumerable<>)))
                 columnList += prop.Name + ",";
 
             using (var conn = new SQLiteConnection(ConnString))
@@ -145,7 +170,7 @@ namespace ThrowAwayDataBackground
             var columnList = "";
             var whereClause = "Deleted = 0";
 
-            foreach (var prop in itemTemplate.GetType().GetProperties())
+            foreach (var prop in itemTemplate.GetType().GetProperties().Where(t => !t.GetType().IsSubclassOf(typeof(BaseObject)) && t.GetType() != typeof(IEnumerable<>)))
                 columnList += prop.Name + ",";
 
             using (var conn = new SQLiteConnection(ConnString))
@@ -194,7 +219,7 @@ namespace ThrowAwayDataBackground
             using (var conn = new SQLiteConnection(ConnString))
             using (var cmd = conn.CreateCommand())
             {
-                foreach (var prop in entity.GetType().GetProperties().Where(e => e.Name != "Id"))
+                foreach (var prop in entity.GetType().GetProperties().Where(t => !t.GetType().IsSubclassOf(typeof(BaseObject)) && t.GetType() != typeof(IEnumerable<>)).Where(e => e.Name != "Id"))
                 {
                     columns += prop.Name + ",";
                     paramiters += "@" + prop.Name + ",";
@@ -221,7 +246,7 @@ namespace ThrowAwayDataBackground
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText = "UPDATE " + tableName + " SET ";
-                foreach (var prop in entity.GetType().GetProperties().Where(e => e.Name != "Id"))
+                foreach (var prop in entity.GetType().GetProperties().Where(t => !t.GetType().IsSubclassOf(typeof(BaseObject)) && t.GetType() != typeof(IEnumerable<>)).Where(e => e.Name != "Id"))
                 {
                     cmd.CommandText += prop.Name + "=@" + prop.Name + ",";
                     cmd.Parameters.AddWithValue("@" + prop.Name, prop.GetValue(entity));
@@ -257,7 +282,7 @@ namespace ThrowAwayDataBackground
             var whereClause = "Deleted = 0";
             var columnList = "";
 
-            foreach (var prop in itemTemplate.GetType().GetProperties())
+            foreach (var prop in itemTemplate.GetType().GetProperties().Where(t => !t.GetType().IsSubclassOf(typeof(BaseObject)) && t.GetType() != typeof(IEnumerable<>)))
                 columnList += prop.Name + ",";
 
             using (var conn = new SQLiteConnection(ConnString))
@@ -287,6 +312,14 @@ namespace ThrowAwayDataBackground
                 }
             }
             return count;
+        }
+    }
+
+    public static class Extensions
+    {
+        public static Type GetItemType<T>(this IEnumerable<T> enumerable)
+        {
+            return typeof(T);
         }
     }
 }

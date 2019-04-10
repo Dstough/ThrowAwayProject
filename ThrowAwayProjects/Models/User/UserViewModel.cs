@@ -22,7 +22,7 @@ namespace ThrowAwayProjects.Models
         public UserViewModel(UserIdentity user)
         {
             Id = user.Id ?? 0;
-            GroupId = user.GroupId;
+            GroupId = user.UserGroupId;
             Email = user.Email;
             UserName = user.UserName;
             Authenticated = user.Authenticated;

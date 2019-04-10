@@ -3,7 +3,8 @@ namespace ThrowAwayData
 {
     public class UserIdentity : BaseObject
     {
-        public int GroupId { get; set; }
+        public int UserGroupId { get; set; }
+        public UserGroup UserGroup { get; set; }
         public string Email { get; set; }
         public string UserName { get; set; }
         public string Passphrase { get; set; }
@@ -11,9 +12,11 @@ namespace ThrowAwayData
         public bool Authenticated { get; set; }
         public bool Banned { get; set; }
         public bool Dead { get; set; }
+
         public UserIdentity() : base()
         {
-            GroupId = 0;
+            UserGroupId = 0;
+            UserGroup = null;
             Email = "";
             UserName = "";
             Passphrase = "";

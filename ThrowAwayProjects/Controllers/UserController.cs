@@ -30,7 +30,7 @@ namespace ThrowAwayProjects.Controllers
                 var key = HttpContext.Session.GetString("UserKey");
                 var user = JsonConvert.DeserializeObject<UserIdentity>(key);
 
-                if (database.UserGroups.GetById(user.GroupId).Name != "Admin")
+                if (database.UserGroups.GetById(user.UserGroupId).Name != "Admin")
                     return RedirectToAction("Index", "Home");
 
                 return logic();
@@ -50,7 +50,7 @@ namespace ThrowAwayProjects.Controllers
                 var key = HttpContext.Session.GetString("UserKey");
                 var user = JsonConvert.DeserializeObject<UserIdentity>(key);
 
-                if (database.UserGroups.GetById(user.GroupId).Name != "Admin")
+                if (database.UserGroups.GetById(user.UserGroupId).Name != "Admin")
                     return Json(new { result = "error", message = "Stop poking around where you shouldn't be omae." });
 
                 return logic();
@@ -72,7 +72,7 @@ namespace ThrowAwayProjects.Controllers
                 {
                     viewModel.Add(new UserViewModel(user)
                     {
-                        GroupName = database.UserGroups.GetById(user.GroupId).Name
+                        GroupName = database.UserGroups.GetById(user.UserGroupId).Name
                     });
                 }
 
@@ -85,7 +85,7 @@ namespace ThrowAwayProjects.Controllers
             return HandleExceptions(() =>
             {
                 var dbUser = database.Users.GetById(Id);
-                var group = database.UserGroups.GetById(dbUser.GroupId);
+                var group = database.UserGroups.GetById(dbUser.UserGroupId);
                 var groups = database.UserGroups.GetAll();
                 var viewModel = new UserViewModel(dbUser)
                 {
