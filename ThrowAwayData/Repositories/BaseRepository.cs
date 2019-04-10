@@ -3,11 +3,12 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Data.SQLite;
+using System.Collections;
 using System.Collections.Generic;
 using ThrowAwayData;
 namespace ThrowAwayDataBackground
 {
-    public class BaseRepository<T> : IRepository<T>
+    public abstract class BaseRepository<T> : IRepository<T>
     where T : BaseObject, new()
     {
         private string ConnString { get; set; }
@@ -25,7 +26,7 @@ namespace ThrowAwayDataBackground
 
         public virtual IRepository<T> Include(string name)
         {
-            if (Array.IndexOf(typeof(T).GetProperties(), name) != -1)
+            if (typeof(T).GetProperties().Where(t => t.Name == name) != null)
                 IncludeFields.Add(name);
             return this;
         }
@@ -35,11 +36,16 @@ namespace ThrowAwayDataBackground
             var item = new T();
             var tableName = item.GetType().Name;
             var columnList = "";
+            var propList = item.GetType()
+                               .GetProperties()
+                               .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
+                               .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+                               .Where(e => e.CanWrite);
 
             using (var conn = new SQLiteConnection(ConnString))
             using (var cmd = conn.CreateCommand())
             {
-                foreach (var prop in item.GetType().GetProperties().Where(t => !t.GetType().IsSubclassOf(typeof(BaseObject)) && t.GetType() != typeof(IEnumerable<>)))
+                foreach (var prop in propList)
                     columnList += prop.Name + ",";
 
                 cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE Id = @Id;";
@@ -51,7 +57,7 @@ namespace ThrowAwayDataBackground
                     if (!reader.Read())
                         return null;
 
-                    foreach (var prop in item.GetType().GetProperties().Where(e => e.CanWrite))
+                    foreach (var prop in propList)
                     {
                         if (prop.PropertyType == typeof(int) || prop.Name == "Id")
                             prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
@@ -59,35 +65,9 @@ namespace ThrowAwayDataBackground
                             prop.SetValue(item, reader[prop.Name], null);
                     }
                 }
-                //TODO: factor in the IncludeFields into the property setting.
-                //If its an id and obj combo then we need to find the parent off of the id.
-                //If its an Ienumerable then we need to find the children based off of this id.
-                if (IncludeFields.Count() > 0)
-                {
-                    cmd.Parameters.Clear();
-                    cmd.CommandText = "";
-                    columnList = "";
 
-                    foreach (var field in IncludeFields)
-                    {
-                        var prop = typeof(T).GetProperties().Where(p => p.Name == field).FirstOrDefault();
-
-                        if (prop == null)
-                            throw new Exception("The property was not found in the data object.");
-
-                        if (prop.GetType() != typeof(IEnumerable<>))
-                        {
-
-                        }
-                        else
-                        {
-
-                        }
-                    }
-                }
             }
-            IncludeFields.Clear();
-            return item;
+            return IncludeProperties(item);
         }
 
         public virtual IEnumerable<T> GetAll()
@@ -96,8 +76,12 @@ namespace ThrowAwayDataBackground
             var itemTemplate = new T();
             var tableName = itemTemplate.GetType().Name;
             var columnList = "";
+            var propList = typeof(T).GetProperties()
+                            .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
+                            .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+                            .Where(e => e.CanWrite);
 
-            foreach (var prop in itemTemplate.GetType().GetProperties().Where(t => !t.GetType().IsSubclassOf(typeof(BaseObject)) && t.GetType() != typeof(IEnumerable<>)))
+            foreach (var prop in propList)
                 columnList += prop.Name + ",";
 
             using (var conn = new SQLiteConnection(ConnString))
@@ -111,7 +95,7 @@ namespace ThrowAwayDataBackground
                     while (reader.Read())
                     {
                         var item = new T();
-                        foreach (var prop in item.GetType().GetProperties().Where(e => e.CanWrite))
+                        foreach (var prop in propList)
                         {
                             if (prop.PropertyType == typeof(int) || prop.Name == "Id")
                                 prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
@@ -132,8 +116,12 @@ namespace ThrowAwayDataBackground
             var tableName = itemTemplate.GetType().Name;
             var columnList = "";
             var pageNumber = (page - 1) * size;
+            var propList = typeof(T).GetProperties()
+                            .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
+                            .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+                            .Where(e => e.CanWrite);
 
-            foreach (var prop in itemTemplate.GetType().GetProperties().Where(t => !t.GetType().IsSubclassOf(typeof(BaseObject)) && t.GetType() != typeof(IEnumerable<>)))
+            foreach (var prop in propList)
                 columnList += prop.Name + ",";
 
             using (var conn = new SQLiteConnection(ConnString))
@@ -147,7 +135,7 @@ namespace ThrowAwayDataBackground
                     while (reader.Read())
                     {
                         var item = new T();
-                        foreach (var prop in item.GetType().GetProperties().Where(e => e.CanWrite))
+                        foreach (var prop in propList)
                         {
                             if (prop.PropertyType == typeof(int) || prop.Name == "Id")
                                 prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
@@ -169,8 +157,12 @@ namespace ThrowAwayDataBackground
             var tableName = itemTemplate.GetType().Name;
             var columnList = "";
             var whereClause = "Deleted = 0";
+            var propList = typeof(T).GetProperties()
+                                .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
+                                .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+                                .Where(e => e.CanWrite);
 
-            foreach (var prop in itemTemplate.GetType().GetProperties().Where(t => !t.GetType().IsSubclassOf(typeof(BaseObject)) && t.GetType() != typeof(IEnumerable<>)))
+            foreach (var prop in propList)
                 columnList += prop.Name + ",";
 
             using (var conn = new SQLiteConnection(ConnString))
@@ -195,18 +187,18 @@ namespace ThrowAwayDataBackground
                     while (reader.Read())
                     {
                         var item = new T();
-                        foreach (var prop in item.GetType().GetProperties().Where(e => e.CanWrite))
+                        foreach (var prop in propList)
                         {
                             if (prop.PropertyType == typeof(int) || prop.Name == "Id")
                                 prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
                             else
                                 prop.SetValue(item, reader[prop.Name], null);
                         }
-                        list.Add(item);
+                        list.Add(IncludeProperties(item));
                     }
                 }
             }
-
+            IncludeFields.Clear();
             return list;
         }
 
@@ -215,11 +207,15 @@ namespace ThrowAwayDataBackground
             var tableName = entity.GetType().Name;
             var columns = "";
             var paramiters = "";
+            var propList = typeof(T).GetProperties()
+                            .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
+                            .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+                            .Where(e => e.Name != "Id");
 
             using (var conn = new SQLiteConnection(ConnString))
             using (var cmd = conn.CreateCommand())
             {
-                foreach (var prop in entity.GetType().GetProperties().Where(t => !t.GetType().IsSubclassOf(typeof(BaseObject)) && t.GetType() != typeof(IEnumerable<>)).Where(e => e.Name != "Id"))
+                foreach (var prop in propList)
                 {
                     columns += prop.Name + ",";
                     paramiters += "@" + prop.Name + ",";
@@ -241,12 +237,16 @@ namespace ThrowAwayDataBackground
         public virtual void Edit(T entity)
         {
             var tableName = entity.GetType().Name;
+            var propList = typeof(T).GetProperties()
+                            .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
+                            .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+                            .Where(e => e.Name != "Id");
 
             using (var conn = new SQLiteConnection(ConnString))
             using (var cmd = conn.CreateCommand())
             {
                 cmd.CommandText = "UPDATE " + tableName + " SET ";
-                foreach (var prop in entity.GetType().GetProperties().Where(t => !t.GetType().IsSubclassOf(typeof(BaseObject)) && t.GetType() != typeof(IEnumerable<>)).Where(e => e.Name != "Id"))
+                foreach (var prop in propList)
                 {
                     cmd.CommandText += prop.Name + "=@" + prop.Name + ",";
                     cmd.Parameters.AddWithValue("@" + prop.Name, prop.GetValue(entity));
@@ -281,8 +281,11 @@ namespace ThrowAwayDataBackground
             var tableName = itemTemplate.GetType().Name;
             var whereClause = "Deleted = 0";
             var columnList = "";
+            var propList = typeof(T).GetProperties()
+                            .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
+                            .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)));
 
-            foreach (var prop in itemTemplate.GetType().GetProperties().Where(t => !t.GetType().IsSubclassOf(typeof(BaseObject)) && t.GetType() != typeof(IEnumerable<>)))
+            foreach (var prop in propList)
                 columnList += prop.Name + ",";
 
             using (var conn = new SQLiteConnection(ConnString))
@@ -303,7 +306,7 @@ namespace ThrowAwayDataBackground
                     }
                 }
 
-                cmd.CommandText = "SELECT COUNT(*) as count FROM " + tableName + " WHERE " + whereClause + ";";
+                cmd.CommandText = "SELECT COUNT(" + columnList.TrimEnd(',') + ") as count FROM " + tableName + " WHERE " + whereClause + ";";
 
                 using (var reader = cmd.ExecuteReader())
                 {
@@ -313,13 +316,113 @@ namespace ThrowAwayDataBackground
             }
             return count;
         }
+
+        private T IncludeProperties(T item)
+        {
+            if (IncludeFields.Count() <= 0)
+                return item;
+
+            var columnList = "";
+            using (var conn = new SQLiteConnection(ConnString))
+            using (var cmd = conn.CreateCommand())
+            {
+                conn.Open();
+                foreach (var field in IncludeFields)
+                {
+                    var prop = typeof(T).GetProperties().Where(p => p.Name == field).FirstOrDefault();
+
+                    if (prop == null)
+                        throw new Exception("The property was not found in the data object.");
+
+                    //TODO: This check is done incorrectly. Fix it.
+                    if (prop.GetType() != typeof(IEnumerable<>))
+                    {
+                        var subItem = Activator.CreateInstance(prop.GetType());
+                        var subPropList = prop.GetType().GetProperties()
+                                            .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
+                                            .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+                                            .Where(e => e.CanWrite);
+
+                        foreach (var subProp in subPropList)
+                            columnList += subProp.Name + ",";
+
+                        cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + prop.Name + " WHERE Id = @Id;";
+                        cmd.Parameters.AddWithValue("@Id", item.GetPropValue(prop.Name + "Id"));
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (!reader.Read())
+                                return item;
+
+                            foreach (var subProp in subPropList)
+                            {
+                                if (subProp.PropertyType == typeof(int) || subProp.Name == "Id")
+                                    subProp.SetValue(subItem, Convert.ToInt32(reader[subProp.Name]), null);
+                                else
+                                    subProp.SetValue(subItem, reader[subProp.Name], null);
+                            }
+                        }
+                        prop.SetValue(item, subItem);
+                    }
+                    else
+                    {
+                        var listType = prop.GetType().GetElementType();
+                        var subItem = Activator.CreateInstance(typeof(List<>).MakeGenericType(listType));
+                        var listItem = Activator.CreateInstance(listType);
+                        var subPropList = listType.GetProperties()
+                                            .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
+                                            .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+                                            .Where(e => e.CanWrite);
+
+                        foreach (var subProp in subPropList)
+                            columnList += subProp.Name + ",";
+
+                        cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + listType + " WHERE " + typeof(T).Name + "Id = @" + typeof(T).Name + "Id";
+                        cmd.Parameters.AddWithValue("@" + typeof(T).Name, item.GetPropValue("Id"));
+
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                foreach (var subProp in subPropList)
+                                {
+                                    if (subProp.PropertyType == typeof(int) || subProp.Name == "Id")
+                                        subProp.SetValue(listItem, Convert.ToInt32(reader[subProp.Name]), null);
+                                    else
+                                        subProp.SetValue(listItem, reader[subProp.Name], null);
+                                }
+
+                                ((IList)subItem).Add(listItem);
+                            }
+                        }
+                        prop.SetValue(item, subItem);
+                    }
+                }
+            }
+            return item;
+        }
     }
 
-    public static class Extensions
+    internal static class Extensions
     {
-        public static Type GetItemType<T>(this IEnumerable<T> enumerable)
+        public static Type GetElementType(this Type type)
         {
-            return typeof(T);
+            if (type.IsArray)
+                return type.GetElementType();
+
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                return type.GetGenericArguments()[0];
+
+            var enumType = type.GetInterfaces()
+                               .Where(t => t.IsGenericType &&
+                                           t.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+                               .Select(t => t.GenericTypeArguments[0]).FirstOrDefault();
+
+            return enumType ?? type;
+        }
+
+        public static object GetPropValue(this object src, string propName)
+        {
+            return src.GetType().GetProperty(propName).GetValue(src, null);
         }
     }
 }

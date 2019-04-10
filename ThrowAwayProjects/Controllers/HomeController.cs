@@ -43,7 +43,7 @@ namespace ThrowAwayProjects.Controllers
         {
             return HandleExceptions(() =>
             {
-                var dbUser = database.Users.Find(new Filter[]
+                var dbUser = database.Users.Include("UserGroup").Find(new Filter[]
                 {
                     new Filter()
                     {

@@ -20,7 +20,7 @@ create table UserIdentity
 	CreatedOn datetime not null,
 	CreatedBy integer not null,
 	Deleted bit not null,
-	GroupId integer not null,
+	UserGroupId integer not null,
 	Email varchar,
 	UserName varchar not null,
 	Passphrase varchar not null,
@@ -41,9 +41,12 @@ create table Post
 	Tags varchar,
 	Closed bit not null
 );
-insert into UserGroup (CreatedOn,CreatedBy,Deleted,Name,Description)
+insert into UserGroup
+	(CreatedOn,CreatedBy,Deleted,Name,Description)
 values(datetime('now'), 0, 0, 'Admin', 'The primary group giving you access');
-insert into UserGroup (CreatedOn,CreatedBy,Deleted,Name,Description)
+insert into UserGroup
+	(CreatedOn,CreatedBy,Deleted,Name,Description)
 values(datetime('now'), 0, 0, 'SuperUser', 'The group for people who can post on closed topics');
-insert into UserGroup (CreatedOn,CreatedBy,Deleted,Name,Description)
+insert into UserGroup
+	(CreatedOn,CreatedBy,Deleted,Name,Description)
 values(datetime('now'), 0, 0, 'User', 'The primary group for users to post');
