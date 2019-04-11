@@ -34,8 +34,6 @@ namespace ThrowAwayProjects.Controllers
                 else
                     viewModel.DateSessionStarted = JsonConvert.DeserializeObject<DateTime>(HttpContext.Session.GetString("FirstSeen"));
 
-                var dbGroups = database.UserGroups.Where(new { Name = "User" }).Include("UserIdentity").Find();
-                var users = database.Users.Where(new { Uasdfas = "Dan" }).Include("UserGroup").Find();
                 return View(viewModel);
             });
         }
