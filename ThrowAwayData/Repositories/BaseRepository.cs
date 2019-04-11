@@ -12,17 +12,23 @@ namespace ThrowAwayDataBackground
     where T : BaseObject, new()
     {
         private string ConnString { get; set; }
+
         private List<string> IncludeFields { get; set; }
 
+        #region Constructors
+
         public BaseRepository() : this("")
-        {
-        }
+        { }
 
         public BaseRepository(string _connectionString)
         {
             ConnString = _connectionString;
             IncludeFields = new List<string>();
         }
+
+        #endregion
+
+        #region Core
 
         public virtual IRepository<T> Include(string name)
         {
@@ -108,47 +114,6 @@ namespace ThrowAwayDataBackground
                 }
             }
             IncludeFields.Clear();
-            return list;
-        }
-
-        public virtual IEnumerable<T> GetPage(int page, int size)
-        {
-            var list = new List<T>();
-            var itemTemplate = new T();
-            var tableName = itemTemplate.GetType().Name;
-            var columnList = "";
-            var pageNumber = (page - 1) * size;
-            var propList = typeof(T).GetProperties()
-                            .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
-                            .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
-                            .Where(e => e.CanWrite);
-
-            foreach (var prop in propList)
-                columnList += prop.Name + ",";
-
-            using (var conn = new SQLiteConnection(ConnString))
-            using (var cmd = conn.CreateCommand())
-            {
-                cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " ORDER BY Id LIMIT " + size + " OFFSET " + pageNumber + ";";
-                conn.Open();
-
-                using (var reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        var item = new T();
-                        foreach (var prop in propList)
-                        {
-                            if (prop.PropertyType == typeof(int) || prop.Name == "Id")
-                                prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
-                            else
-                                prop.SetValue(item, reader[prop.Name], null);
-                        }
-                        list.Add(IncludeProperties(item));
-                    }
-                }
-            }
-
             return list;
         }
 
@@ -279,6 +244,10 @@ namespace ThrowAwayDataBackground
             IncludeFields.Clear();
         }
 
+        #endregion
+
+        #region Extra
+
         public virtual int Count(IEnumerable<Filter> filters = null)
         {
             var count = 0;
@@ -321,6 +290,47 @@ namespace ThrowAwayDataBackground
             }
             IncludeFields.Clear();
             return count;
+        }
+
+        public virtual IEnumerable<T> GetPage(int page, int size)
+        {
+            var list = new List<T>();
+            var itemTemplate = new T();
+            var tableName = itemTemplate.GetType().Name;
+            var columnList = "";
+            var pageNumber = (page - 1) * size;
+            var propList = typeof(T).GetProperties()
+                            .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
+                            .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+                            .Where(e => e.CanWrite);
+
+            foreach (var prop in propList)
+                columnList += prop.Name + ",";
+
+            using (var conn = new SQLiteConnection(ConnString))
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " ORDER BY Id LIMIT " + size + " OFFSET " + pageNumber + ";";
+                conn.Open();
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var item = new T();
+                        foreach (var prop in propList)
+                        {
+                            if (prop.PropertyType == typeof(int) || prop.Name == "Id")
+                                prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
+                            else
+                                prop.SetValue(item, reader[prop.Name], null);
+                        }
+                        list.Add(IncludeProperties(item));
+                    }
+                }
+            }
+
+            return list;
         }
 
         private T IncludeProperties(T item)
@@ -405,6 +415,8 @@ namespace ThrowAwayDataBackground
             }
             return item;
         }
+
+        #endregion
     }
 
     internal static class Extensions
