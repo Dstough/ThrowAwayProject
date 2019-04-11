@@ -93,7 +93,7 @@ namespace ThrowAwayProjects.Controllers
             if (user.Id == null)
                 return false;
 
-            var dbUserData = database.Users.GetById(user.Id ?? 0);
+            var dbUserData = database.Users.Get(user.Id ?? 0);
 
             if (user.Passphrase != dbUserData.Passphrase)
                 return false;

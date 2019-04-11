@@ -56,32 +56,9 @@ namespace ThrowAwayProjects.Controllers
             return HandleExceptions(() =>
             {
                 var CreatedDate = DateTime.Now;
-                var defaultUserGroup = database.UserGroups.Find(new Filter[]
-                {
-                    new Filter()
-                    {
-                        Column = "Name",
-                        Value = "User"
-                    }
-                }).FirstOrDefault();
-
-                var userNameCheck = database.Users.Find(new Filter[]
-                {
-                    new Filter()
-                    {
-                        Column = "UserName",
-                        Value = viewModel.UserName
-                    }
-                }).FirstOrDefault();
-
-                var emailCheck = database.Users.Find(new Filter[]
-                {
-                    new Filter()
-                    {
-                        Column = "Email",
-                        Value = viewModel.Email
-                    }
-                }).FirstOrDefault();
+                var defaultUserGroup = database.UserGroups.Where(new { Name = "User" }).Find().FirstOrDefault();
+                var userNameCheck = database.Users.Where(new { UserName = viewModel.UserName }).Find().FirstOrDefault();
+                var emailCheck = database.Users.Where(new { Email = viewModel.Email }).Find().FirstOrDefault();
 
                 if (defaultUserGroup == null)
                     viewModel.ErrorMessage = "Something went horribly wrong chummer. Try clearing your cache and re-lode the page.";
@@ -168,14 +145,7 @@ namespace ThrowAwayProjects.Controllers
         {
             return HandleExceptions(() =>
             {
-                var dbUser = database.Users.Find(new Filter[]
-                {
-                    new Filter()
-                    {
-                        Column = "Email",
-                        Value = viewModel.Email
-                    }
-                }).FirstOrDefault();
+                var dbUser = database.Users.Where(new { Email = viewModel.Email }).Find().FirstOrDefault();
 
                 if (dbUser == null)
                     viewModel.ErrorMessage = "I couldn't find your account information.";
@@ -230,14 +200,7 @@ namespace ThrowAwayProjects.Controllers
 
                 if (dbUser.UserName != viewModel.UserName)
                 {
-                    var userNameCheck = database.Users.Find(new Filter[]
-                    {
-                        new Filter()
-                        {
-                            Column = "UserName",
-                            Value = viewModel.UserName
-                        }
-                    }).FirstOrDefault();
+                    var userNameCheck = database.Users.Where(new { UserName = viewModel.UserName }).Find().FirstOrDefault();
 
                     if (userNameCheck != null) return Json(new
                     {
@@ -311,7 +274,7 @@ namespace ThrowAwayProjects.Controllers
 
         private void SetSessionUser(UserIdentity user)
         {
-            var dbUserGroup = database.UserGroups.GetById(user.UserGroupId).Name;
+            var dbUserGroup = database.UserGroups.Get(user.UserGroupId).Name;
             HttpContext.Session.SetString("UserKey", JsonConvert.SerializeObject(user));
             HttpContext.Session.SetString("UserGroup", dbUserGroup);
         }
@@ -327,7 +290,7 @@ namespace ThrowAwayProjects.Controllers
         private UserIdentity GetSessionUserFromDb()
         {
             var user = GetSessionUser();
-            return database.Users.GetById(user.Id ?? 0);
+            return database.Users.Get(user.Id ?? 0);
         }
     }
 }

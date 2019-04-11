@@ -34,8 +34,8 @@ namespace ThrowAwayProjects.Controllers
                 else
                     viewModel.DateSessionStarted = JsonConvert.DeserializeObject<DateTime>(HttpContext.Session.GetString("FirstSeen"));
 
-                var dbGroups = database.UserGroups.Include("UserIdentity").GetById(3);
-
+                var dbGroups = database.UserGroups.Where(new { Name = "User" }).Include("UserIdentity").Find();
+                var users = database.Users.Where(new { Uasdfas = "Dan" }).Include("UserGroup").Find();
                 return View(viewModel);
             });
         }
@@ -45,14 +45,7 @@ namespace ThrowAwayProjects.Controllers
         {
             return HandleExceptions(() =>
             {
-                var dbUser = database.Users.Include("UserGroup").Find(new Filter[]
-                {
-                    new Filter()
-                    {
-                        Column = "UserName",
-                        Value = viewModel.UserName
-                    }
-                }).FirstOrDefault();
+                var dbUser = database.Users.Where(new { UserName = viewModel.UserName }).Include("UserGroup").Find().FirstOrDefault();
 
                 if (dbUser == null || Sha512(viewModel.Passphrase + dbUser.CreatedOn) != dbUser.Passphrase)
                 {
@@ -77,7 +70,7 @@ namespace ThrowAwayProjects.Controllers
 
         private void SetSessionUser(UserIdentity user)
         {
-            var dbUserGroup = database.UserGroups.GetById(user.UserGroupId).Name;
+            var dbUserGroup = database.UserGroups.Get(user.UserGroupId).Name;
             HttpContext.Session.SetString("UserKey", JsonConvert.SerializeObject(user));
             HttpContext.Session.SetString("UserGroup", dbUserGroup);
         }
