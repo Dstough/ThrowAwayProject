@@ -67,6 +67,7 @@ namespace ThrowAwayDataBackground
                 }
 
             }
+            IncludeFields.Clear();
             return IncludeProperties(item);
         }
 
@@ -102,10 +103,11 @@ namespace ThrowAwayDataBackground
                             else
                                 prop.SetValue(item, reader[prop.Name], null);
                         }
-                        list.Add(item);
+                        list.Add(IncludeProperties(item));
                     }
                 }
             }
+            IncludeFields.Clear();
             return list;
         }
 
@@ -142,7 +144,7 @@ namespace ThrowAwayDataBackground
                             else
                                 prop.SetValue(item, reader[prop.Name], null);
                         }
-                        list.Add(item);
+                        list.Add(IncludeProperties(item));
                     }
                 }
             }
@@ -232,6 +234,7 @@ namespace ThrowAwayDataBackground
                     entity.Id = Convert.ToInt32(reader[0] ?? 0);
                 }
             }
+            IncludeFields.Clear();
         }
 
         public virtual void Edit(T entity)
@@ -257,6 +260,7 @@ namespace ThrowAwayDataBackground
                 conn.Open();
                 cmd.ExecuteNonQuery();
             }
+            IncludeFields.Clear();
         }
 
         public virtual void Delete(int id)
@@ -272,6 +276,7 @@ namespace ThrowAwayDataBackground
                 conn.Open();
                 cmd.ExecuteNonQuery();
             }
+            IncludeFields.Clear();
         }
 
         public virtual int Count(IEnumerable<Filter> filters = null)
@@ -314,6 +319,7 @@ namespace ThrowAwayDataBackground
                         count = Convert.ToInt32(reader["count"]);
                 }
             }
+            IncludeFields.Clear();
             return count;
         }
 
@@ -334,11 +340,10 @@ namespace ThrowAwayDataBackground
                     if (prop == null)
                         throw new Exception("The property was not found in the data object.");
 
-                    //TODO: This check is done incorrectly. Fix it.
-                    if (prop.GetType() != typeof(IEnumerable<>))
+                    if (!(prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
                     {
-                        var subItem = Activator.CreateInstance(prop.GetType());
-                        var subPropList = prop.GetType().GetProperties()
+                        var subItem = Activator.CreateInstance(prop.PropertyType);
+                        var subPropList = prop.PropertyType.GetProperties()
                                             .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
                                             .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
                                             .Where(e => e.CanWrite);
@@ -365,7 +370,7 @@ namespace ThrowAwayDataBackground
                     }
                     else
                     {
-                        var listType = prop.GetType().GetElementType();
+                        var listType = prop.PropertyType.GetAnyElementType();
                         var subItem = Activator.CreateInstance(typeof(List<>).MakeGenericType(listType));
                         var listItem = Activator.CreateInstance(listType);
                         var subPropList = listType.GetProperties()
@@ -376,8 +381,8 @@ namespace ThrowAwayDataBackground
                         foreach (var subProp in subPropList)
                             columnList += subProp.Name + ",";
 
-                        cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + listType + " WHERE " + typeof(T).Name + "Id = @" + typeof(T).Name + "Id";
-                        cmd.Parameters.AddWithValue("@" + typeof(T).Name, item.GetPropValue("Id"));
+                        cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + listType.Name + " WHERE " + typeof(T).Name + "Id = @" + typeof(T).Name + "Id;";
+                        cmd.Parameters.AddWithValue("@" + typeof(T).Name + "Id", item.GetPropValue("Id"));
 
                         using (var reader = cmd.ExecuteReader())
                         {
@@ -404,19 +409,16 @@ namespace ThrowAwayDataBackground
 
     internal static class Extensions
     {
-        public static Type GetElementType(this Type type)
+        public static Type GetAnyElementType(this Type type)
         {
             if (type.IsArray)
                 return type.GetElementType();
-
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
                 return type.GetGenericArguments()[0];
-
             var enumType = type.GetInterfaces()
                                .Where(t => t.IsGenericType &&
                                            t.GetGenericTypeDefinition() == typeof(IEnumerable<>))
                                .Select(t => t.GenericTypeArguments[0]).FirstOrDefault();
-
             return enumType ?? type;
         }
 
