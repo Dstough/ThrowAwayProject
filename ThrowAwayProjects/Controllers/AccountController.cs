@@ -274,9 +274,7 @@ namespace ThrowAwayProjects.Controllers
 
         private void SetSessionUser(UserIdentity user)
         {
-            var dbUserGroup = database.UserGroups.Get(user.UserGroupId).Name;
             HttpContext.Session.SetString("UserKey", JsonConvert.SerializeObject(user));
-            HttpContext.Session.SetString("UserGroup", dbUserGroup);
         }
 
         private UserIdentity GetSessionUser()
@@ -290,7 +288,7 @@ namespace ThrowAwayProjects.Controllers
         private UserIdentity GetSessionUserFromDb()
         {
             var user = GetSessionUser();
-            return database.Users.Get(user.Id ?? 0);
+            return database.Users.Include("UserGroup").Get(user.Id ?? 0);
         }
     }
 }
