@@ -3,80 +3,46 @@
 {
     <script>DisplayMessage("@Model.ErrorMessage");</script>
     Model.ErrorMessage = null;
-}
-<div style="min-height: 175px; max-height: 175px;">    
-    <div class="col-sm-4" style="font-size: 8pt;">
-        <h2>Connection:</h2>
-        <p><b>...Status:</b> @Model.AccountStatus</p>
-        <p><b>...Privilege:</b> @Model.Privilege</p>
-        <p><b>...Connected:</b> @Model.DateSessionStarted.AddYears(60)</p>
+}  
+
+<div class="col-sm-8">
+    
+    <div class="thread">
+        <h1>Latest News Broadcast</h1>
+        [<a>view all</a>]
+        @for(var i = 0; i < 3; i++)
+        {
+            <div class="post">
+                <span class="message-body">
+                    Here you will find a forum that you can use to set up runs with fixers, post success stories, or just ask questions.
+                </span>
+                <div class="message-signature">
+                    -- Fastjack <span class=time-stamp>| @DateTime.Now.AddYears(60)</span>
+                </div>
+            </div>
+        }
     </div>
-    <div class="col-sm-8 hide-when-small">
-        <br/>
-        <span class="message-body">
-            Welcome back to Jackpoint, omae.
-        </span>
-        <div class="message-signature admin-color">
-            -- Fastjack
-        </div>
+
+    <div class="thread">
+        <h1>Fixer Job Postings</h1>
+        [<a>view all</a>]
+        @for(var i = 0; i < 3; i++)
+        {
+            <div class="post">
+                <span class="message-body">
+                    Here you will find a forum that you can use to set up runs with fixers, post success stories, or just ask questions.
+                </span>
+                <div class="message-signature">
+                    -- Fastjack <span class=time-stamp>| @DateTime.Now.AddYears(60)</span>
+                </div>
+            </div>
+        }
     </div>
 </div>
 
-<div>
-
-    <div class="col-sm-4">
-        <table class="table">
-            <thead>
-                <tr><th>News Broadcasts</th></tr>
-            </thead>
-            <tbody>
-                <tr><td>Headline 1 Title</td></tr>
-                <tr><td>Headline 2 Title</td></tr>
-                <tr><td>Headline 3 Title</td></tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div class="col-sm-4">
-        <table class="table">
-            <thead>
-                <tr><th>Fixer Jobs</th></tr>
-            </thead>
-            <tbody>
-                <tr><td>Job 1 Header</td></tr>
-                <tr><td>Job 2 Header</td></tr>
-                <tr><td>Job 3 Header</td></tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div class="col-sm-4">
-        <table class="table">
-            <thead>
-                <tr><th>Run Archives</th></tr>
-            </thead>
-            <tbody>
-                <tr><td>Run 1 Transcripts</td></tr>
-                <tr><td>Run 2 Transcripts</td></tr>
-                <tr><td>Run 3 Transcripts</td></tr>
-            </tbody>
-        </table>
-    </div>
-
-    <div class="col-sm-12">
-        <table class="table">
-            <thead>
-                <tr><th>User Posts</th></tr>
-            </thead>
-            <tbody>
-                <tr><td>Post 0</td></tr>
-                <tr><td>Post 1</td></tr>
-                <tr><td>Post 2</td></tr>
-                <tr><td>Post 3</td></tr>
-                <tr><td>Post 4</td></tr>
-                <tr><td>Post 5</td></tr>
-            </tbody>
-        </table>
-    </div>
-
+<div class="col-sm-4 side-bar">
+    <h1>Biometric Scan:</h1>
+    <p><span style="color:#aaa;">...Connected:</span> @Model.DateSessionStarted.AddYears(60).ToLongTimeString()</p>
+    <p><span style="color:#aaa;">...Privilege:</span> @Model.Privilege</p>
+    <p><span style="color:#aaa;">......Status:</span> @Model.AccountStatus</p>
 </div>

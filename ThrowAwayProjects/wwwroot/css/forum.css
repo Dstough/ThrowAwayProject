@@ -1,20 +1,41 @@
+.thread {
+    margin-top: 10px;
+    margin-bottom: 150px;
+}
+
+.post {
+    padding-top: 19px;
+}
+
+.post~.post {
+    border-top: 1px solid #5e5e5e;
+}
+
 .message-head {
-    font-size: 32pt;
-    border-bottom: 1px solid #afafaf;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 2;
+    display: block;
 }
 
 .message-body {
-    font-size: 14pt;
+    font-size: 18px;
     text-align: justify;
 }
 
 .message-signature {
-    font-size: 10pt;
+    font-size: 18px;
     font-style: italic;
     margin-top: 19px;
-    color: #fff;
+    margin-bottom: 19px;
+    color: #5e5e5e;
 }
 
 .admin-color {
     color: #ff0;
+}
+
+.time-stamp {
+    font-size: 12px;
+    color: #5e5e5e;
 }

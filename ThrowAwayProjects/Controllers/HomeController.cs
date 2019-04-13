@@ -68,9 +68,7 @@ namespace ThrowAwayProjects.Controllers
 
         private void SetSessionUser(UserIdentity user)
         {
-            var dbUserGroup = database.UserGroups.Get(user.UserGroupId).Name;
             HttpContext.Session.SetString("UserKey", JsonConvert.SerializeObject(user));
-            HttpContext.Session.SetString("UserGroup", dbUserGroup);
         }
     }
 }

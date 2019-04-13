@@ -2,7 +2,7 @@
     padding-top: 50px;
     padding-bottom: 20px;
     font-family: "Consolas";
-    color: #e2e2e2;
+    color: #eee;
     text-shadow: 2px 2px 5px #000000;
     background-color: #323232;
     background-image: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, 0) 90%, rgba(0, 0, 0, 1)), linear-gradient(45deg, black 25%, transparent 25%, transparent 75%, black 75%, black), linear-gradient(45deg, black 25%, transparent 25%, transparent 75%, black 75%, black), linear-gradient(to bottom, rgb(6, 6, 6), rgb(18, 18, 18));
@@ -20,7 +20,6 @@
     background: linear-gradient( #1e1e1e, #000);
     border-bottom: 0;
     box-shadow: 0 0 7px black;
-    z-index: 999;
     position: fixed;
 }
 
