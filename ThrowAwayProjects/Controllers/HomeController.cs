@@ -29,10 +29,6 @@ namespace ThrowAwayProjects.Controllers
             {
                 var viewModel = new HomeViewModel();
 
-                if (HttpContext.Session.GetString("FirstSeen") == null)
-                    HttpContext.Session.SetString("FirstSeen", JsonConvert.SerializeObject(viewModel.DateSessionStarted));
-                else
-                    viewModel.DateSessionStarted = JsonConvert.DeserializeObject<DateTime>(HttpContext.Session.GetString("FirstSeen"));
 
                 return View(viewModel);
             });
@@ -54,7 +50,7 @@ namespace ThrowAwayProjects.Controllers
                     return View("../Home/Index", model);
                 }
 
-                SetSessionUser(dbUser);
+                HttpContext.Session.SetString("UserKey", JsonConvert.SerializeObject(dbUser));
 
                 if (!dbUser.Authenticated)
                 {
@@ -64,11 +60,6 @@ namespace ThrowAwayProjects.Controllers
 
                 return RedirectToAction("Index", "Home");
             });
-        }
-
-        private void SetSessionUser(UserIdentity user)
-        {
-            HttpContext.Session.SetString("UserKey", JsonConvert.SerializeObject(user));
         }
     }
 }

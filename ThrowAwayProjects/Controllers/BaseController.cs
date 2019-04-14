@@ -42,6 +42,8 @@ namespace ThrowAwayProjects.Controllers
             };
         }
 
+        #region Core
+
         protected virtual ActionResult HandleExceptions(Func<ActionResult> logic)
         {
             try
@@ -71,15 +73,27 @@ namespace ThrowAwayProjects.Controllers
             return Json(new { result = "modal", message = RenderViewToString(viewName, model) });
         }
 
-        protected string RunPythonScrit(dynamic script)
+        private string RenderViewToString(string viewName, object model)
         {
-            python.Arguments = environment.WebRootPath + "\\" + configuration.GetValue<string>("ServerScriptFolder") + "\\" + script.name + " ";
-            foreach (var argument in script.arguments)
-                python.Arguments += argument + " ";
-            using (var process = Process.Start(python))
-            using (var reader = process.StandardOutput)
-                return reader.ReadToEnd();
+            if (string.IsNullOrEmpty(viewName))
+                viewName = ControllerContext.ActionDescriptor.ActionName;
+            ViewData.Model = model;
+
+            using (var writer = new StringWriter())
+            {
+                ViewEngineResult viewResult = viewEngine.FindView(ControllerContext, viewName, false);
+                ViewContext viewContext = new ViewContext(ControllerContext, viewResult.View, ViewData, TempData, writer, new HtmlHelperOptions());
+
+                var t = viewResult.View.RenderAsync(viewContext);
+                t.Wait();
+
+                return writer.GetStringBuilder().ToString();
+            }
         }
+
+        #endregion
+
+        #region extra
 
         protected bool IsAuthenticated()
         {
@@ -101,22 +115,14 @@ namespace ThrowAwayProjects.Controllers
             return true;
         }
 
-        private string RenderViewToString(string viewName, object model)
+        protected string RunPythonScrit(dynamic script)
         {
-            if (string.IsNullOrEmpty(viewName))
-                viewName = ControllerContext.ActionDescriptor.ActionName;
-            ViewData.Model = model;
-
-            using (var writer = new StringWriter())
-            {
-                ViewEngineResult viewResult = viewEngine.FindView(ControllerContext, viewName, false);
-                ViewContext viewContext = new ViewContext(ControllerContext, viewResult.View, ViewData, TempData, writer, new HtmlHelperOptions());
-
-                var t = viewResult.View.RenderAsync(viewContext);
-                t.Wait();
-
-                return writer.GetStringBuilder().ToString();
-            }
+            python.Arguments = environment.WebRootPath + "\\" + configuration.GetValue<string>("ServerScriptFolder") + "\\" + script.name + " ";
+            foreach (var argument in script.arguments)
+                python.Arguments += argument + " ";
+            using (var process = Process.Start(python))
+            using (var reader = process.StandardOutput)
+                return reader.ReadToEnd();
         }
 
         protected static string Sha512(string input)
@@ -133,5 +139,7 @@ namespace ThrowAwayProjects.Controllers
                 return hashedInputStringBuilder.ToString();
             }
         }
+
+        #endregion
     }
 }

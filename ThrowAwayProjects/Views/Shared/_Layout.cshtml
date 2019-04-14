@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.Http;
 @using Newtonsoft.Json;
 @using ThrowAwayData;
+@model BaseViewModel;
 @inject IConfiguration Configuration;
 @{    
     var key = Context.Session.GetString("UserKey");
@@ -47,7 +48,7 @@
         </div>
     </div>
     <div id="message" class="message">
-        <span class='message-body'>A quick message for you chummer.</span>
+        <span class='message-body'>@Model.ErrorMessage</span>
         <div class='message-signature admin-color'>-- Fastjack</div>
     </div>
     <nav class="navbar navbar-inverse navbar-fixed-top">
