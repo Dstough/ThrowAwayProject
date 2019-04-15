@@ -54,8 +54,9 @@ var AddRedGlow = function (targetControl) {
 var DisplayMessage = function (message, signature) {
     if (signature === undefined)
         signature = "-- Fastjack";
-
+    
     $("#message").html(
+        "<hr/>" +
         "<span class='message-body'>" + message + "</span>" +
         "<div class='message-signature admin-color'>" + signature + "</div>"
     );

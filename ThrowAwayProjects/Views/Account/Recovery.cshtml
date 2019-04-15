@@ -1,37 +1,37 @@
 @model RecoveryViewModel
 @if(Model.ErrorMessage != null)
 {
-    <script>DisplayMessage("@Model.ErrorMessage");</script>
+    <script>
+        $(function() {
+            DisplayMessage('@Model.ErrorMessage');
+        });
+    </script>
     Model.ErrorMessage = null;
 }
-<div class="col-sm-2"></div>
-<div class="col-sm-4 hide-when-small">
-    <br/><br/>
-    <span class="message-body">
-        Your original verification code will give you access to your account.
-        I hope you saved it like the email said.
-        As soon as you get in, change your Passphrase! 
-        I can't keep doing this for you.
-    </span>
-    <div class="message-signature admin-color">
-        -- Fastjack
+
+<h2>Recover Account</h2>
+<h5>[<a asp-area="" asp-controller="Home" asp-action="Index">Back to home page</a>]</h5>
+<hr/>
+<form asp-controller="Account" asp-action="Recovery" method="post" id="RecoveryForm" role="form">
+    <div class="form-group">
+        <input id="email" type="email" class="form-control" name="Email" placeholder="email" autocomplete="off">
     </div>
+    <div class="form-group">
+        <input id="verificationCode" type="text" class="form-control" name="VerificationCode" placeholder="verification code" autocomplete="off">
+    </div>
+    <button id="recover" id="Recover" class="btn btn-primary" style="width:100%">Recover</button>
+</form>
+<br/><br/>
+<span class="message-body">
+    Your original verification code will give you access to your account.
+    I hope you saved it like the email said.
+    As soon as you get in, change your Passphrase! 
+    I can't keep doing this for you.
+</span>
+<div class="message-signature admin-color">
+    -- Fastjack
 </div>
-<div class="col-sm-4">
-    <h2>Account Recovery</h2>
-    <h5><a asp-area="" asp-controller="Home" asp-action="Index">Back to home page.</a></h5>
-    <hr/>
-    <form asp-controller="Account" asp-action="Recovery" method="post" id="RecoveryForm" role="form">
-        <div class="form-group">
-            <input id="email" type="email" class="form-control" name="Email" placeholder="email" autocomplete="off">
-        </div>
-        <div class="form-group">
-            <input id="verificationCode" type="text" class="form-control" name="VerificationCode" placeholder="verification code" autocomplete="off">
-        </div>
-        <button id="recover" id="Recover" class="btn btn-primary" style="width:100%">Recover</button>
-    </form>
-</div>
-<div class="col-sm-2"></div>
+
 <script>
     $(function(){
         BindValidation(["email", "verificationCode"], "recover");

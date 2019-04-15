@@ -48,6 +48,27 @@ namespace ThrowAwayProjects.Controllers
         {
             try
             {
+                ViewBag.Admin = false;
+                ViewBag.LoggedIn = false;
+                ViewBag.UserName = "Unknown";
+                ViewBag.Privilege = "Unknown";
+                ViewBag.Status = "Unknown";
+
+                if (HttpContext.Session.GetString("SessionDate") == null)
+                    HttpContext.Session.SetString("SessionDate", JsonConvert.SerializeObject(DateTime.Now.AddYears(60)));
+
+                ViewBag.DateConnected = JsonConvert.DeserializeObject<DateTime>(HttpContext.Session.GetString("SessionDate"));
+
+                if (HttpContext.Session.GetString("UserKey") != null)
+                {
+                    var user = JsonConvert.DeserializeObject<UserIdentity>(HttpContext.Session.GetString("UserKey"));
+                    ViewBag.LoggedIn = true;
+                    ViewBag.Admin = user.UserGroup.Name == "Admin";
+                    ViewBag.UserName = user.UserName;
+                    ViewBag.Status = !user.Banned ? !user.Dead ? user.Authenticated ? "Active" : "Not Authenticated" : "Deceased" : "Banned";
+                    ViewBag.Privilege = user.UserGroup.Name;
+                }
+
                 return logic();
             }
             catch (Exception ex)

@@ -1,19 +1,47 @@
 @model AccountViewModel
 @if(Model.ErrorMessage != null)
 {
-    <script>DisplayMessage("@Model.ErrorMessage");</script>
+    <script>
+        $(function() {
+            DisplayMessage('@Model.ErrorMessage');
+        });
+    </script>
     Model.ErrorMessage = null;
 }
-<div class="col-sm-2"></div>
-<div class="col-sm-4 hide-when-small" style="padding-top:25px;">
-    <span class="message-head">Shadowrun</span> <span style="font-size:12pt;">>noun</span><br />
-    <span class="message-body">
-        Any movement, action, or series of such made in carrying out plans which are illegal or quasilegal.
-    </span>
-    <div class="message-signature">
-        -- WorldWide WorldWatch, 2050 archive
+
+<form asp-controller="Account" asp-action="Register" method="post" id="RegisterForm" role="form">
+    
+    <div class="col-sm-12">
+        <h2>Register New Account</h2>
+        <h5>[<a asp-area="" asp-controller="Home" asp-action="Index">Back to home page</a>]</h5>
+        <hr />
     </div>
-    <hr />
+    
+    <div class="col-sm-6">
+        <div class="form-group">
+            <input id="email" type="email" class="form-control" name="Email" placeholder="email" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <input id="username" type="text" class="form-control" name="UserName" placeholder="username" autocomplete="off">
+        </div>
+    </div>
+
+    <div class="col-sm-6">
+        <div class="form-group">
+            <input id="Passphrase" type="password" class="form-control" name="Passphrase" placeholder="Passphrase">
+        </div>
+        <div class="form-group">
+            <input id="PassphraseConfirm" type="password" class="form-control" name="PassphraseConfirm" placeholder="confirm">
+        </div>
+    </div>
+    
+    <div class="col-sm-12">
+        <hr />
+        <button id="register" id="sendlogin" class="btn btn-primary" style="width:100%">Register</button>
+    </div>
+</form>
+<div class="col-sm-12">
+    <br/><br/>
     <span class="message-body">
         Don't use any Passphrase that you have used before. 
         This is a host made for shadowrunners. 
@@ -23,30 +51,6 @@
         -- Fastjack
     </div>
 </div>
-<div class="col-sm-4">
-    <h2>Register</h2>
-    <h5><a asp-area="" asp-controller="Home" asp-action="Index">Back to home page.</a></h5>
-    <hr />
-    <form asp-controller="Account" asp-action="Register" method="post" id="RegisterForm" role="form">
-        <div class="form-group">
-            <input id="email" type="email" class="form-control" name="Email" placeholder="email" autocomplete="off">
-        </div>
-        <div class="form-group">
-            <input id="username" type="text" class="form-control" name="UserName" placeholder="username" autocomplete="off">
-        </div>
-        <hr />
-        <div class="form-group">
-            <input id="Passphrase" type="password" class="form-control" name="Passphrase" placeholder="Passphrase">
-        </div>
-        <div class="form-group">
-            <input id="PassphraseConfirm" type="password" class="form-control" name="PassphraseConfirm" placeholder="confirm">
-        </div>
-        <hr />
-        <button id="register" id="sendlogin" class="btn btn-primary" style="width:100%">Register</button>
-    </form>
-</div>
-<div class="col-sm-2"></div>
-
 <script>
     $(function () {
         BindValidation(["email", "username", "Passphrase", "PassphraseConfirm"], "register");

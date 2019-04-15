@@ -5,25 +5,20 @@
     <h4 class="modal-title">Account Information</h4>
 </div>
 
-<div class="modal-body">    
-    <div class="modal-collumn">
-        <div class="form-group">    
-            <span class="lbl">@Model.Email</span>
-            <span>[<a href='@Url.Action("ChangeEmail","Account")'>change</a>]</span>
-        </div>
-        <div class="form-group">    
-            <input id="UserName" class="form-control" name="UserName" placeholder="username" value="@Model.UserName" autocomplete="off">
-        </div>
-    </div>
-    <div class="modal-collumn">
-        <div class="form-group">
-            <input id="NewPassphrase" type="password" class="form-control" name="NewPassphrase" placeholder="new Passphrase">
-        </div>
-        <div class="form-group">
-            <input id="ConfirmPassphrase" type="password" class="form-control" name="ConfirmPassphrase" placeholder="confirm Passphrase">
-        </div>
-    </div>
+<div class="modal-body">  
+    <h3>@Model.Email</h3>
+    <span>[<a href='@Url.Action("ChangeEmail","Account")'>change</a>]</span>
     <br/><br/>
+    <div class="form-group">    
+        <input id="UserName" class="form-control" name="UserName" placeholder="username" value="@Model.UserName" autocomplete="off">
+    </div>
+    <div class="form-group">
+        <input id="NewPassphrase" type="password" class="form-control" name="NewPassphrase" placeholder="new Passphrase">
+    </div>
+    <div class="form-group">
+        <input id="ConfirmPassphrase" type="password" class="form-control" name="ConfirmPassphrase" placeholder="confirm Passphrase">
+    </div>
+    <hr/>
     <span class='message-body'>
         You can update your handle, Passphrase, or email address.
         It won't hide you or erase your previous posts.

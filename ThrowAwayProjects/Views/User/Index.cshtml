@@ -1,18 +1,26 @@
 @model List<UserViewModel>;
+@if(Model.ErrorMessage != null)
+{
+    <script>
+        $(function() {
+            DisplayMessage('@Model.ErrorMessage');
+        });
+    </script>
+    Model.ErrorMessage = null;
+}
 <h1>Users</h1>
-<br/>
+[<a onclick='Modal("@Url.Action("AddEdit","User")")'>Add New</a>]
 <table class="table">
     <thead>
         <tr>
             @if(Model.Count > 0)
             {
-                <th>UserName</th>
+                <th>User</th>
                 <th>Email</th>
-                <th>Group Name</th>
+                <th>Group</th>
                 <th>Authenticated</th>
                 <th>Banned</th>
                 <th>Dead</th>
-                <th><span class="btn btn-sm btn-primary" onclick='Modal("@Url.Action("AddEdit","User")")'><span class="glyphicon glyphicon-plus"></span></span></th>
             }
             else
             {
@@ -31,7 +39,6 @@
                 <td>@item.Authenticated</td>
                 <td>@item.Banned</td>
                 <td>@item.Dead</td>
-                <td><a><span class="glyphicon glyphicon-pencil"></span></a></td>
             </tr>
         }
     </tbody>

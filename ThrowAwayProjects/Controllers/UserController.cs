@@ -33,7 +33,7 @@ namespace ThrowAwayProjects.Controllers
                 if (database.UserGroups.Get(user.UserGroupId).Name != "Admin")
                     return RedirectToAction("Index", "Home");
 
-                return logic();
+                return base.HandleExceptions(logic);
             }
             catch (Exception ex)
             {

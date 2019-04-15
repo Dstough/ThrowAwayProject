@@ -80,15 +80,6 @@ a {
     text-shadow: 2px 2px 15px #fff;
 }
 
-.message {
-    display: none;
-    z-index: 1;
-    max-width: 15%;
-    position: absolute;
-    right: 10px;
-    top: 80px;
-}
-
 .lbl {
     text-decoration: underline;
     text-overflow: ellipsis;
@@ -100,8 +91,5 @@ a {
     .navbar-collapse ul {
         float: none;
         text-align: center;
-    }
-    .message {
-        background: #000;
     }
 }

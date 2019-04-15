@@ -1,48 +1,74 @@
 ﻿@model HomeViewModel;
 @if(Model.ErrorMessage != null)
 {
-    <script>DisplayMessage("@Model.ErrorMessage");</script>
+    <script>
+        $(function() {
+            DisplayMessage('@Model.ErrorMessage');
+        });
+    </script>
     Model.ErrorMessage = null;
 }  
 
-<div class="col-sm-8">
-    
-    <div class="thread">
-        <h1>Latest News Broadcast</h1>
-        [<a>view all</a>]
-        @for(var i = 0; i < 3; i++)
-        {
-            <div class="post">
-                <span class="message-body">
-                    Here you will find a forum that you can use to set up runs with fixers, post success stories, or just ask questions.
-                </span>
-                <div class="message-signature">
-                    -- Fastjack <span class=time-stamp>| @DateTime.Now.AddYears(60)</span>
-                </div>
+<div class="thread">
+    <h1>Latest News Broadcasts</h1>
+    [<a>view all</a>]
+    @for(var i = 0; i < 3; i++)
+    {
+        <div class="post">
+            <span class="message-body">
+                Here you will find a forum that you can use to set up runs with fixers, post success stories, or just ask questions.
+            </span>
+            <div class="message-signature">
+                -- Fastjack <span class=time-stamp>| @DateTime.Now.AddYears(60)</span>
             </div>
-        }
-    </div>
-
-    <div class="thread">
-        <h1>Fixer Job Postings</h1>
-        [<a>view all</a>]
-        @for(var i = 0; i < 3; i++)
-        {
-            <div class="post">
-                <span class="message-body">
-                    Here you will find a forum that you can use to set up runs with fixers, post success stories, or just ask questions.
-                </span>
-                <div class="message-signature">
-                    -- Fastjack <span class=time-stamp>| @DateTime.Now.AddYears(60)</span>
-                </div>
-            </div>
-        }
-    </div>
+        </div>
+    }
 </div>
 
-<div class="col-sm-4 side-bar">
-    <h1>Biometric Scan:</h1>
-    <p><span style="color:#aaa;">...Connected:</span> @Model.DateSessionStarted.AddYears(60).ToLongTimeString()</p>
-    <p><span style="color:#aaa;">...Privilege:</span> @Model.Privilege</p>
-    <p><span style="color:#aaa;">......Status:</span> @Model.Status</p>
+<div class="thread">
+    <h1>Fixer Job Postings</h1>
+    [<a>view all</a>]
+    @for(var i = 0; i < 3; i++)
+    {
+        <div class="post">
+            <span class="message-body">
+                Here you will find a forum that you can use to set up runs with fixers, post success stories, or just ask questions.
+            </span>
+            <div class="message-signature">
+                -- Fastjack <span class=time-stamp>| @DateTime.Now.AddYears(60)</span>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="thread">
+    <h1>Run Transcript Archive</h1>
+    [<a>view all</a>]
+    @for(var i = 0; i < 3; i++)
+    {
+        <div class="post">
+            <span class="message-body">
+                Here you will find a forum that you can use to set up runs with fixers, post success stories, or just ask questions.
+            </span>
+            <div class="message-signature">
+                -- Fastjack <span class=time-stamp>| @DateTime.Now.AddYears(60)</span>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="thread">
+    <h1>Latest User Threads</h1>
+    [<a>view all</a>]
+    @for(var i = 0; i < 5; i++)
+    {
+        <div class="post">
+            <span class="message-body">
+                Here you will find a forum that you can use to set up runs with fixers, post success stories, or just ask questions.
+            </span>
+            <div class="message-signature">
+                -- Fastjack <span class=time-stamp>| @DateTime.Now.AddYears(60)</span>
+            </div>
+        </div>
+    }
 </div>

@@ -1,36 +1,35 @@
 @model ChangeEmailViewModel
 @if(Model.ErrorMessage != null)
 {
-    <script>DisplayMessage("@Model.ErrorMessage");</script>
+    <script>
+        $(function() {
+            DisplayMessage('@Model.ErrorMessage');
+        });
+    </script>
     Model.ErrorMessage = null;
 }
-<div class="col-sm-2"></div>
-<div class="col-sm-4">
-    <br/><br/>
-    <span class="message-body">
-        You will need to input your passphrase and authentication code.
-        The one that was sent to your old email address.
-        Make sure that you still have access to that email address.
-    </span>
-    <div class="message-signature admin-color">
-        -- Fastjack
+
+<h2>Change Account Email</h2>
+<h5>[<a asp-area="" asp-controller="Home" asp-action="Index">Back to home page</a>]</h5>
+<hr/>
+<form asp-controller="Account" asp-action="Recovery" method="post" id="RecoveryForm" role="form">
+    <div class="form-group">
+        <input name="Passphrase" class="form-control" id="Passphrase" type="text" placeholder="Passphrase">
     </div>
+    <div class="form-group">
+        <input name="AuthenticationCode" class="form-control" id="AuthenticationCode" type="text" placeholder="Verification Code">
+    </div>
+    <div class="form-group">
+        <input name="NewEmail" class="form-control" id="NewEmail" type="email" placeholder="New Email Address">
+    </div>
+    <span id="ChangeEmail" class="btn btn-primary" style="width:100%">Change Email</span>
+</form>
+<hr/>
+<span class="message-body">
+    You will need to input your passphrase and authentication code.
+    The one that was sent to your old email address.
+    Make sure that you still have access to that email address.
+</span>
+<div class="message-signature admin-color">
+    -- Fastjack
 </div>
-<div class="col-sm-4">
-    <h2>Change Email</h2>
-    <h5><a asp-area="" asp-controller="Home" asp-action="Index">Back to home page.</a></h5>
-    <hr/>
-    <form asp-controller="Account" asp-action="Recovery" method="post" id="RecoveryForm" role="form">
-        <div class="form-group">
-            <input name="Passphrase" class="form-control" id="Passphrase" type="text" placeholder="Passphrase">
-        </div>
-        <div class="form-group">
-            <input name="AuthenticationCode" class="form-control" id="AuthenticationCode" type="text" placeholder="Verification Code">
-        </div>
-        <div class="form-group">
-            <input name="NewEmail" class="form-control" id="NewEmail" type="email" placeholder="New Email Address">
-        </div>
-        <span id="ChangeEmail" class="btn btn-primary" style="width:100%">Change Email</span>
-    </form>
-</div>
-<div class="col-sm-2"></div>
