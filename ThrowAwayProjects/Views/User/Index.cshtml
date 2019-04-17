@@ -1,13 +1,5 @@
 @model List<UserViewModel>;
-@if(Model.ErrorMessage != null)
-{
-    <script>
-        $(function() {
-            DisplayMessage('@Model.ErrorMessage');
-        });
-    </script>
-    Model.ErrorMessage = null;
-}
+
 <h1>Users</h1>
 [<a onclick='Modal("@Url.Action("AddEdit","User")")'>Add New</a>]
 <table class="table">
