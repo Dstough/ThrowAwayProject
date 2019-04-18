@@ -10,9 +10,17 @@
     overflow: hidden;
 }
 
+.widget {
+    max-width: 300px;
+    display: none;
+}
+
 @media screen and (max-width: 767px) {
     .side-bar {
         position: inherit;
         margin-bottom: 30px;
+    }
+    .widget {
+        display: none !important;
     }
 }

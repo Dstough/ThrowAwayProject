@@ -28,8 +28,6 @@ namespace ThrowAwayProjects.Controllers
             return HandleExceptions(() =>
             {
                 var viewModel = new HomeViewModel();
-
-
                 return View(viewModel);
             });
         }
@@ -59,6 +57,23 @@ namespace ThrowAwayProjects.Controllers
                 }
 
                 return RedirectToAction("Index", "Home");
+            });
+        }
+
+        public JsonResult GetRandomPost()
+        {
+            return HandleExceptions(() =>
+            {
+                //TODO: get a random post title from the db here.
+
+                var list = new List<string> { "Hello world", "how are you?", "what is up?" };
+                var message = list.OrderBy(x => Guid.NewGuid()).FirstOrDefault();
+                return Json(new
+                {
+                    message = message,
+                    signature = "-- Fastjack",
+                    css = "admin-color"
+                });
             });
         }
     }

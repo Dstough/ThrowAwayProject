@@ -18,8 +18,10 @@
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> 
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/site.js"></script>
     <script src="~/js/Modal.js"></script>
+    <script src="~/js/Validation.js"></script>
+    <script src="~/js/Sidebar.js"></script>
 </head>
 <body>
     <div id="modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
@@ -78,7 +80,16 @@
                 <p><span style="color:#aaa;">...Privilege:</span> @ViewBag.Privilege</p>
                 <p><span style="color:#aaa;">......Status:</span> @ViewBag.Status</p>
             </div>
-
+            <div id="post-widget" class="widget">
+                <hr />
+                <span class='message-body'>Welcome back to Jackpoint, Omae.</span>
+                <div class='message-signature admin-color'>-- Fastjack</div>
+            </div>
+            <script>
+                $(function(){
+                    FetchNewRandomPost('@Url.Action("GetRandomPost","Home")','post-widget');
+                });
+            </script>
         </div>
     </div>
     <footer class="navbar-fixed-bottom" style="background-color:#080808; color:#9d9d9d">
