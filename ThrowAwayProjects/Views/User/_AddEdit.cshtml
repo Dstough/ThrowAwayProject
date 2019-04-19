@@ -2,36 +2,58 @@
 
 <div class="modal-header">
     <span type="button" class="close" data-dismiss="modal">&times;</span>
-    <h4 class="modal-title">Add or edit user</h4>
+    <h4 class="modal-title">User Settings</h4>
 </div>
-
 <div class="modal-body">
-    <div class="form-group">
-        <label id="Id" name="Id" placeholder="Id" value="@Model.Id">
+    <div class="col-sm-6">
+        <div class="form-group">
+            <input id="UserName" class="form-control" name="UserName" placeholder="Name" value="@Model.UserName" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <input id="Email" type="email" class="form-control" name="Email" placeholder="Eamil" value="@Model.Email" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <select asp-for="GroupId" asp-items="Model.GroupOptions" class="form-control" ></select>
+        </div>
     </div>
-    <div class="form-group">
-        <input id="UserName" class="form-control" name="UserName" placeholder="Name" value="@Model.UserName">
+    <div class="col-sm-6">
+        <div class="form-group">
+            <input type="checkbox" id="Authenticated" class="form-control" name="Authenticated" placeholder="Authenticated" value="@Model.Authenticated">
+            Authenticated
+        </div>
+        <div class="form-group">
+            <input type="checkbox" id="Banned" class="form-control" name="Banned" placeholder="Banned" value="@Model.Banned">
+            Banned
+        </div>
+        <div class="form-group">
+            <input type="checkbox" id="Dead" class="form-control" name="Dead" placeholder="Dead" value="@Model.Dead">
+            Dead
+        </div>
     </div>
-    <div class="form-group">
-        <input id="Email" type="email" class="form-control" name="Email" placeholder="Name" value="@Model.Email">
+    <div>
+        <div class="form-group" style="padding:15px;margin-bottom:0;">
+            <input id="Passphrase" class="form-control" name="Passphrase" placeholder="Passphrase" value="@Model.Passphrase" autocomplete="off">
+        </div>
     </div>
-    <div class="form-group">
-        <select asp-for="GroupId" asp-items="Model.GroupOptions" class="form-control" ></select>
-    </div>
-    <div class="form-group">
-        <input id="Passphrase" class="form-control" name="Passphrase" placeholder="Passphrase" value="@Model.Passphrase">
-    </div>
-    <div class="form-group">
-        <input type="checkbox" id="Authenticated" class="form-control" name="Authenticated" placeholder="Authenticated" value="@Model.Authenticated">
-    </div>
-    <div class="form-group">
-        <input type="checkbox" id="Banned" class="form-control" name="Banned" placeholder="Banned" value="@Model.Banned">
-    </div>
-    <div class="form-group">
-        <input type="checkbox" id="Dead" class="form-control" name="Dead" placeholder="Dead" value="@Model.Dead">
-    </div>
+</div>
+<div class="modal-footer" >
+    <span id="save" class="btn btn-primary">Save</span>
 </div>
 
-<div class="modal-footer">
-    <span id="login" class="btn btn-primary">Save</span>
-</div>
+<script>
+    $(function () {
+        BindModalValidation("AddEditUser", ["UserName", "Email"], "save", function() {
+            var action = '@Url.Action("AddEdit","User")';
+            var tag = "tag1";
+            var model = {
+                UserName : $('#UserName').val(),
+                Email : $('#Email').val(),
+                Passphrase : $('#Passphrase').val(),
+                Authenticated : $("#Authenticated").val(),
+                Banned : $("#Banned").val(),
+                Dead : $("#Dead").val()
+            }
+            Submit(action, model, tag);
+        });
+    });
+</script>

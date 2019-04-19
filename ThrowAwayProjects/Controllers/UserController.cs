@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -61,11 +62,15 @@ namespace ThrowAwayProjects.Controllers
             }
         }
 
-        public ActionResult Index(int id)
+        public ActionResult Index(int? id)
         {
             return HandleExceptions(() =>
             {
-                var dbUsers = database.Users.GetPage(id + 1, 50);
+                if (id == null)
+                    return View(new UserViewModel());
+
+
+                var dbUsers = database.Users.GetPage((id ?? 0) + 1, 50);
                 var viewModel = new List<UserViewModel>();
 
                 foreach (var user in dbUsers)
@@ -80,22 +85,28 @@ namespace ThrowAwayProjects.Controllers
             });
         }
 
-        public JsonResult AddEdit(int Id)
+        public JsonResult AddEdit(int? Id)
         {
             return HandleExceptions(() =>
             {
-                var dbUser = database.Users.Get(Id);
-                var group = database.UserGroups.Get(dbUser.UserGroupId);
+                HttpContext.Session.SetString("CurrentEditId", Id.ToString());
+
                 var groups = database.UserGroups.GetAll();
-                var viewModel = new UserViewModel(dbUser)
-                {
-                    Passphrase = null
-                };
+                var viewModel = new UserViewModel();
 
                 foreach (var item in groups)
-                    viewModel.GroupOptions.Add(new SelectListItem(group.Name, group.Id.ToString(), group.Id == item.Id));
+                    viewModel.GroupOptions.Add(new SelectListItem(item.Name, item.Id.ToString()));
 
-                return Modal("_AddEdit", new UserViewModel());
+                if (Id == 0)
+                    return Modal("_AddEdit", viewModel);
+
+                var dbUser = database.Users.Include("UserGroup").Get(Id ?? 0);
+
+                viewModel.GroupOptions.Where(e => e.Value == dbUser.UserGroup.Id.ToString()).First().Selected = true;
+
+                //TODO: Add the user settings to the view model.
+
+                return Modal("_AddEdit", viewModel);
             });
         }
 
@@ -104,10 +115,12 @@ namespace ThrowAwayProjects.Controllers
         {
             return HandleExceptions(() =>
             {
+                var Id = Convert.ToInt32(HttpContext.Session.GetString("CurrentEditId"));
+
                 //TODO: add html string to update row.
                 return Json(new
                 {
-                    message = "The user info has been saved.",
+                    message = "Done",
                     html = ""
                 });
             });

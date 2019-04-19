@@ -39,6 +39,13 @@ input::placeholder {
     color: #555 !important;
 }
 
+input[type=checkbox], input[type=radio] {
+    width: 35px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: 0;
+}
+
 .btn-primary {
     color: #ccc;
     box-shadow: 0 0 7px black;
