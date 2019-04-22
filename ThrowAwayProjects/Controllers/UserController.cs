@@ -103,8 +103,14 @@ namespace ThrowAwayProjects.Controllers
                 var dbUser = database.Users.Include("UserGroup").Get(Id ?? 0);
 
                 viewModel.GroupOptions.Where(e => e.Value == dbUser.UserGroup.Id.ToString()).First().Selected = true;
-
-                //TODO: Add the user settings to the view model.
+                viewModel.Id = dbUser.Id ?? 0;
+                viewModel.GroupId = dbUser.UserGroupId;
+                viewModel.UserName = dbUser.UserName;
+                viewModel.Email = dbUser.Email;
+                viewModel.Authenticated = dbUser.Authenticated;
+                viewModel.Banned = dbUser.Banned;
+                viewModel.Dead = dbUser.Dead;
+                viewModel.GroupName = dbUser.UserGroup.Name;
 
                 return Modal("_AddEdit", viewModel);
             });
@@ -116,6 +122,7 @@ namespace ThrowAwayProjects.Controllers
             return HandleExceptions(() =>
             {
                 var Id = Convert.ToInt32(HttpContext.Session.GetString("CurrentEditId"));
+                viewModel.Id = Id;
 
                 //TODO: add html string to update row.
                 return Json(new

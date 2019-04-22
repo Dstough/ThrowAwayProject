@@ -18,21 +18,21 @@
     </div>
     <div class="col-sm-6">
         <div class="form-group">
-            <input type="checkbox" id="Authenticated" class="form-control" name="Authenticated" placeholder="Authenticated" value="@Model.Authenticated">
+            <input asp-for="Authenticated" type="checkbox" id="Authenticated" class="form-control" >
             Authenticated
         </div>
         <div class="form-group">
-            <input type="checkbox" id="Banned" class="form-control" name="Banned" placeholder="Banned" value="@Model.Banned">
+            <input asp-for="Banned" type="checkbox" id="Banned" class="form-control" >
             Banned
         </div>
         <div class="form-group">
-            <input type="checkbox" id="Dead" class="form-control" name="Dead" placeholder="Dead" value="@Model.Dead">
+            <input asp-for="Dead" type="checkbox" id="Dead" class="form-control">
             Dead
         </div>
     </div>
     <div>
         <div class="form-group" style="padding:15px;margin-bottom:0;">
-            <input id="Passphrase" class="form-control" name="Passphrase" placeholder="Passphrase" value="@Model.Passphrase" autocomplete="off">
+            <input id="Passphrase" class="form-control" name="Passphrase" placeholder="Passphrase" autocomplete="off">
         </div>
     </div>
 </div>
@@ -48,6 +48,7 @@
             var model = {
                 UserName : $('#UserName').val(),
                 Email : $('#Email').val(),
+                GroupId : $("#GroupId").val(),
                 Passphrase : $('#Passphrase').val(),
                 Authenticated : $("#Authenticated").val(),
                 Banned : $("#Banned").val(),
