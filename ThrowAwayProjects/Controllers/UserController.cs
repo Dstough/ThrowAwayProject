@@ -123,13 +123,17 @@ namespace ThrowAwayProjects.Controllers
             {
                 var Id = Convert.ToInt32(HttpContext.Session.GetString("CurrentEditId"));
                 viewModel.Id = Id;
+                HttpContext.Session.SetString("CurrentEditId", 0.ToString());
 
                 //TODO: add html string to update row.
+
                 return Json(new
                 {
                     message = "Done",
                     html = ""
                 });
+
+
             });
         }
     }
