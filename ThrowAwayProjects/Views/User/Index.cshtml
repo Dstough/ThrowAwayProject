@@ -24,10 +24,10 @@
         @foreach(var item in Model)
         {
             var css = item.GroupName == "Admin" ? "admin-color": "";
-            <tr onclick='Modal("@Url.Action("AddEdit","User", new{Id=item.Id})")'>
+            <tr id="@item.Id" onclick='Modal("@Url.Action("AddEdit","User", new{Id=item.Id})")'>
                 <td class='@css'>@item.UserName</td>
-                <td class='@css'>@item.Email</td>
-                <td class='@css'>@item.GroupName</td>
+                <td>@item.Email</td>
+                <td>@item.GroupName</td>
                 <td>@item.Authenticated</td>
                 <td>@item.Banned</td>
                 <td>@item.Dead</td>

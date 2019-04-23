@@ -19,6 +19,7 @@ namespace ThrowAwayProjects.Models
         public UserViewModel() : this(new UserIdentity())
         {
         }
+
         public UserViewModel(UserIdentity user)
         {
             Id = user.Id ?? 0;

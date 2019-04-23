@@ -22,9 +22,9 @@ var Submit = function (action, data, tag = "") {
         success: function (result) {
             $('#modal').modal('hide');
 
-            var signature = result["signature"];
-
-            DisplayMessage(result["message"], signature);
+            if (result["message"] !== undefined && result["signature"] !== undefined) {
+                DisplayMessage(result["message"], signature);
+            }
 
             if (tag !== "" && result["html"] !== undefined) {
                 $("#" + tag).html(result["html"]);

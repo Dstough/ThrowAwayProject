@@ -46,13 +46,13 @@ namespace ThrowAwayProjects.Controllers
             try
             {
                 if (!IsAuthenticated())
-                    return Json(new { result = "error", message = "Stop poking around where you shouldn't be omae." });
+                    throw new Exception("Stop poking around where you shouldn't be omae.");
 
                 var key = HttpContext.Session.GetString("UserKey");
                 var user = JsonConvert.DeserializeObject<UserIdentity>(key);
 
                 if (database.UserGroups.Get(user.UserGroupId).Name != "Admin")
-                    return Json(new { result = "error", message = "Stop poking around where you shouldn't be omae." });
+                    throw new Exception("Stop poking around where you shouldn't be omae.");
 
                 return logic();
             }
@@ -121,19 +121,56 @@ namespace ThrowAwayProjects.Controllers
         {
             return HandleExceptions(() =>
             {
-                var Id = Convert.ToInt32(HttpContext.Session.GetString("CurrentEditId"));
+                var key = HttpContext.Session.GetString("CurrentEditId");
+
+                if (key == null)
+                    throw new Exception("Stop poking around where you shouldn't be omae.");
+
+                var Id = Convert.ToInt32(key);
+
                 viewModel.Id = Id;
                 HttpContext.Session.SetString("CurrentEditId", 0.ToString());
 
-                //TODO: add html string to update row.
+                var dbUser = Id == 0 ? new UserIdentity() : database.Users.Get(Id);
+
+                if (dbUser.UserName != viewModel.UserName)
+                    dbUser.UserName = viewModel.UserName;
+
+                if (dbUser.Email != viewModel.Email)
+                    dbUser.Email = viewModel.Email;
+
+                if (dbUser.UserGroupId != viewModel.GroupId)
+                    dbUser.UserGroupId = viewModel.GroupId;
+
+                if (viewModel.Passphrase != null)
+                    dbUser.Passphrase = Sha512(viewModel.Passphrase + dbUser.CreatedOn);
+
+                if (dbUser.Authenticated != viewModel.Authenticated)
+                    dbUser.Authenticated = viewModel.Authenticated;
+
+                if (dbUser.Banned != viewModel.Banned)
+                    dbUser.Banned = viewModel.Banned;
+
+                if (dbUser.Dead != viewModel.Dead)
+                    dbUser.Dead = viewModel.Dead;
+
+                if (dbUser.Id == null)
+                    database.Users.Add(dbUser);
+                else
+                    database.Users.Edit(dbUser);
+
+                var group = database.UserGroups.Get(dbUser.UserGroupId);
+                var htmlString = "<td>" + dbUser.UserName + "</td>";
+                htmlString += "<td>" + dbUser.Email + "</td>";
+                htmlString += "<td>" + group.Name + "</td>";
+                htmlString += "<td>" + dbUser.Authenticated + "</td>";
+                htmlString += "<td>" + dbUser.Banned + "</td>";
+                htmlString += "<td>" + dbUser.Dead + "</td>";
 
                 return Json(new
                 {
-                    message = "Done",
-                    html = ""
+                    html = htmlString
                 });
-
-
             });
         }
     }

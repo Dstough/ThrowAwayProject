@@ -173,26 +173,21 @@ namespace ThrowAwayProjects.Controllers
         {
             return HandleExceptions(() =>
             {
-                if (HttpContext.Session.GetString("UserKey") == null) return Json(new
-                {
-                    result = "error",
-                    message = "You must be logged in to update your account."
-                });
+                if (HttpContext.Session.GetString("UserKey") == null)
+                    throw new Exception("You must be logged in to update your account.");
 
                 var user = JsonConvert.DeserializeObject<UserIdentity>(HttpContext.Session.GetString("UserKey"));
                 var dbUser = database.Users.Include("UserGroup").Get(user.Id ?? 0);
 
-                if (!dbUser.Authenticated) return Json(new
-                {
-                    result = "error",
-                    message = "You must verify your email address before you can update your account."
-                });
+                if (!dbUser.Authenticated)
+                    throw new Exception("You must verify your email address before you can update your account.");
 
                 var viewModel = new UpdateViewModel()
                 {
                     UserName = dbUser.UserName,
                     Email = dbUser.Email
                 };
+
                 return Modal("_Update", viewModel);
             });
         }
@@ -202,30 +197,21 @@ namespace ThrowAwayProjects.Controllers
         {
             return HandleExceptions(() =>
             {
-                if (HttpContext.Session.GetString("UserKey") == null) return Json(new
-                {
-                    result = "error",
-                    message = "You must be logged in to update your account."
-                });
+                if (HttpContext.Session.GetString("UserKey") == null)
+                    throw new Exception("You must be logged in to update your account.");
 
                 var user = JsonConvert.DeserializeObject<UserIdentity>(HttpContext.Session.GetString("UserKey"));
                 var dbUser = database.Users.Include("UserGroup").Get(user.Id ?? 0);
 
-                if (!dbUser.Authenticated) return Json(new
-                {
-                    result = "error",
-                    message = "You must verify your email address before you can update your account."
-                });
+                if (!dbUser.Authenticated)
+                    throw new Exception("You must verify your email address before you can update your account.");
 
                 if (dbUser.UserName != viewModel.UserName)
                 {
                     var userNameCheck = database.Users.Where(new { UserName = viewModel.UserName }).Find().FirstOrDefault();
 
-                    if (userNameCheck != null) return Json(new
-                    {
-                        result = "error",
-                        message = "That username is already in use chummer. Nothing was updated. Sorry."
-                    });
+                    if (userNameCheck != null)
+                        throw new Exception("That username is already in use chummer. Nothing was updated. Sorry.");
 
                     dbUser.UserName = viewModel.UserName;
                 }
@@ -233,11 +219,8 @@ namespace ThrowAwayProjects.Controllers
                 if (viewModel.NewPassphrase != null)
                 {
                     if (viewModel.NewPassphrase != viewModel.ConfirmPassphrase)
-                        return Json(new
-                        {
-                            result = "error",
-                            message = "The new passphrase didn't match. Nothing was updated. Sorry."
-                        });
+                        throw new Exception("The new passphrase didn't match. Nothing was updated. Sorry.");
+
                     dbUser.Passphrase = Sha512(viewModel.NewPassphrase + dbUser.CreatedOn);
                 }
 
