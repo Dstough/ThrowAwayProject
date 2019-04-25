@@ -32,3 +32,25 @@ var Submit = function (action, data, tag = "") {
         }
     });
 }
+
+var VerifyDelete = function (submitControl, action, tag = "", message = "Are you sure you want to delete this item?") {
+    $("#" + submitControl).on("click", function (e) {
+        if (confirm(message)) {
+            $.ajax({
+                url: action,
+                method: 'POST',
+                success: function (result) {
+                    $('#modal').modal('hide');
+
+                    if (result["message"] !== undefined && result["signature"] !== undefined) {
+                        DisplayMessage(result["message"], signature);
+                    }
+
+                    if (tag !== "" && result["html"] !== undefined) {
+                        $("#" + tag).html(result["html"]);
+                    }
+                }
+            });
+        }
+    });
+}

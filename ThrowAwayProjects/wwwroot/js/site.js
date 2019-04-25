@@ -16,3 +16,15 @@
         });
     }, 3000);
 }
+
+var RenderPageNavigation = function (url, pageNumber, tag) {
+    if (pageNumber === undefined || tag === undefined || url === undefined)
+        return;
+
+    var html = ' Page ' + (pageNumber + 1) + ' [<a href="' + url + '/' + (pageNumber + 1) + '">Next</a>]';
+
+    if (pageNumber > 0)
+        html = '[<a href="' + url + '/' + (pageNumber - 1) + '">Previous</a>] ' + html;
+
+    $("#" + tag).html(html);
+}

@@ -67,15 +67,17 @@ namespace ThrowAwayProjects.Controllers
             return HandleExceptions(() =>
             {
                 if (id == null)
-                    return View(new UserViewModel());
-
+                    throw new Exception("That set isn't in the database chummer. Try again.");
 
                 var dbUsers = database.Users.GetPage((id ?? 0) + 1, 50);
-                var viewModel = new List<UserViewModel>();
+                var viewModel = new UserListViewModel()
+                {
+                    page = id ?? 0
+                };
 
                 foreach (var user in dbUsers)
                 {
-                    viewModel.Add(new UserViewModel(user)
+                    viewModel.list.Add(new UserViewModel(user)
                     {
                         GroupName = database.UserGroups.Get(user.UserGroupId).Name
                     });
@@ -170,6 +172,27 @@ namespace ThrowAwayProjects.Controllers
                 return Json(new
                 {
                     html = htmlString
+                });
+            });
+        }
+
+        [HttpPost]
+        public JsonResult Delete()
+        {
+            return HandleExceptions(() =>
+            {
+                var key = HttpContext.Session.GetString("CurrentEditId");
+
+                if (key == null)
+                    throw new Exception("Stop poking around where you shouldn't be omae.");
+
+                var Id = Convert.ToInt32(key);
+
+                database.Users.Delete(Id);
+
+                return Json(new
+                {
+                    html = "<td colspan='6'>&nbsp;</td>"
                 });
             });
         }

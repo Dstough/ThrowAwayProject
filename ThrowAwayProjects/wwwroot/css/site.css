@@ -53,6 +53,17 @@ input[type=checkbox], input[type=radio] {
     background: linear-gradient( #4c4c4c, #1f1f1f);
 }
 
+.btn-danger {
+    float: left;
+    background: linear-gradient( #960400, #2b0000);
+    border-color: black;
+}
+
+.btn-danger:hover {
+    background: linear-gradient( #dd0000, #2b0000);
+    border-color: black;
+}
+
 .btn-primary:hover {
     background: linear-gradient( #6d6d6d, #1f1f1f);
 }
@@ -92,6 +103,10 @@ a {
     text-overflow: ellipsis;
     overflow: hidden;
     font-size: 14pt;
+}
+
+.page-navigation {
+    float: right;
 }
 
 @media screen and (max-width: 767px) {

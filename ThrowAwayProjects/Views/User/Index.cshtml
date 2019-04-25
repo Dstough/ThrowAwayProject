@@ -1,16 +1,17 @@
-@model List<UserViewModel>;
+@model UserListViewModel;
 
 <h1>Users</h1>
 [<a onclick='Modal("@Url.Action("AddEdit","User")")'>Add New</a>]
+<div id="navigation" class="page-navigation"></div>
 <table class="table">
     <thead>
         <tr>
-            @if(Model.Count > 0)
+            @if(Model.list.Count > 0)
             {
-                <th>User</th>
+                <th>Name</th>
                 <th>Email</th>
                 <th>Group</th>
-                <th>Authenticated</th>
+                <th>Auth</th>
                 <th>Banned</th>
                 <th>Dead</th>
             }
@@ -21,7 +22,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach(var item in Model)
+        @foreach(var item in Model.list)
         {
             var css = item.GroupName == "Admin" ? "admin-color": "";
             <tr id="@item.Id" onclick='Modal("@Url.Action("AddEdit","User", new{Id=item.Id})")'>
@@ -35,3 +36,8 @@
         }
     </tbody>
 </table>
+<script>
+    $(function(){
+        RenderPageNavigation('/user/index', @Model.page, 'navigation');
+    });
+</script>
