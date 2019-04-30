@@ -1,14 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
 using ThrowAwayProjects.Models;
 using ThrowAwayData;
@@ -57,8 +52,8 @@ namespace ThrowAwayProjects.Controllers
             {
                 var CreatedDate = DateTime.Now;
                 var defaultUserGroup = database.UserGroups.Where(new { Name = "User" }).Find().FirstOrDefault();
-                var userNameCheck = database.Users.Where(new { UserName = viewModel.UserName }).Find().FirstOrDefault();
-                var emailCheck = database.Users.Where(new { Email = viewModel.Email }).Find().FirstOrDefault();
+                var userNameCheck = database.Users.Where(new { viewModel.UserName }).Find().FirstOrDefault();
+                var emailCheck = database.Users.Where(new { viewModel.Email }).Find().FirstOrDefault();
 
                 if (defaultUserGroup == null)
                     viewModel.ErrorMessage = "Something went horribly wrong chummer. Try clearing your cache and re-lode the page.";
@@ -149,7 +144,7 @@ namespace ThrowAwayProjects.Controllers
         {
             return HandleExceptions(() =>
             {
-                var dbUser = database.Users.Where(new { Email = viewModel.Email }).Find().FirstOrDefault();
+                var dbUser = database.Users.Where(new { viewModel.Email }).Find().FirstOrDefault();
 
                 if (dbUser == null)
                     viewModel.ErrorMessage = "I couldn't find your account information.";
@@ -208,7 +203,7 @@ namespace ThrowAwayProjects.Controllers
 
                 if (dbUser.UserName != viewModel.UserName)
                 {
-                    var userNameCheck = database.Users.Where(new { UserName = viewModel.UserName }).Find().FirstOrDefault();
+                    var userNameCheck = database.Users.Where(new { viewModel.UserName }).Find().FirstOrDefault();
 
                     if (userNameCheck != null)
                         throw new Exception("That username is already in use chummer. Nothing was updated. Sorry.");

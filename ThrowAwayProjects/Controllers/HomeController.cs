@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
 using ThrowAwayProjects.Models;
 using Newtonsoft.Json;
@@ -37,7 +33,7 @@ namespace ThrowAwayProjects.Controllers
         {
             return HandleExceptions(() =>
             {
-                var dbUser = database.Users.Where(new { UserName = viewModel.UserName }).Include("UserGroup").Find().FirstOrDefault();
+                var dbUser = database.Users.Where(new { viewModel.UserName }).Include("UserGroup").Find().FirstOrDefault();
 
                 if (dbUser == null || Sha512(viewModel.Passphrase + dbUser.CreatedOn) != dbUser.Passphrase)
                 {
@@ -70,7 +66,7 @@ namespace ThrowAwayProjects.Controllers
                 var message = list.OrderBy(x => Guid.NewGuid()).FirstOrDefault();
                 return Json(new
                 {
-                    message = message,
+                    message,
                     signature = "-- Fastjack",
                     css = "admin-color"
                 });

@@ -1,10 +1,7 @@
 using System;
 using System.IO;
-using System.Linq;
 using System.Diagnostics;
 using System.Text;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
@@ -13,7 +10,6 @@ using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
-using ThrowAwayProjects.Models;
 using ThrowAwayData;
 using Newtonsoft.Json;
 

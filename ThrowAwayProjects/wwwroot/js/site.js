@@ -2,12 +2,7 @@
     if (signature === undefined)
         signature = "-- Fastjack";
 
-    $("#message").html(
-        "<hr/>" +
-        "<span class='message-body'>" + message + "</span>" +
-        "<div class='message-signature admin-color'>" + signature + "</div>"
-    );
-
+    $("#message").html("<span class='message-body'>" + message + "</span><div class='message-signature admin-color'>" + signature + "</div>");
     $("#message").css("display", "inherit");
 
     setTimeout(function () {
