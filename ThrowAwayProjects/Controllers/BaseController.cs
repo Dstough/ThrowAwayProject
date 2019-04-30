@@ -24,10 +24,10 @@ namespace ThrowAwayProjects.Controllers
         protected Database database;
         protected IConfiguration configuration;
         private ICompositeViewEngine viewEngine;
-        private IHostingEnvironment environment;
+        private IWebHostEnvironment environment;
         private ProcessStartInfo python;
 
-        public BaseController(ICompositeViewEngine _viewEngine, IConfiguration _config, IHostingEnvironment _environment)
+        public BaseController(ICompositeViewEngine _viewEngine, IConfiguration _config, IWebHostEnvironment _environment)
         {
             configuration = _config;
             viewEngine = _viewEngine;

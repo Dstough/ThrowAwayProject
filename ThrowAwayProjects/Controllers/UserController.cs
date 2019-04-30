@@ -16,7 +16,7 @@ namespace ThrowAwayProjects.Controllers
 {
     public class UserController : BaseController
     {
-        public UserController(ICompositeViewEngine viewEngine, IConfiguration configuration, IHostingEnvironment environment) :
+        public UserController(ICompositeViewEngine viewEngine, IConfiguration configuration, IWebHostEnvironment environment) :
         base(viewEngine, configuration, environment)
         {
         }
