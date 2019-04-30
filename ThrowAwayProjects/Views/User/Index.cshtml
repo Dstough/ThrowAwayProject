@@ -6,7 +6,7 @@
 <table class="table">
     <thead>
         <tr>
-            @if(Model.list.Count > 0)
+            @if (Model.list.Count > 0)
             {
                 <th>Name</th>
                 <th>Email</th>
@@ -22,9 +22,9 @@
         </tr>
     </thead>
     <tbody>
-        @foreach(var item in Model.list)
+        @foreach (var item in Model.list)
         {
-            var css = item.GroupName == "Admin" ? "admin-color": "";
+            var css = item.GroupName == "Admin" ? "admin-color" : "";
             <tr id="@item.Id" onclick='Modal("@Url.Action("AddEdit","User", new{Id=item.Id})")'>
                 <td class='@css'>@item.UserName</td>
                 <td>@item.Email</td>
@@ -37,7 +37,7 @@
     </tbody>
 </table>
 <script>
-    $(function(){
+    $(function () {
         RenderPageNavigation('/user/index', @Model.page, 'navigation');
     });
 </script>
