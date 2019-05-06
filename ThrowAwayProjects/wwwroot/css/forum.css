@@ -50,3 +50,7 @@
 .post:hover .message-signature {
     text-shadow: 1px 1px 10px #555;
 }
+
+.post:hover .message-body {
+    text-shadow: 1px 1px 10px #555;
+}

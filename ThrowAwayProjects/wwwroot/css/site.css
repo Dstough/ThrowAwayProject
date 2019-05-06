@@ -35,7 +35,7 @@ footer {
     color: #000;
 }
 
-input::-webkit-input-placeholder {
+input::placeholder {
     color: #555 !important;
 }
 
