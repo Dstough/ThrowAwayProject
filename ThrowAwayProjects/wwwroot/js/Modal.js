@@ -51,8 +51,8 @@ var VerifyDelete = function (submitControl, action, tag = "", message = "Are you
 
                     $('#modal').modal('hide');
 
-                    if (result["message"] !== undefined && result["signature"] !== undefined) {
-                        DisplayMessage(result["message"], signature);
+                    if (result["message"] !== undefined) {
+                        DisplayMessage(result["message"], result["signature"]);
                     }
 
                     if (tag !== "") {

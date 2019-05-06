@@ -122,6 +122,7 @@ namespace ThrowAwayProjects.Controllers
             return HandleExceptions(() =>
             {
                 var key = HttpContext.Session.GetString("CurrentEditId");
+                var result = "edit";
 
                 if (key == null)
                     throw new Exception("Stop poking around where you shouldn't be omae.");
@@ -155,7 +156,10 @@ namespace ThrowAwayProjects.Controllers
                     dbUser.Dead = viewModel.Dead;
 
                 if (dbUser.Id == null)
+                {
                     database.Users.Add(dbUser);
+                    result = "prepend";
+                }
                 else
                     database.Users.Edit(dbUser);
 
@@ -169,6 +173,8 @@ namespace ThrowAwayProjects.Controllers
 
                 return Json(new
                 {
+                    result,
+                    newId = dbUser.Id,
                     html = htmlString
                 });
             });
@@ -190,7 +196,7 @@ namespace ThrowAwayProjects.Controllers
 
                 return Json(new
                 {
-                    html = "<td colspan='6'>&nbsp;</td>"
+                    message = "The user was removed"
                 });
             });
         }
