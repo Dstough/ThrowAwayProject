@@ -80,6 +80,7 @@ namespace ThrowAwayProjects.Controllers
                     VerificationCode = Guid.NewGuid().ToString()
                 };
                 database.Users.Add(user);
+                //TODO: re-fetch the user from the database and include the group before saving to the session.
                 HttpContext.Session.SetString("UserKey", JsonConvert.SerializeObject(user));
                 //TODO: Send Auth Code to email.
                 return RedirectToAction("Verify");
