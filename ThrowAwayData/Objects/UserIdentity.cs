@@ -1,4 +1,5 @@
 using ThrowAwayDataBackground;
+
 namespace ThrowAwayData
 {
     public class UserIdentity : BaseObject

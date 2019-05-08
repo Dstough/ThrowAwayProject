@@ -1,21 +1,20 @@
 using ThrowAwayDataBackground;
-namespace ThrowAwayDataBackground
+
+namespace ThrowAwayData
 {
     public class Post : BaseObject
     {
-        public int? ParentId { get; set; }
-        public string Title { get; set; }
+        public int ThreadId { get; set; }
+        public Thread Thread { get; set; }
         public string Body { get; set; }
-        public string Tags { get; set; }
-        public bool Closed { get; set; }
-        
+        public bool Edited { get; set; }
+
         public Post() : base()
         {
-            ParentId = null;
-            Title = "";
             Body = "";
-            Tags = "";
-            Closed = false;
+            Edited = false;
+            ThreadId = 0;
+            Thread = null;
         }
     }
 }

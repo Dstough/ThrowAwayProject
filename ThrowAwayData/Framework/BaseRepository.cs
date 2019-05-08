@@ -1,11 +1,9 @@
 using System;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
 using System.Data.SQLite;
 using System.Collections;
 using System.Collections.Generic;
-using ThrowAwayData;
+
 namespace ThrowAwayDataBackground
 {
     public abstract class BaseRepository<T> : IRepository<T>

@@ -22,6 +22,14 @@ namespace ThrowAwayProjects.Controllers
             return HandleExceptions(() =>
             {
                 var model = new List<PostViewModel>();
+                return View();
+            });
+        }
+
+        public ActionResult NewThread()
+        {
+            return HandleExceptions(() => 
+            {
 
                 return View();
             });
