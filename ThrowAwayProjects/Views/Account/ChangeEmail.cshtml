@@ -8,7 +8,6 @@
     </script>
     Model.ErrorMessage = null;
 }
-
 <h2>Change Account Email</h2>
 <h5>[<a asp-area="" asp-controller="Home" asp-action="Index">Back to home page</a>]</h5>
 <hr/>
@@ -33,3 +32,9 @@
 <div class="message-signature admin-color">
     -- Fastjack
 </div>
+
+<script>
+    $(function() {
+        BindValidation(["Passphrase", "AuthenticationCode", "NewEmail"], "ChangeEmail");
+    });
+</script>
