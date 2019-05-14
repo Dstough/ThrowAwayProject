@@ -53,6 +53,10 @@ input[type=checkbox], input[type=radio] {
     background: linear-gradient( #4c4c4c, #1f1f1f);
 }
 
+.control .btn-primary{
+    width:50%;
+}
+
 .btn-danger {
     float: left;
     background: linear-gradient( #960400, #2b0000);
@@ -107,6 +111,10 @@ a {
 
 .page-navigation {
     float: right;
+}
+
+.control{
+    width: 100%;
 }
 
 @media screen and (max-width: 767px) {

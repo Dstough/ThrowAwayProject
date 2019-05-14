@@ -8,7 +8,6 @@ var FetchNewRandomPost = function (action, tag) {
                         method: 'GET',
                         success: function (result) {
                             $("#" + tag).html(
-                                "<hr/>" +
                                 "<span class='message-body'>" + result["message"] + "</span>" +
                                 "<div class='message-signature " + result["css"] + "'>" + result["signature"] + "</div>"
                             );

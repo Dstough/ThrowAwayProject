@@ -22,3 +22,7 @@ html {
     scrollbar-color: grey black;
     scrollbar-width: thin;
 }
+
+body {
+    padding-right: 20px;
+}
