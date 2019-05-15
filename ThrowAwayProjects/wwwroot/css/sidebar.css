@@ -4,6 +4,14 @@
     right: 0;
 }
 
+    .side-bar > * {
+        max-width: 300px;
+    }
+
+    .side-bar .btn-primary {
+        width: 290px;
+    }
+
 .biometrics {
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -11,7 +19,6 @@
 }
 
 .widget {
-    max-width: 300px;
     display: none;
 }
 
@@ -20,6 +27,15 @@
         position: inherit;
         margin-bottom: 30px;
     }
+
+        .side-bar > * {
+            max-width: inherit;
+        }
+
+        .side-bar .btn-primary {
+            width: 100%;
+        }
+
     .widget {
         display: none !important;
     }

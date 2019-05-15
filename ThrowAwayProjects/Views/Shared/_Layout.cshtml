@@ -77,12 +77,17 @@
                 <p><span style="color:#aaa;">...Privilege:</span> @ViewBag.Privilege</p>
                 <p><span style="color:#aaa;">....Identity:</span> @ViewBag.UserName</p>
                 <p><span style="color:#aaa;">......Status:</span> @ViewBag.Status</p>
+                <hr />
             </div>
-            <hr />
-            <div class="control">
-                <button id="new-thread" class="btn btn-primary" onclick='Modal("@Url.Action("AddEditThread","Forum")");'>New Thread</button>
-            </div>
-            <hr />
+
+            @if (ViewBag.LoggedIn)
+            {
+                <div class="control">
+                    <button id="new-thread" class="btn btn-primary" onclick='Modal("@Url.Action("AddEditThread","Forum")");'>New Thread</button>
+                    <hr />
+                </div>
+            }
+
             <div id="post-widget" class="widget">
                 <span class='message-body'>Welcome back to Jackpoint, Omae.</span>
                 <div class='message-signature admin-color'>-- Fastjack</div>

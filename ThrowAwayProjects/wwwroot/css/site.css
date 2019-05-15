@@ -35,9 +35,11 @@ footer {
     color: #000;
 }
 
-input::placeholder {
+input::placeholder,
+textarea::placeholder{
     color: #555 !important;
 }
+
 
 input[type=checkbox], input[type=radio] {
     width: 35px;
@@ -51,10 +53,6 @@ input[type=checkbox], input[type=radio] {
     box-shadow: 0 0 7px black;
     border: 3px black;
     background: linear-gradient( #4c4c4c, #1f1f1f);
-}
-
-.control .btn-primary{
-    width:50%;
 }
 
 .btn-danger {
@@ -115,6 +113,12 @@ a {
 
 .control{
     width: 100%;
+}
+
+.modal-open {
+    overflow: hidden;
+    overflow-y: inherit;
+    padding-right: 20px !important;
 }
 
 @media screen and (max-width: 767px) {
