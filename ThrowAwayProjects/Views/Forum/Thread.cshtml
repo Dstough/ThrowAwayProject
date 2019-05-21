@@ -1,0 +1,41 @@
+﻿@model ThreadViewModel
+
+<div class="thread">
+    <h1>@Model.Title</h1>
+    <hr />
+    <div class="post">
+        <span class="message-body">
+            @Model.Body
+        </span>
+        <div class="message-signature">
+            -- @Model.Author <span class="time-stamp @Model.CSS">@Model.PostDate.AddYears(60)</span>
+        </div>
+    </div>
+    @foreach (var post in Model.Posts)
+    {
+        <div class="post">
+            <span class="message-body">
+                @post.Body
+            </span>
+            <div class="message-signature">
+                -- @post.Author <span class="time-stamp @post.CSS">@post.PostDate.AddYears(60)</span>
+            </div>
+        </div>
+    }
+    @if (ViewBag.LoggedIn)
+    {
+        <form asp-controller="Forum" asp-action="AddPost" method="post" id="PostForm" role="form">
+            <div>
+                <div class="form-group">
+                    <textarea id="Body" class="form-control" name="Body" placeholder="Post Reply" value="@Model.Body" autocomplete="off"></textarea>
+                </div>
+                <div class="form-group">
+                    <button id="submit" class="btn btn-primary right">Post</button>
+                </div>
+            </div>
+        </form>
+        <script>
+            BindValidation(["Body"], "submit");
+        </script>
+    }
+</div>
