@@ -64,6 +64,7 @@ namespace ThrowAwayProjects.Controllers
 
                     var post = new PostViewModel
                     {
+                        Id = dbPost.Id,
                         Body = dbPost.Body,
                         Author = author.UserName,
                         PostDate = dbPost.CreatedOn,
@@ -161,6 +162,49 @@ namespace ThrowAwayProjects.Controllers
                 }
 
                 return RedirectToAction("Thread", new { Id = dbThread.Id ?? 0 });
+            });
+        }
+
+        public JsonResult EditPost(int? Id)
+        {
+            return HandleExceptions(() =>
+            {
+                var userKey = HttpContext.Session.GetString("UserKey");
+
+                if (userKey == null)
+                    throw new Exception("Stop poking around where you shouldn't be omae!");
+
+                var sessionUser = JsonConvert.DeserializeObject<UserIdentity>(userKey);
+
+                if (Id == null)
+                    throw new Exception("You need to specify a post to edit chummer.");
+
+                var dbPost = database.Posts.Get(Id ?? 0);
+
+                if(dbPost == null)
+                    throw new Exception("That isn't a valid post omae.");
+
+                if (dbPost.CreatedBy != sessionUser.Id)
+                    throw new Exception("Stop poking around where you shouldn't be omae!");
+
+                var viewModel = new PostViewModel() {
+                    Id = dbPost.Id,
+                    Author = sessionUser.UserName,
+                    Body = dbPost.Body,
+                    PostDate = dbPost.CreatedOn
+                };
+
+                return Modal("_EditPost",viewModel);
+            });
+        }
+
+        [HttpPost]
+        public JsonResult EditPost(PostViewModel viewModel)
+        {
+            return HandleExceptions(() =>
+            {
+
+                return Json(new { });
             });
         }
     }

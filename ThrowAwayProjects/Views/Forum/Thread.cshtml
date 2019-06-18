@@ -13,7 +13,12 @@
     </div>
     @foreach (var post in Model.Posts)
     {
-        <div class="post">
+        var onClick = "";
+        if (ViewBag.UserName == post.Author)
+        {
+            onClick = "Modal('" + @Url.Action("EditPost", "Forum", new { Id = post.Id }) + "')";
+        }
+        <div class="post" id="@post.Id" onclick="@onClick">
             <span class="message-body">
                 @post.Body
             </span>
