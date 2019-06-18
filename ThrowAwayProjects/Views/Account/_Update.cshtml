@@ -33,16 +33,13 @@
 
 <script>
     $(function () {
-        BindModalValidation("update", ["UserName", "Email"], "submit", function() {
-            var action = '@Url.Action("AddEditThread","Forum")';
-            var tag = "userLabel";
-            var model = {
+        BindModalValidation('update', ['UserName', 'Email'], 'submit', function() {
+            Submit('@Url.Action("AddEditThread","Forum")', {
                 UserName : $('#UserName').val(),
                 Email : $('#Email').val(),
                 NewPassphrase : $('#NewPassphrase').val(),
                 ConfirmPassphrase : $('#ConfirmPassphrase').val()
-            };
-            Submit(action, model, tag);
+            },'userLabel');
         });
     });
 </script>

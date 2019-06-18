@@ -40,10 +40,8 @@
 <script>
     $(function () {
         VerifyDelete('delete', '@Url.Action("Delete", "User")', '@Model.Id.ToString()');
-        BindModalValidation("AddEditUser", ["UserName", "Email"], "save", function() {
-            var action = '@Url.Action("AddEdit", "User")';
-            var tag = '@Model.Id.ToString()';
-            var model = {
+        BindModalValidation('AddEditUser', ['UserName', 'Email'], 'save', function() {
+            Submit('@Url.Action("AddEdit", "User")', {
                 UserName : $('#UserName').val(),
                 Email : $('#Email').val(),
                 GroupId : $("#GroupId").val(),
@@ -51,8 +49,7 @@
                 Authenticated : $("#Authenticated").is(":checked"),
                 Banned : $("#Banned").is(":checked"),
                 Dead : $("#Dead").is(":checked")
-            };
-            Submit(action, model, tag);
+            },'@Model.Id.ToString()');
         });
     });
 </script>

@@ -16,13 +16,10 @@
 </form>
 <script>
     $(function () {
-        BindModalValidation("ThreadForm", ["Body"], "submit", function() {
-            var action = '@Url.Action("EditPost","Forum")';
-            var tag = "@Model.Id";
-            var model = {
+        BindModalValidation('ThreadForm', ['Body'], 'submit', function() {
+            Submit('@Url.Action("EditPost","Forum")',{
                 Body : $('#Body').val()
-            };
-            Submit(action, model, tag);
+            },'@Model.Id');
         });
     });
 </script>
