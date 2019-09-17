@@ -60,15 +60,14 @@ namespace ThrowAwayProjects.Controllers
         {
             return HandleExceptions(() =>
             {
-                //TODO: get a random post title from the db here.
+                var thread = database.Threads.GetRandom();
+                var author = database.Users.Include("UserGroup").Get(thread.CreatedBy);
 
-                var list = new List<string> { "Hello world", "how are you?", "what is up?" };
-                var message = list.OrderBy(x => Guid.NewGuid()).FirstOrDefault();
                 return Json(new
                 {
-                    message,
-                    signature = "-- Fastjack",
-                    css = "admin-color"
+                    thread.Title,
+                    signature = author.UserName,
+                    css = author.UserGroup.Name == "Admin" ? "admin-color" : ""
                 });
             });
         }

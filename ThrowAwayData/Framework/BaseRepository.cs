@@ -38,6 +38,11 @@ namespace ThrowAwayDataBackground
         {
             if (typeof(T).GetProperty(name) != null)
                 IncludeFields.Add(name);
+
+            //foreach (var item in typeof(T).GetProperties().Where(prop => prop.GetType().IsSubclassOf(typeof(BaseObject))))
+            //    if (item.GetType().GetProperty(name) != null && IncludeFields.Contains(item.Name))
+            //        IncludeFields.Add(name);
+
             return this;
         }
 
@@ -444,6 +449,48 @@ namespace ThrowAwayDataBackground
             WhereParameters.Clear();
 
             return list;
+        }
+
+        public virtual T GetRandom()
+        {
+            var item = new T();
+            var tableName = item.GetType().Name;
+            var whereClause = "Deleted = 0";
+            var columnList = "";
+            var propList = typeof(T).GetProperties()
+                            .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
+                            .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)));
+
+            foreach (var prop in propList)
+                columnList += prop.Name + ",";
+
+            using (var conn = new SQLiteConnection(ConnString))
+            using (var cmd = conn.CreateCommand())
+            {
+                foreach (var paramiter in WhereParameters)
+                {
+                    whereClause += " AND " + paramiter.Key + " " + paramiter.Value.Item1 + " @" + paramiter.Key;
+                    cmd.Parameters.AddWithValue("@" + paramiter.Key, paramiter.Value.Item2);
+                }
+
+                cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE " + whereClause + " ORDER BY RANDOM() LIMIT 1";
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (!reader.Read())
+                        return null;
+
+                    foreach (var prop in propList)
+                    {
+                        if (prop.PropertyType == typeof(int) || prop.Name == "Id")
+                            prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
+                        else
+                            prop.SetValue(item, reader[prop.Name], null);
+                    }
+                }
+            }
+
+            return item;
         }
 
         #endregion

@@ -96,16 +96,14 @@ namespace ThrowAwayProjects.Controllers
                 viewName = ControllerContext.ActionDescriptor.ActionName;
             ViewData.Model = model;
 
-            using (var writer = new StringWriter())
-            {
-                ViewEngineResult viewResult = viewEngine.FindView(ControllerContext, viewName, false);
-                ViewContext viewContext = new ViewContext(ControllerContext, viewResult.View, ViewData, TempData, writer, new HtmlHelperOptions());
+            using var writer = new StringWriter();
+            ViewEngineResult viewResult = viewEngine.FindView(ControllerContext, viewName, false);
+            ViewContext viewContext = new ViewContext(ControllerContext, viewResult.View, ViewData, TempData, writer, new HtmlHelperOptions());
 
-                var t = viewResult.View.RenderAsync(viewContext);
-                t.Wait();
+            var t = viewResult.View.RenderAsync(viewContext);
+            t.Wait();
 
-                return writer.GetStringBuilder().ToString();
-            }
+            return writer.GetStringBuilder().ToString();
         }
 
         #endregion
