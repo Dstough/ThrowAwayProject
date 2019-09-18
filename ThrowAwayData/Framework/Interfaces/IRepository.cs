@@ -10,7 +10,7 @@ namespace ThrowAwayDataBackground
         IRepository<T> Where(object arg);
         T Get(int id);
         IEnumerable<T> GetAll();
-        IEnumerable<T> Find();
+        IEnumerable<T> Find(int count = 0);
         void Add(T entity);
         void Delete(int id);
         void Edit(T entity);

@@ -13,8 +13,7 @@ namespace ThrowAwayProjects.Controllers
 {
     public class AccountController : BaseController
     {
-        public AccountController(ICompositeViewEngine viewEngine, IConfiguration configuration, IWebHostEnvironment environment) :
-        base(viewEngine, configuration, environment)
+        public AccountController(ICompositeViewEngine viewEngine, IConfiguration configuration, IWebHostEnvironment environment) : base(viewEngine, configuration, environment)
         {
         }
 

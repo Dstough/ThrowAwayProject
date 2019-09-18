@@ -24,6 +24,17 @@ namespace ThrowAwayProjects.Controllers
             return HandleExceptions(() =>
             {
                 var viewModel = new HomeViewModel();
+
+                foreach (var thread in database.Threads.Find(5))
+                {
+                    var author = database.Users.Include("UserGroup").Get(thread.CreatedBy);
+                    viewModel.UserThreads.Add(new ThreadViewModel(thread)
+                    {
+                        Author = author.UserName,
+                        CSS = author.UserGroup.Name == "Admin" ? "admin-color" : ""
+                    });
+                }
+
                 return View(viewModel);
             });
         }
@@ -65,7 +76,7 @@ namespace ThrowAwayProjects.Controllers
 
                 return Json(new
                 {
-                    thread.Title,
+                    message = thread.Title,
                     signature = author.UserName,
                     css = author.UserGroup.Name == "Admin" ? "admin-color" : ""
                 });

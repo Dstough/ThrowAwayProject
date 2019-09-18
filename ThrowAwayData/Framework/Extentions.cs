@@ -11,12 +11,12 @@ namespace ThrowAwayDataBackground
         {
             if (type.IsArray)
                 return type.GetElementType();
+
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
                 return type.GetGenericArguments()[0];
-            var enumType = type.GetInterfaces()
-                               .Where(t => t.IsGenericType &&
-                                           t.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-                               .Select(t => t.GenericTypeArguments[0]).FirstOrDefault();
+
+            var enumType = type.GetInterfaces().Where(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(IEnumerable<>)).Select(t => t.GenericTypeArguments[0]).FirstOrDefault();
+
             return enumType ?? type;
         }
 

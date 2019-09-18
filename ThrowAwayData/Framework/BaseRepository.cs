@@ -15,8 +15,6 @@ namespace ThrowAwayDataBackground
 
         private List<string> ApprovedOperators { get; set; }
 
-        private List<string> IncludeFields { get; set; }
-
         #region Constructors
 
         public BaseRepository() : this("")
@@ -33,18 +31,6 @@ namespace ThrowAwayDataBackground
         #endregion
 
         #region Core
-
-        public virtual IRepository<T> Include(string name)
-        {
-            if (typeof(T).GetProperty(name) != null)
-                IncludeFields.Add(name);
-
-            //foreach (var item in typeof(T).GetProperties().Where(prop => prop.GetType().IsSubclassOf(typeof(BaseObject))))
-            //    if (item.GetType().GetProperty(name) != null && IncludeFields.Contains(item.Name))
-            //        IncludeFields.Add(name);
-
-            return this;
-        }
 
         public virtual IRepository<T> Where(object obj)
         {
@@ -82,7 +68,7 @@ namespace ThrowAwayDataBackground
                 foreach (var prop in propList)
                     columnList += prop.Name + ",";
 
-                cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE Id = @Id;";
+                cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE Id = @Id" + " ORDER BY CreatedOn DESC;";
                 cmd.Parameters.AddWithValue("@Id", id);
                 conn.Open();
 
@@ -108,13 +94,14 @@ namespace ThrowAwayDataBackground
             return item;
         }
 
-        public virtual IEnumerable<T> Find()
+        public virtual IEnumerable<T> Find(int count = 0)
         {
             var list = new List<T>();
             var itemTemplate = new T();
             var tableName = itemTemplate.GetType().Name;
             var columnList = "";
             var whereClause = "Deleted = 0";
+            var limitClause = count > 0 ? " LIMIT " + count : "";
             var propList = typeof(T).GetProperties()
                                 .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
                                 .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
@@ -132,7 +119,7 @@ namespace ThrowAwayDataBackground
                     cmd.Parameters.AddWithValue("@" + paramiter.Key, paramiter.Value.Item2);
                 }
 
-                cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE " + whereClause + ";";
+                cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE " + whereClause + " ORDER BY CreatedOn DESC " + limitClause + ";";
 
                 conn.Open();
                 using (var reader = cmd.ExecuteReader())
@@ -239,6 +226,24 @@ namespace ThrowAwayDataBackground
             WhereParameters.Clear();
         }
 
+        #endregion
+
+        #region Extra
+
+        private List<string> IncludeFields { get; set; }
+
+        public virtual IRepository<T> Include(string name)
+        {
+            if (typeof(T).GetProperty(name) != null)
+                IncludeFields.Add(name);
+
+            //foreach (var item in typeof(T).GetProperties().Where(prop => prop.GetType().IsSubclassOf(typeof(BaseObject))))
+            //    if (item.GetType().GetProperty(name) != null && IncludeFields.Contains(item.Name))
+            //        IncludeFields.Add(name);
+
+            return this;
+        }
+
         private T IncludeProperties(T item)
         {
             if (IncludeFields.Count() <= 0)
@@ -321,10 +326,6 @@ namespace ThrowAwayDataBackground
             }
             return item;
         }
-
-        #endregion
-
-        #region Extra
 
         public virtual IEnumerable<T> GetAll()
         {
@@ -474,6 +475,8 @@ namespace ThrowAwayDataBackground
                 }
 
                 cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE " + whereClause + " ORDER BY RANDOM() LIMIT 1";
+
+                conn.Open();
 
                 using (var reader = cmd.ExecuteReader())
                 {

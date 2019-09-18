@@ -1,5 +1,5 @@
 ﻿@model HomeViewModel;
-@if(Model.ErrorMessage != null)
+@if (Model.ErrorMessage != null)
 {
     <script>
         $(function() {
@@ -7,12 +7,12 @@
         });
     </script>
     Model.ErrorMessage = null;
-}  
+}
 
 <div class="thread">
     <h1>Latest News Broadcasts</h1>
     [<a>view all</a>]
-    @for(var i = 0; i < 3; i++)
+    @for (var i = 0; i < 3; i++)
     {
         <div class="post">
             <span class="message-body">
@@ -28,7 +28,7 @@
 <div class="thread">
     <h1>Fixer Job Postings</h1>
     [<a>view all</a>]
-    @for(var i = 0; i < 3; i++)
+    @for (var i = 0; i < 3; i++)
     {
         <div class="post">
             <span class="message-body">
@@ -44,7 +44,7 @@
 <div class="thread">
     <h1>Run Transcript Archive</h1>
     [<a>view all</a>]
-    @for(var i = 0; i < 3; i++)
+    @for (var i = 0; i < 3; i++)
     {
         <div class="post">
             <span class="message-body">
@@ -60,14 +60,14 @@
 <div class="thread">
     <h1>Latest User Threads</h1>
     [<a>view all</a>]
-    @for(var i = 0; i < 5; i++)
+    @foreach (var thread in Model.UserThreads)
     {
-        <div class="post">
+        <div class="post" onclick="location.href='@thread.Url';">
             <span class="message-body">
-                Here you will find a forum that you can use to set up runs with fixers, post success stories, or just ask questions.
+                @thread.Title
             </span>
-            <div class="message-signature">
-                -- Fastjack <span class=time-stamp>@DateTime.Now.AddYears(60)</span>
+            <div class="message-signature @thread.CSS ">
+                -- @thread.Author <span class=time-stamp>@DateTime.Now.AddYears(60)</span>
             </div>
         </div>
     }
