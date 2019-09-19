@@ -1,0 +1,12 @@
+﻿@model List<ThreadViewModel>
+@foreach (var thread in Model)
+{
+    <div class="post">
+        <span class="message-body">
+            @thread.Title
+        </span>
+        <div class="message-signature">
+            -- @thread.Author <span class="time-stamp @thread.CSS">@thread.PostDate.AddYears(60)</span>
+        </div>
+    </div>
+}

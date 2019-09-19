@@ -79,6 +79,28 @@ namespace ThrowAwayProjects.Controllers
             });
         }
 
+        public ActionResult List(int Page = 0)
+        {
+            return HandleExceptions(() => 
+            {
+                var dbThreads = database.Threads.GetPage(Page, 20);
+                var threads = new List<ThreadViewModel>();
+
+                foreach (var dbThread in dbThreads)
+                {
+                    var user = database.Users.Include("UserGroups").Get(dbThread.CreatedBy);
+
+                    threads.Add(new ThreadViewModel(dbThread)
+                    {
+                        CSS = user.UserGroup.Name == "Admin" ? "admin-color" : "",
+                        Author = user.UserName
+                    });
+                }
+                
+                return View(threads);
+            });
+        }
+
         [HttpPost]
         public ActionResult AddPost(PostViewModel viewModel)
         {
