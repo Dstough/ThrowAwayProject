@@ -7,6 +7,7 @@ var Modal = function (action) {
             if (result["result"] == "modal") {
                 $(".modal-content").html(result["message"]);
                 $("#modal").modal({ backdrop: 'static' });
+                $('#modal').draggable();
             }
 
             if (result["result"] == "error") {
