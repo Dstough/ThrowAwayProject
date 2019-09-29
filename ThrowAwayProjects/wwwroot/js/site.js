@@ -1,8 +1,8 @@
 ﻿var DisplayMessage = function (message, signature) {
     if (signature === undefined)
-        signature = "-- Fastjack";
+        signature = "Fastjack";
 
-    $("#message").html("<span class='message-body'>" + message + "</span><div class='message-signature admin-color'>" + signature + "</div>");
+    $("#message").html("<span class='message-body'>" + message + "</span><div class='message-signature admin-color'>-- " + signature + "</div>");
     $("#message").css("display", "inherit");
 
     setTimeout(function () {

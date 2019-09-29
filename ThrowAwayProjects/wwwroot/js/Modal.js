@@ -25,8 +25,11 @@ var Submit = function (action, data, tag = "") {
 
             $('#modal').modal('hide');
 
-            if (result["message"] !== undefined && result["signature"] !== undefined) {
-                DisplayMessage(result["message"], signature);
+            if (result["message"] !== undefined) {
+                if (result["signature"] !== undefined)
+                    DisplayMessage(result["message"], result["signature"])
+                else
+                   DisplayMessage(result["message"]);
             }
 
             if (tag !== "") {

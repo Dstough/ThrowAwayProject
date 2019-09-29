@@ -8,7 +8,7 @@
             @Model.Body
         </span>
         <div class="message-signature">
-            -- @Model.Author <span class="time-stamp @Model.CSS">@Model.PostDate.AddYears(60)</span>
+            <span class="@Model.CSS">-- @Model.Author</span><span class="time-stamp">@Model.PostDate.AddYears(60)</span>
         </div>
     </div>
     @foreach (var post in Model.Posts)
@@ -23,7 +23,7 @@
                 @post.Body
             </span>
             <div class="message-signature">
-                -- @post.Author <span class="time-stamp @post.CSS">@post.PostDate.AddYears(60)</span>
+                <span class="@Model.CSS">-- @Model.Author</span><span class="time-stamp">@post.PostDate.AddYears(60)</span>
             </div>
         </div>
     }

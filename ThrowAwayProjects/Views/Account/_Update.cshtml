@@ -34,7 +34,7 @@
 <script>
     $(function () {
         BindModalValidation('update', ['UserName', 'Email'], 'submit', function() {
-            Submit('@Url.Action("AddEditThread","Forum")', {
+            Submit('@Url.Action("Update","Account")', {
                 UserName : $('#UserName').val(),
                 Email : $('#Email').val(),
                 NewPassphrase : $('#NewPassphrase').val(),
