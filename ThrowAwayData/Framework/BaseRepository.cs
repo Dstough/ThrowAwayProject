@@ -94,6 +94,49 @@ namespace ThrowAwayDataBackground
             return item;
         }
 
+        public virtual T Get(string publicId)
+        {
+            var item = new T();
+            var tableName = item.GetType().Name;
+            var columnList = "";
+            var propList = item.GetType()
+                               .GetProperties()
+                               .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
+                               .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+                               .Where(e => e.CanWrite);
+
+            using (var conn = new SQLiteConnection(ConnString))
+            using (var cmd = conn.CreateCommand())
+            {
+                foreach (var prop in propList)
+                    columnList += prop.Name + ",";
+
+                cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE PublicId = @PublicId" + " ORDER BY CreatedOn DESC;";
+                cmd.Parameters.AddWithValue("@PublicId", publicId);
+                conn.Open();
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    if (!reader.Read())
+                        return null;
+
+                    foreach (var prop in propList)
+                    {
+                        if (prop.PropertyType == typeof(int) || prop.Name == "Id")
+                            prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
+                        else
+                            prop.SetValue(item, reader[prop.Name], null);
+                    }
+                }
+            }
+
+            item = IncludeProperties(item);
+            WhereParameters.Clear();
+            IncludeFields.Clear();
+
+            return item;
+        }
+
         public virtual IEnumerable<T> Find(int count = 0)
         {
             var list = new List<T>();
@@ -154,6 +197,27 @@ namespace ThrowAwayDataBackground
                             .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
                             .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
                             .Where(e => e.Name != "Id");
+
+            var unique = false;
+            do
+            {
+                using (var conn = new SQLiteConnection(ConnString))
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.Parameters.Clear();
+                    cmd.CommandText = "SELECT PublicId FROM " + tableName + " WHERE PublicId = @PublicId;";
+                    cmd.Parameters.AddWithValue("@PublicId", entity.PublicId);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                            entity.PublicId = entity.Random64BaseString();
+                        else
+                            unique = true;
+                    }
+                }
+            }
+            while (!unique);
 
             using (var conn = new SQLiteConnection(ConnString))
             using (var cmd = conn.CreateCommand())

@@ -5,7 +5,6 @@ namespace ThrowAwayData
 {
     public class Thread : BaseObject
     {
-        public string PublicId { get; set; }
         public string Title { get; set; }
         public string Body { get; set; }
         public bool Edited { get; set; }

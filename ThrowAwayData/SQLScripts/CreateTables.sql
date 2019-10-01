@@ -9,6 +9,7 @@
 create table UserGroup
 (
 	Id INTEGER PRIMARY KEY,
+	PublicId varchar not null unique,
 	CreatedOn datetime not null,
 	CreatedBy integer not null,
 	Deleted bit not null,
@@ -16,46 +17,41 @@ create table UserGroup
 	Description varhcar not null
 );
 
-insert into UserGroup
-	(CreatedOn, CreatedBy, Deleted, Name, Description)
+insert into UserGroup (CreatedOn, CreatedBy, Deleted, Name, Description)
 values(datetime('now'), 0, 0, 'Admin', 'The primary group giving you access');
 
-insert into UserGroup
-	(CreatedOn, CreatedBy, Deleted, Name, Description)
+insert into UserGroup (CreatedOn, CreatedBy, Deleted, Name, Description)
 values(datetime('now'), 0, 0, 'SuperUser', 'The group for people who can post on closed topics');
 
-insert into UserGroup
-	(CreatedOn, CreatedBy, Deleted, Name, Description)
+insert into UserGroup (CreatedOn, CreatedBy, Deleted, Name, Description)
 values(datetime('now'), 0, 0, 'User', 'The primary group for users to post');
 
 create table Tag
 (
 	Id INTEGER PRIMARY KEY,
+	PublicId varchar not null unique,
 	CreatedOn datetime not null,
 	CreatedBy integer not null,
 	Deleted bit not null,
 	Name varchar not null
 );
 
-insert into Tag
-	(CreatedOn, CreatedBy, Deleted, Name)
+insert into Tag	(CreatedOn, CreatedBy, Deleted, Name)
 values(datetime('now'), 0, 0, 'User');
 
-insert into Tag
-	(CreatedOn, CreatedBy, Deleted, Name)
+insert into Tag	(CreatedOn, CreatedBy, Deleted, Name)
 values(datetime('now'), 0, 0, 'News');
 
-insert into Tag
-	(CreatedOn, CreatedBy, Deleted, Name)
+insert into Tag	(CreatedOn, CreatedBy, Deleted, Name)
 values(datetime('now'), 0, 0, 'Jobs');
 
-insert into Tag
-	(CreatedOn, CreatedBy, Deleted, Name)
+insert into Tag	(CreatedOn, CreatedBy, Deleted, Name)
 values(datetime('now'), 0, 0, 'Runs');
 
 create table UserIdentity
 (
 	Id INTEGER PRIMARY KEY,
+	PublicId varchar not null unique,
 	CreatedOn datetime not null,
 	CreatedBy integer not null,
 	Deleted bit not null,
@@ -72,6 +68,7 @@ create table UserIdentity
 create table Thread
 (
 	Id INTEGER PRIMARY KEY,
+	PublicId varchar not null unique,
 	CreatedOn datetime not null,
 	CreatedBy integer not null,
 	Deleted bit not null,
@@ -89,6 +86,7 @@ create table Thread
 create table Post
 (
 	Id INTEGER PRIMARY KEY,
+	PublicId varchar not null unique,
 	CreatedOn datetime not null,
 	CreatedBy integer not null,
 	Deleted bit not null,
