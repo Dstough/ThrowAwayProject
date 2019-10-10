@@ -198,27 +198,6 @@ namespace ThrowAwayDataBackground
                             .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
                             .Where(e => e.Name != "Id");
 
-            var unique = false;
-            do
-            {
-                using (var conn = new SQLiteConnection(ConnString))
-                using (var cmd = conn.CreateCommand())
-                {
-                    cmd.Parameters.Clear();
-                    cmd.CommandText = "SELECT PublicId FROM " + tableName + " WHERE PublicId = @PublicId;";
-                    cmd.Parameters.AddWithValue("@PublicId", entity.PublicId);
-
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        if (reader.Read())
-                            entity.PublicId = entity.Random64BaseString();
-                        else
-                            unique = true;
-                    }
-                }
-            }
-            while (!unique);
-
             using (var conn = new SQLiteConnection(ConnString))
             using (var cmd = conn.CreateCommand())
             {

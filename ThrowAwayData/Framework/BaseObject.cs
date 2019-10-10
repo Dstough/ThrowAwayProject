@@ -4,7 +4,6 @@ namespace ThrowAwayDataBackground
     public abstract class BaseObject
     {
         public int? Id { get; set; }
-        public string PublicId { get; set; }
         public DateTime CreatedOn { get; set; }
         public int CreatedBy { get; set; }
         public bool Deleted { get; set; }
@@ -12,7 +11,6 @@ namespace ThrowAwayDataBackground
         public BaseObject()
         {
             Id = null;
-            PublicId = this.Random64BaseString();
             CreatedOn = DateTime.Now;
             CreatedBy = 0;
             Deleted = false;

@@ -19,22 +19,22 @@ namespace ThrowAwayProjects.Controllers
         {
         }
 
-        public ActionResult Thread(int Id)
+        public ActionResult Thread(string Id)
         {
             return HandleExceptions(() =>
             {
-                if (Id == 0)
+                if (Id == null)
                     throw new Exception("The post number needs to be specified in the address bar.");
 
-                var dbThread = database.Threads.Get(Id);
+                var dbThread = database.Threads.Where(new { PublicId = Id }).Find().FirstOrDefault();
 
                 if (dbThread == null)
-                    throw new Exception("The post doesn't exist.");
+                    throw new Exception("The thread doesn't exist.");
 
                 var dbAuthor = database.Users.Include("UserGroup").Get(dbThread.CreatedBy);
 
                 if (dbAuthor == null)
-                    throw new Exception("The post doesn't have a valid user.");
+                    throw new Exception("The thread doesn't have a valid user.");
 
                 if (HttpContext.Session.GetString("UserKey") != null)
                 {
@@ -81,7 +81,7 @@ namespace ThrowAwayProjects.Controllers
 
         public ActionResult List(int Page = 0)
         {
-            return HandleExceptions(() => 
+            return HandleExceptions(() =>
             {
                 var dbThreads = database.Threads.GetPage(Page, 20);
                 var threads = new List<ThreadViewModel>();
@@ -96,7 +96,7 @@ namespace ThrowAwayProjects.Controllers
                         Author = user.UserName
                     });
                 }
-                
+
                 return View(threads);
             });
         }
@@ -203,20 +203,21 @@ namespace ThrowAwayProjects.Controllers
 
                 var dbPost = database.Posts.Get(Id ?? 0);
 
-                if(dbPost == null)
+                if (dbPost == null)
                     throw new Exception("That isn't a valid post omae.");
 
                 if (dbPost.CreatedBy != sessionUser.Id)
                     throw new Exception("Stop poking around where you shouldn't be omae!");
 
-                var viewModel = new PostViewModel() {
+                var viewModel = new PostViewModel()
+                {
                     Id = dbPost.Id,
                     Author = sessionUser.UserName,
                     Body = dbPost.Body,
                     PostDate = dbPost.CreatedOn
                 };
 
-                return Modal("_EditPost",viewModel);
+                return Modal("_EditPost", viewModel);
             });
         }
 

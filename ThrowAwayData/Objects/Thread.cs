@@ -5,6 +5,7 @@ namespace ThrowAwayData
 {
     public class Thread : BaseObject
     {
+        public string PublicId { get; set; }
         public string Title { get; set; }
         public string Body { get; set; }
         public bool Edited { get; set; }
@@ -12,5 +13,18 @@ namespace ThrowAwayData
         public int TagId { get; set; }
         public Tag Tag { get; set; }
         public IEnumerable<Post> Post { get; set; }
+
+        public Thread()
+        {
+            PublicId = "";
+            Title = "";
+            Body = "";
+            Edited = false;
+            Closed = false;
+            TagId = 0;
+            PublicId = this.Random64BaseString();
+            Tag = new Tag();
+            Post = new List<Post>();
+        }
     }
 }

@@ -19,7 +19,7 @@ namespace ThrowAwayProjects.Models
 
         public ThreadViewModel( Thread thread)
         {
-            Url = "/Forum/Thread/" + thread.Id;
+            Url = "/Forum/Thread/" + thread.PublicId;
             Title = thread.Title;
             Body = thread.Body;
             Author = null;

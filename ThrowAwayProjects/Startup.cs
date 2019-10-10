@@ -29,7 +29,6 @@ namespace ThrowAwayProjects
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseSession();
-
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
