@@ -31,9 +31,11 @@ namespace ThrowAwayProjects
             app.UseSession();
             app.UseMvc(routes =>
             {
-                routes.MapRoute(
+                routes.MapRoute
+                (
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id=0}");
+                    template: "{controller=Home}/{action=Index}/{id?}"
+                );
             });
         }
     }

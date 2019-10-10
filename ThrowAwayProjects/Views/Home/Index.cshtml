@@ -10,22 +10,12 @@
 }
 
 <div class="thread">
-    <h1>Latest News Broadcasts</h1>
+    <h1>News Broadcasts</h1>
     [<a>view all</a>]
 </div>
 
 <div class="thread">
-    <h1>Fixer Job Postings</h1>
-    [<a>view all</a>]
-</div>
-
-<div class="thread">
-    <h1>Run Transcript Archive</h1>
-    [<a>view all</a>]
-</div>
-
-<div class="thread">
-    <h1>Latest User Threads</h1>
+    <h1>User Threads</h1>
     [<a>view all</a>]
     @foreach (var thread in Model.UserThreads)
     {
@@ -39,3 +29,14 @@
         </div>
     }
 </div>
+
+<div class="thread">
+    <h1>Job Postings</h1>
+    [<a>view all</a>]
+</div>
+
+<div class="thread">
+    <h1>Run Archive</h1>
+    [<a>view all</a>]
+</div>
+

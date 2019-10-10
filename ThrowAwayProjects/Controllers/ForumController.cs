@@ -125,16 +125,16 @@ namespace ThrowAwayProjects.Controllers
             });
         }
 
-        public JsonResult AddEditThread(int Id)
+        public JsonResult AddEditThread(string Id)
         {
             return HandleExceptions(() =>
             {
-                HttpContext.Session.SetString("CurrentEditId", Id.ToString());
-
-                if (Id == 0)
+                if (Id == null)
                     return Modal("_AddEditThread", new ThreadViewModel());
+                
+                HttpContext.Session.SetString("CurrentEditId", Id);
 
-                var DBthread = database.Threads.Get(Id);
+                var DBthread = database.Threads.Where(new {PublicId = Id}).Find().FirstOrDefault();
 
                 if (DBthread == null)
                     throw new Exception("That thread couldn't be found in the database.");
@@ -155,20 +155,15 @@ namespace ThrowAwayProjects.Controllers
             return HandleExceptions(() =>
             {
                 var key = HttpContext.Session.GetString("UserKey");
-
+                var currentEditId = HttpContext.Session.GetString("CurrentEditId");
+                var dbThread = new Thread();
+                
                 if (key == null)
                     throw new Exception("You must be logged in to do that.");
 
                 var user = JsonConvert.DeserializeObject<UserIdentity>(key);
-
-                var sessionString = HttpContext.Session.GetString("CurrentEditId");
-
-                if (sessionString == null)
-                    throw new Exception("Stop poking around where you shouldn't be omae!");
-
-                var dbThread = new Thread();
-
-                if (sessionString == "0")
+                
+                if (currentEditId == null)
                 {
                     dbThread.Title = viewModel.Title;
                     dbThread.Body = viewModel.Body;
@@ -177,13 +172,13 @@ namespace ThrowAwayProjects.Controllers
                 }
                 else
                 {
-                    dbThread = database.Threads.Get(Convert.ToInt32(sessionString));
+                    dbThread = database.Threads.Where(new{PublicId = currentEditId}).Find().FirstOrDefault();
                     dbThread.Title = viewModel.Title;
                     dbThread.Body = viewModel.Body;
                     database.Threads.Edit(dbThread);
                 }
 
-                return RedirectToAction("Thread", new { Id = dbThread.Id ?? 0 });
+                return RedirectToAction("Thread", new { Id = dbThread.PublicId } );
             });
         }
 

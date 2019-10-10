@@ -7,6 +7,7 @@ var FetchNewRandomPost = function (action, tag) {
                         url: action,
                         method: 'GET',
                         success: function (result) {
+                            $("#" + tag).attr('onclick', "location.href='" + result["url"] + "'")
                             $("#" + tag).html(
                                 "<span class='message-body'>" + result["message"] + "</span>" +
                                 "<div class='message-signature " + result["css"] + "'>-- " + result["signature"] + "</div>"
