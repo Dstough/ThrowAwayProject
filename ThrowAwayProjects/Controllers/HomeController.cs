@@ -76,7 +76,8 @@ namespace ThrowAwayProjects.Controllers
                     message = thread.Title,
                     signature = author.UserName,
                     css = author.UserGroup.Name == "Admin" ? "admin-color" : "",
-                    url = "/Forum/Thread/" + thread.PublicId
+                    url = "/Forum/Thread/" + thread.PublicId,
+                    date = thread.CreatedOn.AddYears(60).ToString("MM/dd/yyyy h:mm:ss tt")
                 });
             });
         }
