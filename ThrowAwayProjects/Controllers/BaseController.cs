@@ -19,9 +19,9 @@ namespace ThrowAwayProjects.Controllers
     {
         protected Database database;
         protected IConfiguration configuration;
-        private ICompositeViewEngine viewEngine;
-        private IWebHostEnvironment environment;
-        private ProcessStartInfo python;
+        private readonly ICompositeViewEngine viewEngine;
+        private readonly IWebHostEnvironment environment;
+        private readonly ProcessStartInfo python;
 
         public BaseController(ICompositeViewEngine _viewEngine, IConfiguration _config, IWebHostEnvironment _environment)
         {
@@ -135,24 +135,22 @@ namespace ThrowAwayProjects.Controllers
             python.Arguments = environment.WebRootPath + "\\" + configuration.GetValue<string>("ServerScriptFolder") + "\\" + script.name + " ";
             foreach (var argument in script.arguments)
                 python.Arguments += argument + " ";
-            using (var process = Process.Start(python))
-            using (var reader = process.StandardOutput)
-                return reader.ReadToEnd();
+            using var process = Process.Start(python);
+            using var reader = process.StandardOutput;
+            return reader.ReadToEnd();
         }
 
         protected static string Sha512(string input)
         {
             var bytes = Encoding.UTF8.GetBytes(input);
-            using (var hash = SHA512.Create())
-            {
-                var hashedInputBytes = hash.ComputeHash(bytes);
-                var hashedInputStringBuilder = new StringBuilder(128);
+            using var hash = SHA512.Create();
+            var hashedInputBytes = hash.ComputeHash(bytes);
+            var hashedInputStringBuilder = new StringBuilder(128);
 
-                foreach (var b in hashedInputBytes)
-                    hashedInputStringBuilder.Append(b.ToString("X2"));
+            foreach (var b in hashedInputBytes)
+                hashedInputStringBuilder.Append(b.ToString("X2"));
 
-                return hashedInputStringBuilder.ToString();
-            }
+            return hashedInputStringBuilder.ToString();
         }
 
         #endregion

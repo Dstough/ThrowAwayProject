@@ -34,7 +34,7 @@ namespace ThrowAwayDataBackground
 
         public virtual IRepository<T> Where(object obj)
         {
-            Type type = obj.GetType();
+            var type = obj.GetType();
             var OperatorSymbol = "=";
 
             if (type.GetProperty("OperatorSymbol") != null && ApprovedOperators.Contains(obj.GetPropValue("OperatorSymbol")))
@@ -45,7 +45,7 @@ namespace ThrowAwayDataBackground
                 if (typeof(T).GetProperty(prop.Name) == null)
                     continue;
 
-                WhereParameters.Add(prop.Name, Tuple.Create<string, string>(OperatorSymbol, obj.GetPropValue(prop.Name).ToString()));
+                WhereParameters.Add(prop.Name, Tuple.Create(OperatorSymbol, obj.GetPropValue(prop.Name).ToString()));
             }
 
             return this;
@@ -62,29 +62,27 @@ namespace ThrowAwayDataBackground
                                .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
                                .Where(e => e.CanWrite);
 
-            using (var conn = new SQLiteConnection(ConnString))
-            using (var cmd = conn.CreateCommand())
+            using var conn = new SQLiteConnection(ConnString);
+            using var cmd = conn.CreateCommand();
+
+            foreach (var prop in propList)
+                columnList += prop.Name + ",";
+
+            cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE Id = @Id" + " ORDER BY CreatedOn DESC;";
+            cmd.Parameters.AddWithValue("@Id", id);
+            conn.Open();
+
+            using var reader = cmd.ExecuteReader();
+
+            if (!reader.Read())
+                return null;
+
+            foreach (var prop in propList)
             {
-                foreach (var prop in propList)
-                    columnList += prop.Name + ",";
-
-                cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE Id = @Id" + " ORDER BY CreatedOn DESC;";
-                cmd.Parameters.AddWithValue("@Id", id);
-                conn.Open();
-
-                using (var reader = cmd.ExecuteReader())
-                {
-                    if (!reader.Read())
-                        return null;
-
-                    foreach (var prop in propList)
-                    {
-                        if (prop.PropertyType == typeof(int) || prop.Name == "Id")
-                            prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
-                        else
-                            prop.SetValue(item, reader[prop.Name], null);
-                    }
-                }
+                if (prop.PropertyType == typeof(int) || prop.Name == "Id")
+                    prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
+                else
+                    prop.SetValue(item, reader[prop.Name], null);
             }
 
             item = IncludeProperties(item);
@@ -105,29 +103,27 @@ namespace ThrowAwayDataBackground
                                .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
                                .Where(e => e.CanWrite);
 
-            using (var conn = new SQLiteConnection(ConnString))
-            using (var cmd = conn.CreateCommand())
+            using var conn = new SQLiteConnection(ConnString);
+            using var cmd = conn.CreateCommand();
+
+            foreach (var prop in propList)
+                columnList += prop.Name + ",";
+
+            cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE PublicId = @PublicId" + " ORDER BY CreatedOn DESC;";
+            cmd.Parameters.AddWithValue("@PublicId", publicId);
+            conn.Open();
+
+            using var reader = cmd.ExecuteReader();
+
+            if (!reader.Read())
+                return null;
+
+            foreach (var prop in propList)
             {
-                foreach (var prop in propList)
-                    columnList += prop.Name + ",";
-
-                cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE PublicId = @PublicId" + " ORDER BY CreatedOn DESC;";
-                cmd.Parameters.AddWithValue("@PublicId", publicId);
-                conn.Open();
-
-                using (var reader = cmd.ExecuteReader())
-                {
-                    if (!reader.Read())
-                        return null;
-
-                    foreach (var prop in propList)
-                    {
-                        if (prop.PropertyType == typeof(int) || prop.Name == "Id")
-                            prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
-                        else
-                            prop.SetValue(item, reader[prop.Name], null);
-                    }
-                }
+                if (prop.PropertyType == typeof(int) || prop.Name == "Id")
+                    prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
+                else
+                    prop.SetValue(item, reader[prop.Name], null);
             }
 
             item = IncludeProperties(item);
@@ -146,40 +142,39 @@ namespace ThrowAwayDataBackground
             var whereClause = "Deleted = 0";
             var limitClause = count > 0 ? " LIMIT " + count : "";
             var propList = typeof(T).GetProperties()
-                                .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
-                                .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
-                                .Where(e => e.CanWrite);
+                                    .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
+                                    .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+                                    .Where(e => e.CanWrite);
 
             foreach (var prop in propList)
                 columnList += prop.Name + ",";
 
-            using (var conn = new SQLiteConnection(ConnString))
-            using (var cmd = conn.CreateCommand())
+            using var conn = new SQLiteConnection(ConnString);
+            using var cmd = conn.CreateCommand();
+
+            foreach (var paramiter in WhereParameters)
             {
-                foreach (var paramiter in WhereParameters)
-                {
-                    whereClause += " AND " + paramiter.Key + " " + paramiter.Value.Item1 + " @" + paramiter.Key;
-                    cmd.Parameters.AddWithValue("@" + paramiter.Key, paramiter.Value.Item2);
-                }
+                whereClause += " AND " + paramiter.Key + " " + paramiter.Value.Item1 + " @" + paramiter.Key;
+                cmd.Parameters.AddWithValue("@" + paramiter.Key, paramiter.Value.Item2);
+            }
 
-                cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE " + whereClause + " ORDER BY CreatedOn DESC " + limitClause + ";";
+            cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE " + whereClause + " ORDER BY CreatedOn DESC " + limitClause + ";";
 
-                conn.Open();
-                using (var reader = cmd.ExecuteReader())
+            conn.Open();
+
+            using var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var item = new T();
+                foreach (var prop in propList)
                 {
-                    while (reader.Read())
-                    {
-                        var item = new T();
-                        foreach (var prop in propList)
-                        {
-                            if (prop.PropertyType == typeof(int) || prop.Name == "Id")
-                                prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
-                            else
-                                prop.SetValue(item, reader[prop.Name], null);
-                        }
-                        list.Add(IncludeProperties(item));
-                    }
+                    if (prop.PropertyType == typeof(int) || prop.Name == "Id")
+                        prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
+                    else
+                        prop.SetValue(item, reader[prop.Name], null);
                 }
+                list.Add(IncludeProperties(item));
             }
 
             IncludeFields.Clear();
@@ -194,30 +189,29 @@ namespace ThrowAwayDataBackground
             var columns = "";
             var paramiters = "";
             var propList = typeof(T).GetProperties()
-                            .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
-                            .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
-                            .Where(e => e.Name != "Id");
+                                    .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
+                                    .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+                                    .Where(e => e.Name != "Id");
 
-            using (var conn = new SQLiteConnection(ConnString))
-            using (var cmd = conn.CreateCommand())
+            using var conn = new SQLiteConnection(ConnString);
+            using var cmd = conn.CreateCommand();
+
+            foreach (var prop in propList)
             {
-                foreach (var prop in propList)
-                {
-                    columns += prop.Name + ",";
-                    paramiters += "@" + prop.Name + ",";
-                    cmd.Parameters.AddWithValue("@" + prop.Name, prop.GetValue(entity));
-                }
-                cmd.CommandText = "INSERT INTO " + tableName + " (" + columns.TrimEnd(',') + ")";
-                cmd.CommandText += "VALUES (" + paramiters.TrimEnd(',') + ");";
-                cmd.CommandText += "SELECT MAX (Id) FROM " + tableName + " AS Id;";
-                conn.Open();
-                using (var reader = cmd.ExecuteReader())
-                {
-                    if (!reader.Read())
-                        return;
-                    entity.Id = Convert.ToInt32(reader[0] ?? 0);
-                }
+                columns += prop.Name + ",";
+                paramiters += "@" + prop.Name + ",";
+                cmd.Parameters.AddWithValue("@" + prop.Name, prop.GetValue(entity));
             }
+            cmd.CommandText = "INSERT INTO " + tableName + " (" + columns.TrimEnd(',') + ")";
+            cmd.CommandText += "VALUES (" + paramiters.TrimEnd(',') + ");";
+            cmd.CommandText += "SELECT MAX (Id) FROM " + tableName + " AS Id;";
+            conn.Open();
+
+            using var reader = cmd.ExecuteReader();
+
+            if (!reader.Read())
+                return;
+            entity.Id = Convert.ToInt32(reader[0] ?? 0);
 
             IncludeFields.Clear();
             WhereParameters.Clear();
@@ -227,25 +221,24 @@ namespace ThrowAwayDataBackground
         {
             var tableName = entity.GetType().Name;
             var propList = typeof(T).GetProperties()
-                            .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
-                            .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
-                            .Where(e => e.Name != "Id");
+                                    .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
+                                    .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+                                    .Where(e => e.Name != "Id");
 
-            using (var conn = new SQLiteConnection(ConnString))
-            using (var cmd = conn.CreateCommand())
+            using var conn = new SQLiteConnection(ConnString);
+            using var cmd = conn.CreateCommand();
+
+            cmd.CommandText = "UPDATE " + tableName + " SET ";
+            foreach (var prop in propList)
             {
-                cmd.CommandText = "UPDATE " + tableName + " SET ";
-                foreach (var prop in propList)
-                {
-                    cmd.CommandText += prop.Name + "=@" + prop.Name + ",";
-                    cmd.Parameters.AddWithValue("@" + prop.Name, prop.GetValue(entity));
-                }
-                cmd.CommandText = cmd.CommandText.TrimEnd(',') + " WHERE Id = @Id;";
-                cmd.Parameters.AddWithValue("@Id", entity.Id);
-
-                conn.Open();
-                cmd.ExecuteNonQuery();
+                cmd.CommandText += prop.Name + "=@" + prop.Name + ",";
+                cmd.Parameters.AddWithValue("@" + prop.Name, prop.GetValue(entity));
             }
+            cmd.CommandText = cmd.CommandText.TrimEnd(',') + " WHERE Id = @Id;";
+            cmd.Parameters.AddWithValue("@Id", entity.Id);
+
+            conn.Open();
+            cmd.ExecuteNonQuery();
 
             IncludeFields.Clear();
             WhereParameters.Clear();
@@ -256,14 +249,13 @@ namespace ThrowAwayDataBackground
             var itemTemplate = new T();
             var tableName = itemTemplate.GetType().Name;
 
-            using (var conn = new SQLiteConnection(ConnString))
-            using (var cmd = conn.CreateCommand())
-            {
-                cmd.CommandText = "UPDATE " + tableName + " SET Deleted = 1 WHERE Id = @Id";
-                cmd.Parameters.AddWithValue("@Id", id);
-                conn.Open();
-                cmd.ExecuteNonQuery();
-            }
+            using var conn = new SQLiteConnection(ConnString);
+            using var cmd = conn.CreateCommand();
+
+            cmd.CommandText = "UPDATE " + tableName + " SET Deleted = 1 WHERE Id = @Id";
+            cmd.Parameters.AddWithValue("@Id", id);
+            conn.Open();
+            cmd.ExecuteNonQuery();
 
             IncludeFields.Clear();
             WhereParameters.Clear();
@@ -280,10 +272,6 @@ namespace ThrowAwayDataBackground
             if (typeof(T).GetProperty(name) != null)
                 IncludeFields.Add(name);
 
-            //foreach (var item in typeof(T).GetProperties().Where(prop => prop.GetType().IsSubclassOf(typeof(BaseObject))))
-            //    if (item.GetType().GetProperty(name) != null && IncludeFields.Contains(item.Name))
-            //        IncludeFields.Add(name);
-
             return this;
         }
 
@@ -293,80 +281,80 @@ namespace ThrowAwayDataBackground
                 return item;
 
             var columnList = "";
-            using (var conn = new SQLiteConnection(ConnString))
-            using (var cmd = conn.CreateCommand())
+            using var conn = new SQLiteConnection(ConnString);
+            using var cmd = conn.CreateCommand();
+
+            conn.Open();
+            foreach (var field in IncludeFields)
             {
-                conn.Open();
-                foreach (var field in IncludeFields)
+                var prop = typeof(T).GetProperties().Where(p => p.Name == field).FirstOrDefault();
+
+                if (prop == null)
+                    throw new Exception("The property was not found in the data object.");
+
+                if (!(prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
                 {
-                    var prop = typeof(T).GetProperties().Where(p => p.Name == field).FirstOrDefault();
+                    var subItem = Activator.CreateInstance(prop.PropertyType);
+                    var subPropList = prop.PropertyType.GetProperties()
+                                                       .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
+                                                       .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+                                                       .Where(e => e.CanWrite);
 
-                    if (prop == null)
-                        throw new Exception("The property was not found in the data object.");
+                    foreach (var subProp in subPropList)
+                        columnList += subProp.Name + ",";
 
-                    if (!(prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+                    cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + prop.Name + " WHERE Id = @Id;";
+                    cmd.Parameters.AddWithValue("@Id", item.GetPropValue(prop.Name + "Id"));
+
+                    using var reader = cmd.ExecuteReader();
+
+                    if (!reader.Read())
+                        return item;
+
+                    foreach (var subProp in subPropList)
                     {
-                        var subItem = Activator.CreateInstance(prop.PropertyType);
-                        var subPropList = prop.PropertyType.GetProperties()
-                                            .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
-                                            .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
-                                            .Where(e => e.CanWrite);
-
-                        foreach (var subProp in subPropList)
-                            columnList += subProp.Name + ",";
-
-                        cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + prop.Name + " WHERE Id = @Id;";
-                        cmd.Parameters.AddWithValue("@Id", item.GetPropValue(prop.Name + "Id"));
-                        using (var reader = cmd.ExecuteReader())
-                        {
-                            if (!reader.Read())
-                                return item;
-
-                            foreach (var subProp in subPropList)
-                            {
-                                if (subProp.PropertyType == typeof(int) || subProp.Name == "Id")
-                                    subProp.SetValue(subItem, Convert.ToInt32(reader[subProp.Name]), null);
-                                else
-                                    subProp.SetValue(subItem, reader[subProp.Name], null);
-                            }
-                        }
-                        prop.SetValue(item, subItem);
+                        if (subProp.PropertyType == typeof(int) || subProp.Name == "Id")
+                            subProp.SetValue(subItem, Convert.ToInt32(reader[subProp.Name]), null);
+                        else
+                            subProp.SetValue(subItem, reader[subProp.Name], null);
                     }
-                    else
+
+                    prop.SetValue(item, subItem);
+                }
+                else
+                {
+                    var listType = prop.PropertyType.GetAnyElementType();
+                    var subItem = Activator.CreateInstance(typeof(List<>).MakeGenericType(listType));
+                    var listItem = Activator.CreateInstance(listType);
+                    var subPropList = listType.GetProperties()
+                                              .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
+                                              .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+                                              .Where(e => e.CanWrite);
+
+                    foreach (var subProp in subPropList)
+                        columnList += subProp.Name + ",";
+
+                    cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + listType.Name + " WHERE " + typeof(T).Name + "Id = @" + typeof(T).Name + "Id;";
+                    cmd.Parameters.AddWithValue("@" + typeof(T).Name + "Id", item.GetPropValue("Id"));
+
+                    using var reader = cmd.ExecuteReader();
+
+                    while (reader.Read())
                     {
-                        var listType = prop.PropertyType.GetAnyElementType();
-                        var subItem = Activator.CreateInstance(typeof(List<>).MakeGenericType(listType));
-                        var listItem = Activator.CreateInstance(listType);
-                        var subPropList = listType.GetProperties()
-                                            .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
-                                            .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
-                                            .Where(e => e.CanWrite);
-
                         foreach (var subProp in subPropList)
-                            columnList += subProp.Name + ",";
-
-                        cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + listType.Name + " WHERE " + typeof(T).Name + "Id = @" + typeof(T).Name + "Id;";
-                        cmd.Parameters.AddWithValue("@" + typeof(T).Name + "Id", item.GetPropValue("Id"));
-
-                        using (var reader = cmd.ExecuteReader())
                         {
-                            while (reader.Read())
-                            {
-                                foreach (var subProp in subPropList)
-                                {
-                                    if (subProp.PropertyType == typeof(int) || subProp.Name == "Id")
-                                        subProp.SetValue(listItem, Convert.ToInt32(reader[subProp.Name]), null);
-                                    else
-                                        subProp.SetValue(listItem, reader[subProp.Name], null);
-                                }
-
-                                ((IList)subItem).Add(listItem);
-                            }
+                            if (subProp.PropertyType == typeof(int) || subProp.Name == "Id")
+                                subProp.SetValue(listItem, Convert.ToInt32(reader[subProp.Name]), null);
+                            else
+                                subProp.SetValue(listItem, reader[subProp.Name], null);
                         }
-                        prop.SetValue(item, subItem);
+                        ((IList)subItem).Add(listItem);
                     }
+
+                    prop.SetValue(item, subItem);
                 }
             }
+
             return item;
         }
 
@@ -377,35 +365,34 @@ namespace ThrowAwayDataBackground
             var tableName = itemTemplate.GetType().Name;
             var columnList = "";
             var propList = typeof(T).GetProperties()
-                            .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
-                            .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
-                            .Where(e => e.CanWrite);
+                                    .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
+                                    .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+                                    .Where(e => e.CanWrite);
 
             foreach (var prop in propList)
                 columnList += prop.Name + ",";
 
-            using (var conn = new SQLiteConnection(ConnString))
-            using (var cmd = conn.CreateCommand())
-            {
-                cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE Deleted = 0;";
-                conn.Open();
+            using var conn = new SQLiteConnection(ConnString);
+            using var cmd = conn.CreateCommand();
 
-                using (var reader = cmd.ExecuteReader())
+            cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE Deleted = 0;";
+            conn.Open();
+
+            using var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var item = new T();
+                foreach (var prop in propList)
                 {
-                    while (reader.Read())
-                    {
-                        var item = new T();
-                        foreach (var prop in propList)
-                        {
-                            if (prop.PropertyType == typeof(int) || prop.Name == "Id")
-                                prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
-                            else
-                                prop.SetValue(item, reader[prop.Name], null);
-                        }
-                        list.Add(IncludeProperties(item));
-                    }
+                    if (prop.PropertyType == typeof(int) || prop.Name == "Id")
+                        prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
+                    else
+                        prop.SetValue(item, reader[prop.Name], null);
                 }
+                list.Add(IncludeProperties(item));
             }
+
 
             IncludeFields.Clear();
             WhereParameters.Clear();
@@ -421,29 +408,27 @@ namespace ThrowAwayDataBackground
             var whereClause = "Deleted = 0";
             var columnList = "";
             var propList = typeof(T).GetProperties()
-                            .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
-                            .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)));
+                                    .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
+                                    .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)));
 
             foreach (var prop in propList)
                 columnList += prop.Name + ",";
 
-            using (var conn = new SQLiteConnection(ConnString))
-            using (var cmd = conn.CreateCommand())
+            using var conn = new SQLiteConnection(ConnString);
+            using var cmd = conn.CreateCommand();
+
+            foreach (var paramiter in WhereParameters)
             {
-                foreach (var paramiter in WhereParameters)
-                {
-                    whereClause += " AND " + paramiter.Key + " " + paramiter.Value.Item1 + " @" + paramiter.Key;
-                    cmd.Parameters.AddWithValue("@" + paramiter.Key, paramiter.Value.Item2);
-                }
-
-                cmd.CommandText = "SELECT COUNT(" + columnList.TrimEnd(',') + ") as count FROM " + tableName + " WHERE " + whereClause + ";";
-
-                using (var reader = cmd.ExecuteReader())
-                {
-                    if (reader.Read())
-                        count = Convert.ToInt32(reader["count"]);
-                }
+                whereClause += " AND " + paramiter.Key + " " + paramiter.Value.Item1 + " @" + paramiter.Key;
+                cmd.Parameters.AddWithValue("@" + paramiter.Key, paramiter.Value.Item2);
             }
+
+            cmd.CommandText = "SELECT COUNT(" + columnList.TrimEnd(',') + ") as count FROM " + tableName + " WHERE " + whereClause + ";";
+
+            using var reader = cmd.ExecuteReader();
+
+            if (reader.Read())
+                count = Convert.ToInt32(reader["count"]);
 
             IncludeFields.Clear();
             WhereParameters.Clear();
@@ -459,34 +444,32 @@ namespace ThrowAwayDataBackground
             var columnList = "";
             var pageNumber = (page - 1) * size;
             var propList = typeof(T).GetProperties()
-                            .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
-                            .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
-                            .Where(e => e.CanWrite);
+                                    .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
+                                    .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+                                    .Where(e => e.CanWrite);
 
             foreach (var prop in propList)
                 columnList += prop.Name + ",";
 
-            using (var conn = new SQLiteConnection(ConnString))
-            using (var cmd = conn.CreateCommand())
-            {
-                cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE Deleted = 0 ORDER BY Id LIMIT " + size + " OFFSET " + pageNumber + ";";
-                conn.Open();
+            using var conn = new SQLiteConnection(ConnString);
+            using var cmd = conn.CreateCommand();
 
-                using (var reader = cmd.ExecuteReader())
+            cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE Deleted = 0 ORDER BY Id LIMIT " + size + " OFFSET " + pageNumber + ";";
+            conn.Open();
+
+            using var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                var item = new T();
+                foreach (var prop in propList)
                 {
-                    while (reader.Read())
-                    {
-                        var item = new T();
-                        foreach (var prop in propList)
-                        {
-                            if (prop.PropertyType == typeof(int) || prop.Name == "Id")
-                                prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
-                            else
-                                prop.SetValue(item, reader[prop.Name], null);
-                        }
-                        list.Add(IncludeProperties(item));
-                    }
+                    if (prop.PropertyType == typeof(int) || prop.Name == "Id")
+                        prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
+                    else
+                        prop.SetValue(item, reader[prop.Name], null);
                 }
+                list.Add(IncludeProperties(item));
             }
 
             IncludeFields.Clear();
@@ -502,38 +485,35 @@ namespace ThrowAwayDataBackground
             var whereClause = "Deleted = 0";
             var columnList = "";
             var propList = typeof(T).GetProperties()
-                            .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
-                            .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)));
+                                    .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
+                                    .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)));
 
             foreach (var prop in propList)
                 columnList += prop.Name + ",";
 
-            using (var conn = new SQLiteConnection(ConnString))
-            using (var cmd = conn.CreateCommand())
+            using var conn = new SQLiteConnection(ConnString);
+            using var cmd = conn.CreateCommand();
+
+            foreach (var paramiter in WhereParameters)
             {
-                foreach (var paramiter in WhereParameters)
-                {
-                    whereClause += " AND " + paramiter.Key + " " + paramiter.Value.Item1 + " @" + paramiter.Key;
-                    cmd.Parameters.AddWithValue("@" + paramiter.Key, paramiter.Value.Item2);
-                }
+                whereClause += " AND " + paramiter.Key + " " + paramiter.Value.Item1 + " @" + paramiter.Key;
+                cmd.Parameters.AddWithValue("@" + paramiter.Key, paramiter.Value.Item2);
+            }
 
-                cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE " + whereClause + " ORDER BY RANDOM() LIMIT 1";
+            cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE " + whereClause + " ORDER BY RANDOM() LIMIT 1";
+            conn.Open();
 
-                conn.Open();
+            using var reader = cmd.ExecuteReader();
 
-                using (var reader = cmd.ExecuteReader())
-                {
-                    if (!reader.Read())
-                        return null;
+            if (!reader.Read())
+                return null;
 
-                    foreach (var prop in propList)
-                    {
-                        if (prop.PropertyType == typeof(int) || prop.Name == "Id")
-                            prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
-                        else
-                            prop.SetValue(item, reader[prop.Name], null);
-                    }
-                }
+            foreach (var prop in propList)
+            {
+                if (prop.PropertyType == typeof(int) || prop.Name == "Id")
+                    prop.SetValue(item, Convert.ToInt32(reader[prop.Name]), null);
+                else
+                    prop.SetValue(item, reader[prop.Name], null);
             }
 
             return item;
