@@ -7,7 +7,7 @@
 <form asp-controller="Forum" asp-action="AddEditThread" method="post" id="ThreadForm" role="form">
     <div class="modal-body">
         <div class="form-group">
-            <input id="Title" class="form-control" name="Title" placeholder="Thread Title" value="@Model.Title" autocomplete="off">
+            <input id="Title" class="form-control" name="Title" placeholder="Thread Description" value="@Model.Title" autocomplete="off">
         </div>
         <div class="form-group">
             <textarea id="Body" class="form-control" name="Body" placeholder="Thread Body" value="@Model.Body" autocomplete="off"></textarea>

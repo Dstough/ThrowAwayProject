@@ -193,6 +193,8 @@ namespace ThrowAwayDataBackground
                                     .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
                                     .Where(e => e.Name != "Id");
 
+            entity.PublicId = GetNewPublicId();
+
             using var conn = new SQLiteConnection(ConnString);
             using var cmd = conn.CreateCommand();
 
@@ -519,7 +521,28 @@ namespace ThrowAwayDataBackground
             return item;
         }
 
+        protected virtual string GetNewPublicId()
+        {
+            var tableName = typeof(T).Name;
+
+            while (true)
+            {
+                var value = "".RandomString(11);
+                using var conn = new SQLiteConnection(ConnString);
+                using var cmd = conn.CreateCommand();
+                
+                cmd.CommandText = "SELECT PublicId FROM " + tableName + " WHERE PublicId = @publicId";
+                cmd.Parameters.AddWithValue("@publicId", value);
+
+                conn.Open();
+
+                using var reader = cmd.ExecuteReader();
+
+                if (!reader.Read())
+                    return value;
+            }
+        }
+
         #endregion
     }
-
 }

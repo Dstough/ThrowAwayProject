@@ -25,16 +25,11 @@ namespace ThrowAwayDataBackground
             return src.GetType().GetProperty(propName).GetValue(src, null);
         }
 
-        public static string Random64BaseString(this BaseObject _)
-        {
-            return RandomString(11);
-        }
-
-        private static string RandomString(int length, string alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_")
+        public static string RandomString(this string value, int length, string alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_")
         {
             var outOfRange = byte.MaxValue + 1 - (byte.MaxValue + 1) % alphabet.Length;
 
-            return string.Concat(
+            value = string.Concat(
                 Enumerable
                     .Repeat(0, int.MaxValue)
                     .Select(e => RandomByte())
@@ -42,16 +37,16 @@ namespace ThrowAwayDataBackground
                     .Take(length)
                     .Select(randomByte => alphabet[randomByte % alphabet.Length])
             );
+
+            return value;
         }
 
         private static byte RandomByte()
         {
-            using (var randomizationProvider = new RNGCryptoServiceProvider())
-            {
-                var randomBytes = new byte[1];
-                randomizationProvider.GetBytes(randomBytes);
-                return randomBytes.Single();
-            }
+            using var randomizationProvider = new RNGCryptoServiceProvider();
+            var randomBytes = new byte[1];
+            randomizationProvider.GetBytes(randomBytes);
+            return randomBytes.Single();
         }
     }
 }

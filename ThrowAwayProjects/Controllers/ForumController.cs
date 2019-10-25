@@ -101,48 +101,24 @@ namespace ThrowAwayProjects.Controllers
             });
         }
 
-        [HttpPost]
-        public ActionResult AddPost(PostViewModel viewModel)
+        public JsonResult AddEditThread(string id)
         {
             return HandleExceptions(() =>
             {
-                var User = HttpContext.Session.GetString("CurrentUserId");
-                var ThreadId = HttpContext.Session.GetString("CurrentThreadId");
-
-                if (User == null || ThreadId == null)
-                    throw new Exception("Stop poking around where you shouldn't be omae.");
-
-                var dbPost = new Post()
-                {
-                    Body = viewModel.Body,
-                    CreatedBy = Convert.ToInt32(User),
-                    ThreadId = Convert.ToInt32(ThreadId)
-                };
-
-                database.Posts.Add(dbPost);
-
-                return RedirectToAction("Thread", new { Id = ThreadId });
-            });
-        }
-
-        public JsonResult AddEditThread(string Id)
-        {
-            return HandleExceptions(() =>
-            {
-                if (Id == null)
+                if (id == null)
                     return Modal("_AddEditThread", new ThreadViewModel());
                 
-                HttpContext.Session.SetString("CurrentEditId", Id);
+                HttpContext.Session.SetString("CurrentEditId", id);
 
-                var DBthread = database.Threads.Where(new {PublicId = Id}).Find().FirstOrDefault();
+                var dbThread = database.Threads.Where(new {PublicId = id}).Find().FirstOrDefault();
 
-                if (DBthread == null)
+                if (dbThread == null)
                     throw new Exception("That thread couldn't be found in the database.");
 
                 var viewModel = new ThreadViewModel()
                 {
-                    Title = DBthread.Title,
-                    Body = DBthread.Body
+                    Title = dbThread.Title,
+                    Body = dbThread.Body
                 };
 
                 return Modal("_AddEditThread", viewModel);
@@ -179,6 +155,30 @@ namespace ThrowAwayProjects.Controllers
                 }
 
                 return RedirectToAction("Thread", new { Id = dbThread.PublicId } );
+            });
+        }
+        
+        [HttpPost]
+        public ActionResult AddPost(PostViewModel viewModel)
+        {
+            return HandleExceptions(() =>
+            {
+                var user = HttpContext.Session.GetString("CurrentUserId");
+                var threadId = HttpContext.Session.GetString("CurrentThreadId");
+
+                if (user == null || threadId == null)
+                    throw new Exception("Stop poking around where you shouldn't be omae.");
+
+                var dbPost = new Post()
+                {
+                    Body = viewModel.Body,
+                    CreatedBy = Convert.ToInt32(User),
+                    ThreadId = Convert.ToInt32(threadId)
+                };
+
+                database.Posts.Add(dbPost);
+
+                return RedirectToAction("Thread", new { Id = threadId });
             });
         }
 

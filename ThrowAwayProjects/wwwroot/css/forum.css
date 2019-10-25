@@ -55,3 +55,7 @@
 .post:hover .message-body {
     text-shadow: 1px 1px 10px #555;
 }
+
+#ThreadForm textarea{
+    height: 500px;
+}
