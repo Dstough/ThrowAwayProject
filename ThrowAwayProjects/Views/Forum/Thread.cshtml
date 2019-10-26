@@ -2,24 +2,27 @@
 
 <div class="thread">
     <div class="post">
-        <span class="message-body">
-            @Model.Body
-        </span>
+        <span id="thread" class="message-body"></span>
     </div>
+
+    <script>
+        $(function () {
+
+            let data = {
+                "type": "section",
+                "entries": [
+                    "@Model.Body"
+                ]
+            };
+
+            data = JSON.parse('@Html.Raw(Model.Body.Replace("\r\n","").Replace("'",""))');
+
+            $('#thread').html(RenderData(data));
+        });
+    </script>
+
     @foreach (var post in Model.Posts)
     {
-        var onClick = "";
-        if (ViewBag.UserName == post.Author)
-        {
-            onClick = "Modal('" + @Url.Action("EditPost", "Forum", new { Id = post.Id }) + "')";
-        }
-        <div class="post" id="@post.Id" onclick="@onClick">
-            <span class="message-body">
-                @post.Body
-            </span>
-            <div class="message-signature">
-                <span class="@Model.CSS">-- @Model.Author</span><span class="time-stamp">@post.PostDate.AddYears(60)</span>
-            </div>
-        </div>
+        //TODO: render the posts in their spots.
     }
 </div>
