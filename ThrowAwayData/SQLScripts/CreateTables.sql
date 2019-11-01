@@ -64,7 +64,6 @@ create table Thread
 	CreatedOn datetime not null,
 	CreatedBy integer not null,
 	Deleted bit not null,
-	Title varchar not null,
 	Body varchar not null,
 	TagId integer,
 	Edited bit not null,

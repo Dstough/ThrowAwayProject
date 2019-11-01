@@ -24,7 +24,7 @@ namespace ThrowAwayProjects.Controllers
             return HandleExceptions(() =>
             {
                 if (Id == null)
-                    throw new Exception("The post number needs to be specified in the address bar.");
+                    throw new Exception("The thread id needs to be specified in the address bar.");
 
                 var dbThread = database.Threads.Where(new { PublicId = Id }).Find().FirstOrDefault();
 
@@ -45,7 +45,6 @@ namespace ThrowAwayProjects.Controllers
 
                 var viewModel = new ThreadViewModel
                 {
-                    Title = dbThread.Title,
                     Body = dbThread.Body,
                     Author = dbAuthor.UserName,
                     PostDate = dbAuthor.CreatedOn,
@@ -107,18 +106,17 @@ namespace ThrowAwayProjects.Controllers
             {
                 if (id == null)
                     return Modal("_AddEditThread", new ThreadViewModel());
-                
+
                 HttpContext.Session.SetString("CurrentEditId", id);
 
-                var dbThread = database.Threads.Where(new {PublicId = id}).Find().FirstOrDefault();
+                var dbThread = database.Threads.Where(new { PublicId = id }).Find().FirstOrDefault();
 
                 if (dbThread == null)
                     throw new Exception("That thread couldn't be found in the database.");
 
                 var viewModel = new ThreadViewModel()
                 {
-                    Title = dbThread.Title,
-                    Body = dbThread.Body
+                    Body = dbThread.Body.Substring(0, 200) + "..."
                 };
 
                 return Modal("_AddEditThread", viewModel);
@@ -133,31 +131,29 @@ namespace ThrowAwayProjects.Controllers
                 var key = HttpContext.Session.GetString("UserKey");
                 var currentEditId = HttpContext.Session.GetString("CurrentEditId");
                 var dbThread = new Thread();
-                
+
                 if (key == null)
                     throw new Exception("You must be logged in to do that.");
 
                 var user = JsonConvert.DeserializeObject<UserIdentity>(key);
-                
+
                 if (currentEditId == null)
                 {
-                    dbThread.Title = viewModel.Title;
                     dbThread.Body = viewModel.Body;
                     dbThread.CreatedBy = user.Id ?? 0;
                     database.Threads.Add(dbThread);
                 }
                 else
                 {
-                    dbThread = database.Threads.Where(new{PublicId = currentEditId}).Find().FirstOrDefault();
-                    dbThread.Title = viewModel.Title;
+                    dbThread = database.Threads.Where(new { PublicId = currentEditId }).Find().FirstOrDefault();
                     dbThread.Body = viewModel.Body;
                     database.Threads.Edit(dbThread);
                 }
 
-                return RedirectToAction("Thread", new { Id = dbThread.PublicId } );
+                return RedirectToAction("Thread", new { Id = dbThread.PublicId });
             });
         }
-        
+
         [HttpPost]
         public ActionResult AddPost(PostViewModel viewModel)
         {

@@ -1,25 +1,14 @@
-﻿@model ThreadViewModel
+﻿@using System.Web
+@using Markdig
+@model ThreadViewModel
 
 <div class="thread">
+
     <div class="post">
-        <span id="thread" class="message-body"></span>
+        <span id="thread" class="message-body">
+            @Html.Raw(Markdown.ToHtml(Model.Body, new MarkdownPipelineBuilder().UseAdvancedExtensions().Build()))
+        </span>
     </div>
-
-    <script>
-        $(function () {
-
-            let data = {
-                "type": "section",
-                "entries": [
-                    "@Model.Body"
-                ]
-            };
-
-            data = JSON.parse('@Html.Raw(Model.Body.Replace("\r\n","").Replace("'",""))');
-
-            $('#thread').html(RenderData(data));
-        });
-    </script>
 
     @foreach (var post in Model.Posts)
     {

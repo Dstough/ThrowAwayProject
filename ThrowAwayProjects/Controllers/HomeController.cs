@@ -27,9 +27,10 @@ namespace ThrowAwayProjects.Controllers
                     var author = database.Users.Include("UserGroup").Get(thread.CreatedBy);
                     viewModel.UserThreads.Add(new ThreadViewModel(thread)
                     {
+                        Body = thread.Body.Substring(0, 200) + "...",
                         Author = author.UserName,
                         CSS = author.UserGroup.Name == "Admin" ? "admin-color" : ""
-                    });
+                    }) ;
                 }
 
                 return View(viewModel);
@@ -73,7 +74,7 @@ namespace ThrowAwayProjects.Controllers
 
                 return Json(new
                 {
-                    message = thread.Title,
+                    message = thread.Body.Substring(0, 200) + "...",
                     signature = author.UserName,
                     css = author.UserGroup.Name == "Admin" ? "admin-color" : "",
                     url = "/Forum/Thread/" + thread.PublicId,

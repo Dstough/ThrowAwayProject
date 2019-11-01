@@ -31,7 +31,7 @@
     {
         <div class="post" onclick="location.href='@thread.Url';">
             <span class="message-body">
-                @thread.Title
+                @thread.Body.Substring(0, 200)
             </span>
             <div class="message-signature @thread.CSS ">
                 -- @thread.Author <span class=time-stamp>@thread.PostDate.AddYears(60)</span>
