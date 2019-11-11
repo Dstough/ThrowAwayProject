@@ -1,5 +1,5 @@
 @model VerificationViewModel;
-@if(Model.ErrorMessage != null)
+@if (Model.ErrorMessage != null)
 {
     <script>
         $(function() {
@@ -10,27 +10,29 @@
 }
 
 <h2>Verify Account</h2>
-<h5>[<a asp-area="" asp-controller="Home" asp-action="Index">Back to home page</a>]</h5>
-<hr/>
+<h5><a asp-area="" asp-controller="Home" asp-action="Index">Back to home page</a></h5>
+<hr />
 <form asp-controller="Account" asp-action="Verify" method="post" id="VerifyForm" role="form">
     <div class="form-group">
         <input id="code" type="text" class="form-control" name="inputGuid" placeholder="code" autocomplete="off">
     </div>
     <!--@Model.dbGuid-->
-    <button id="verify" id="verify" class="btn btn-primary" style="width:100%">Verify</button>
+    <button id="verify" class="btn btn-primary" style="width:100%">Verify</button>
 </form>
-<br/><br/>
-<span class="message-body">
-    I have sent you a new verification code.
-    Check your email and type in the code.
-    Or you could just copy and paste it, like everyone else.
-</span>
-<div class="message-signature admin-color">
-    Fastjack
+<br />
+<br />
+<div class="comment">
+    <span class="message-body">
+        I have sent you a new verification code.
+        Check your email and type in the code.
+        Or you could just copy and paste it, like everyone else.
+    </span>
+    <div class="message-signature admin-color">
+        Fastjack
+    </div>
 </div>
-
 <script>
-    $(function(){
+    $(function () {
         BindValidation(["code"], "verify");
     });
 </script>

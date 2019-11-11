@@ -11,22 +11,22 @@
 
 <div class="thread">
     <h1>News Broadcasts</h1>
-    [<a>view all</a>]
+    <a>view all</a>
 </div>
 
 <div class="thread">
     <h1>Job Postings</h1>
-    [<a>view all</a>]
+    <a>view all</a>
 </div>
 
 <div class="thread">
     <h1>Run Archive</h1>
-    [<a>view all</a>]
+    <a>view all</a>
 </div>
 
 <div class="thread">
     <h1>User Threads</h1>
-    [<a>view all</a>]
+    <a>view all</a>
     @foreach (var thread in Model.UserThreads)
     {
         <div class="post comment" onclick="location.href='@thread.Url';">

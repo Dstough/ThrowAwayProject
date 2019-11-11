@@ -27,7 +27,7 @@
     .post .message-signature {
         font-size: 18px;
         font-style: italic;
-        margin-top: 19px;
+        margin-top: 10px;
         margin-bottom: 19px;
         color: #999;
     }
@@ -55,7 +55,15 @@
 .comment {
     padding-left: 22px;
     text-indent: -22px;
+    font-size: 18px;
 }
+
+    .comment .message-signature {
+        font-size: 18px;
+        font-style: italic;
+        margin-top: 10px;
+        margin-bottom: 19px;
+    }
 
     .comment .message-body:before,
     .message-signature:before {

@@ -84,7 +84,23 @@ hr {
 
 a {
     cursor: pointer;
+    color: #337ab7 !important;
 }
+
+    a:hover {
+        text-decoration: none;
+        color: #23527c !important;
+    }
+
+    a:before {
+        content: "[";
+        color: #eee;
+    }
+
+    a:after {
+        content: "]";
+        color: #eee;
+    }
 
 .close {
     float: right;
