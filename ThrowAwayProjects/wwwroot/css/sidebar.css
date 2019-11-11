@@ -41,11 +41,13 @@
 .side-bar .comment {
     padding-left: 12px;
     text-indent: -12px;
+    line-height: 1;
 }
 
     .side-bar .comment .message-body,
     .side-bar .comment .message-signature {
         font-size: 11px;
+        
         color: #808080;
     }
 

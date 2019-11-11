@@ -87,13 +87,14 @@ namespace ThrowAwayProjects.Controllers
 
                 foreach (var dbThread in dbThreads)
                 {
-                    var user = database.Users.Include("UserGroups").Get(dbThread.CreatedBy);
+                    var user = database.Users.Get(dbThread.CreatedBy);
+                    var group = database.UserGroups.Get(user.UserGroupId);
 
                     threads.Add(new ThreadViewModel(dbThread)
                     {
-                        CSS = user.UserGroup.Name == "Admin" ? "admin-color" : "",
+                        CSS = group.Name == "Admin" ? "admin-color" : "",
                         Author = user.UserName
-                    });
+                    }); ;
                 }
 
                 return View(threads);

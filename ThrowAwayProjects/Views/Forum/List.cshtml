@@ -1,12 +1,28 @@
 ﻿@model List<ThreadViewModel>
-@foreach (var thread in Model)
-{
-    <div class="post">
-        <span class="message-body">
-            @thread.Body;
-        </span>
-        <div class="message-signature">
-            @thread.Author <span class="time-stamp @thread.CSS">@thread.PostDate.AddYears(60)</span>
+
+<div class="thread">
+    @foreach (var thread in Model)
+    {
+        <div class="post comment">
+            <span class="message-body">@thread.Body</span>
+            <div class="message-signature">
+                @thread.Author <span class="time-stamp @thread.CSS">@thread.PostDate.AddYears(60)</span>
+            </div>
         </div>
-    </div>
-}
+    }
+</div>
+
+<script>
+    $(function () {
+
+        var converter = new showdown.Converter({
+            tables: true,
+            strikethrough: true,
+        });
+
+        $(".thread .message-body").each(function () {
+            var text = $(this).html()
+            $(this).html(converter.makeHtml(text));
+        });
+    });
+</script>

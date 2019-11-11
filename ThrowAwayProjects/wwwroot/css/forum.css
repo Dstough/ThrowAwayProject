@@ -29,7 +29,6 @@
         font-style: italic;
         margin-top: 10px;
         margin-bottom: 19px;
-        color: #999;
     }
 
     .post .time-stamp {
@@ -58,6 +57,10 @@
     font-size: 18px;
 }
 
+    .comment .message-body {
+        
+    }
+
     .comment .message-signature {
         font-size: 18px;
         font-style: italic;
@@ -83,7 +86,9 @@
 
     .comment table,
     .comment ol,
-    .comment ul {
+    .comment ul,
+    .comment hr,
+    .comment img{
         display: none;
     }
 

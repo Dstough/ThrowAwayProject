@@ -1,13 +1,14 @@
 ﻿@model Exception
-@{    
-    var errorMessage = Model.ToString().Split(new string[] { " at " }, StringSplitOptions.None);
-}
 <div>
-    <br/><br/>
-    <span class="message-body">
-        @Model.Message
-    </span>
-    <div class="message-signature admin-color">
-        Fastjack
+    <br />
+    <div class="thread">
+        <div class="post">
+            <span class="message-body">
+                @Model.Message
+            </span>
+            <div class="message-signature admin-color">
+                Fastjack
+            </div>
+        </div>
     </div>
 </div>

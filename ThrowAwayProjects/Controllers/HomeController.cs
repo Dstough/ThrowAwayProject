@@ -24,13 +24,14 @@ namespace ThrowAwayProjects.Controllers
 
                 foreach (var thread in database.Threads.Find(5))
                 {
-                    var author = database.Users.Include("UserGroup").Get(thread.CreatedBy);
+                    var author = database.Users.Get(thread.CreatedBy);
+                    var group = database.UserGroups.Get(author.UserGroupId);
+
                     viewModel.UserThreads.Add(new ThreadViewModel(thread)
                     {
-                        Body = thread.Body.Substring(0, 200) + "...",
                         Author = author.UserName,
-                        CSS = author.UserGroup.Name == "Admin" ? "admin-color" : ""
-                    }) ;
+                        CSS = group.Name == "Admin" ? "admin-color" : ""
+                    });
                 }
 
                 return View(viewModel);
