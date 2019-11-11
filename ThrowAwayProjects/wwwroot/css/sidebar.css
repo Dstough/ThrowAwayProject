@@ -32,19 +32,19 @@
             padding-top: 15px;
         }
 
-.biometrics {
+.side-bar .biometrics {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
 }
 
-.widget.post {
+.side-bar .comment {
     padding-left: 12px;
     text-indent: -12px;
 }
 
-    .widget.post .message-body,
-    .widget.post .message-signature{
+    .side-bar .comment .message-body,
+    .side-bar .comment .message-signature {
         font-size: 11px;
         color: #808080;
     }

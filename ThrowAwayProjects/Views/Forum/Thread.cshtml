@@ -1,17 +1,30 @@
-﻿@using System.Web
-@using Markdig
-@model ThreadViewModel
+﻿@model ThreadViewModel
 
 <div class="thread">
 
     <div class="post">
-        <span id="thread" class="message-body">
-            @Html.Raw(Markdown.ToHtml(Model.Body, new MarkdownPipelineBuilder().UseAdvancedExtensions().Build()))
-        </span>
+        <span class="message-body">@Model.Body</span>
+        <div class="message-signature">
+            @Model.Author
+            <span class=time-stamp>
+                @Model.PostDate.AddYears(60)
+            </span>
+        </div>
     </div>
 
-    @foreach (var post in Model.Posts)
-    {
-        //TODO: render the posts in their spots.
-    }
+    <script>
+        $(function () {
+
+            var converter = new showdown.Converter({
+                tables: true,
+                strikethrough: true,
+            });
+
+            $(".thread .message-body").each(function () {
+                var text = $(this).html()
+                $(this).html(converter.makeHtml(text));
+            });
+        });
+    </script>
+
 </div>
