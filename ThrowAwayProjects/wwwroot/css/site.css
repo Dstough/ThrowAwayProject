@@ -23,11 +23,6 @@
     position: fixed;
 }
 
-footer {
-    background: linear-gradient( #1e1e1e, #000);
-    border-top: 0;
-}
-
 .form-control {
     background-color: #ababab;
     box-shadow: inset 0 0 7px #000;
@@ -36,10 +31,9 @@ footer {
 }
 
 input::placeholder,
-textarea::placeholder{
+textarea::placeholder {
     color: #555 !important;
 }
-
 
 input[type=checkbox], input[type=radio] {
     width: 35px;
@@ -61,10 +55,10 @@ input[type=checkbox], input[type=radio] {
     border-color: black;
 }
 
-.btn-danger:hover {
-    background: linear-gradient( #dd0000, #2b0000);
-    border-color: black;
-}
+    .btn-danger:hover {
+        background: linear-gradient( #dd0000, #2b0000);
+        border-color: black;
+    }
 
 .btn-primary:hover {
     background: linear-gradient( #6d6d6d, #1f1f1f);
@@ -95,10 +89,10 @@ a {
     text-shadow: 2px 2px 15px #000;
 }
 
-.close:hover {
-    color: #e1e1e1;
-    text-shadow: 2px 2px 15px #fff;
-}
+    .close:hover {
+        color: #e1e1e1;
+        text-shadow: 2px 2px 15px #fff;
+    }
 
 .lbl {
     text-decoration: underline;
@@ -111,7 +105,7 @@ a {
     float: right;
 }
 
-.control{
+.control {
     width: 100%;
 }
 
@@ -121,7 +115,7 @@ a {
     padding-right: 20px !important;
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 768px) {
     .navbar-collapse ul {
         float: none;
         text-align: center;

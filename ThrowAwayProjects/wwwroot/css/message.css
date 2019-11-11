@@ -19,7 +19,7 @@
     top: 70px;
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (max-width: 992px) {
     .message {
         right: 5%;
         min-width: 90%;

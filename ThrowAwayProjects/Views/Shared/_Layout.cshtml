@@ -4,9 +4,9 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/png" href="\Images\Logo.png" />
-    <title>Jackpoint</title>
+    <title>JackPoint</title>
 
-    <link rel="stylesheet" href="~/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/lib/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/css/scrollbar.css" />
     <link rel="stylesheet" href="~/css/forum.css" />
@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="~/css/modal.css" />
     <link rel="stylesheet" href="~/css/sidebar.css" />
     <link rel="stylesheet" href="~/css/message.css" />
-    <link rel="stylesheet" href="~/css/ShadowrunTable.css" />
 
     <script src="~/js/lib/jquery.min.js"></script>
     <script src="~/js/lib/jquery-ui.min.js"></script>
@@ -32,8 +31,8 @@
         </div>
     </div>
     <div id="message" class="message">
-        <span class='message-body'>Welcome back to Jackpoint, Omae.</span>
-        <div class='message-signature admin-color'>-- Fastjack</div>
+        <span class='message-body'>Welcome back to JackPoint, Omae.</span>
+        <div class='message-signature admin-color'> FastJack</div>
     </div>
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
@@ -44,8 +43,8 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <img src="\Images\Jackpoint.svg" class="navbar-brand header-image" />
-                <a class="navbar-brand" asp-controller="Home" asp-action="Index">Jackpoint</a>
+                <img src="\Images\shadowrun-logo.svg" class="navbar-brand header-image" />
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">JackPoint</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav"></ul>
@@ -69,10 +68,10 @@
         </div>
     </nav>
     <div class="container body-content">
-        <div class="col-sm-8">
+        <div class="col-md-8">
             @RenderBody()
         </div>
-        <div class="col-sm-4 side-bar">
+        <div class="col-md-4 side-bar">
             <div class="biometrics">
                 <h1>Biometrics:</h1>
                 <p><span style="color:#aaa;">...Connected:</span> @ViewBag.DateConnected</p>
@@ -90,19 +89,27 @@
                 </div>
             }
 
-            <div id="post-widget" class="widget post">
-                <span class='message-body'>Welcome back to Jackpoint, Omae.</span>
-                <div class='message-signature admin-color'>-- Fastjack</div>
+            <div class="widget">
+                <h2>Posting rules:</h2>
+                <ol>
+                    <li>Your account must be 1 week old to leave shadowtalk comments.</li>
+                    <li>Once you have made a name for yourself here, you will be able to post longer articles.</li>
+                    <li>No doxing, harrasing, or generally offensive content.</li>
+                    <li>Try to keep the posts on topic.</li>
+                </ol>
+                <hr />
             </div>
-            <script>
-                $(function() {
-                    FetchNewRandomPost('@Url.Action("GetRandomPost","Home")','post-widget');
-                });
-            </script>
+
+            <div class="widget post">
+                <span class='message-body'>
+                    The Topps Company, Inc. has sole ownership of the names, logo, artwork, marks, photographs, sounds, audio, video and/or any proprietary material used in connection with the game Shadowrun.
+                    The Topps Company, Inc. has granted permission to JackPoint to use such names, logos, artwork, marks and/or any proprietary materials for promotional and informational purposes on its website but does not endorse, and is not affiliated with JackPoint in any official capacity whatsoever.
+                </span>
+                <div class="message-signature">
+                    &copy;@(DateTime.Now.Year + 60) - JackPoint
+                </div>
+            </div>
         </div>
     </div>
-    <footer class="navbar-fixed-bottom" style="background-color:#080808; color:#9d9d9d">
-        <div class="pl-3 text-center ">&nbsp;&copy; @(DateTime.Now.Year + 60) - Jackpoint</div>
-    </footer>
 </body>
 </html>

@@ -1,6 +1,5 @@
 .side-bar {
-    position: fixed;
-    text-align: left;
+    text-align: justify;
     right: 0;
 }
 
@@ -8,9 +7,30 @@
         max-width: 300px;
     }
 
+    .side-bar h2 {
+        margin-top: 0;
+    }
+
     .side-bar .btn-primary {
         width: 290px;
     }
+
+    .side-bar .post {
+        cursor: default;
+    }
+
+        .side-bar .post:hover .message-body,
+        .side-bar .post:hover .message-signature {
+            text-shadow: none !important;
+        }
+
+    .side-bar ol {
+        text-align: left;
+    }
+
+        .side-bar ol li {
+            padding-top: 15px;
+        }
 
 .biometrics {
     white-space: nowrap;
@@ -18,11 +38,18 @@
     overflow: hidden;
 }
 
-.widget {
-    display: none;
+.widget.post {
+    padding-left: 12px;
+    text-indent: -12px;
 }
 
-@media screen and (max-width: 767px) {
+    .widget.post .message-body,
+    .widget.post .message-signature{
+        font-size: 11px;
+        color: #808080;
+    }
+
+@media screen and (max-width: 992px) {
     .side-bar {
         position: inherit;
         margin-bottom: 30px;
@@ -35,8 +62,4 @@
         .side-bar .btn-primary {
             width: 100%;
         }
-
-    .widget {
-        display: none !important;
-    }
 }

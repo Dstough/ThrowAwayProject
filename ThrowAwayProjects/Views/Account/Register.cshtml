@@ -1,5 +1,5 @@
 @model AccountViewModel
-@if(Model.ErrorMessage != null)
+@if (Model.ErrorMessage != null)
 {
     <script>
         $(function() {
@@ -10,13 +10,13 @@
 }
 
 <form asp-controller="Account" asp-action="Register" method="post" id="RegisterForm" role="form">
-    
+
     <div class="col-sm-12">
         <h2>Register New Account</h2>
         <h5>[<a asp-area="" asp-controller="Home" asp-action="Index">Back to home page</a>]</h5>
         <hr />
     </div>
-    
+
     <div class="col-sm-6">
         <div class="form-group">
             <input id="email" type="email" class="form-control" name="Email" placeholder="email" autocomplete="off">
@@ -34,21 +34,23 @@
             <input id="PassphraseConfirm" type="password" class="form-control" name="PassphraseConfirm" placeholder="confirm">
         </div>
     </div>
-    
+
     <div class="col-sm-12">
         <hr />
-        <button id="register" id="sendlogin" class="btn btn-primary" style="width:100%">Register</button>
+        <button id="register" class="btn btn-primary" style="width:100%">Register</button>
     </div>
 </form>
 <div class="col-sm-12">
-    <br/><br/>
-    <span class="message-body">
-        Don't use any Passphrase that you have used before. 
-        This is a host made for shadowrunners. 
-        If you are here, you know what we do best.
-    </span>
-    <div class="message-signature admin-color">
-        -- Fastjack
+    <br />
+    <div class="post">
+        <span class="message-body">
+            Don't use any Passphrase that you have used before.
+            This is a host made for shadowrunners.
+            If you are here, you know what we do best.
+        </span>
+        <div class="message-signature admin-color">
+            FastJack
+        </div>
     </div>
 </div>
 <script>
