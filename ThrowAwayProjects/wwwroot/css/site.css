@@ -9,12 +9,49 @@ body {
     padding-right: 20px;
     font-family: "Consolas";
     color: #eee;
-    text-shadow: 2px 2px 5px #000000;
+    text-shadow: 2px 2px 15px #000000;
     background-color: #323232;
     background-image: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0) 10%, rgba(0, 0, 0, 0) 90%, rgba(0, 0, 0, 1)), linear-gradient(45deg, black 25%, transparent 25%, transparent 75%, black 75%, black), linear-gradient(45deg, black 25%, transparent 25%, transparent 75%, black 75%, black), linear-gradient(to bottom, rgb(6, 6, 6), rgb(18, 18, 18));
     background-size: 100% 100%, 10px 10px, 10px 10px, 10px 5px;
     background-position: 0px 0px, 0px 0px, 5px 5px, 0px 0px;
 }
+
+h1 {
+    display: inline-block;
+    border-top: 1px solid #4c4c4c;
+    border-bottom: 1px solid #4c4c4c;
+}
+
+h2 {
+    display: inline-block;
+    border-bottom: 1px solid #4c4c4c;
+}
+
+h4 {
+    display: inline;
+    font-weight: bold;
+}
+
+h5 {
+    display: inline;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 18px;
+}
+
+    h4 + p,
+    h5 + p {
+        display: inline;
+    }
+
+p {
+    text-indent: 22px;
+    margin: 0px;
+}
+
+    p + p {
+        padding-top: 20px;
+    }
 
 .navbar-header {
     background: linear-gradient( #1e1e1e, #000);
@@ -189,5 +226,29 @@ a {
     .navbar-collapse ul {
         float: none;
         text-align: center;
+    }
+}
+
+@media print {
+    body,
+    thread {
+        padding: 0;
+        padding-right: 100px;
+        margin: 0 !important;
+    }
+
+    .post .message-body,
+    h4,
+    h5,
+    h6 {
+        font-size: 14px !important;
+    }
+
+    .time-stamp {
+        display: block !important;
+    }
+
+    col-md-8 {
+        width: auto !important;
     }
 }

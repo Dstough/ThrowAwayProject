@@ -7,10 +7,10 @@
 
 <form asp-controller="Home" asp-action="Index" method="post" id="logInForm" role="form">
     <div class="modal-body">
-        <h5>
+        <div>
             <a asp-area="" asp-controller="Account" asp-action="Register">sign up</a>
             <a asp-area="" asp-controller="Account" asp-action="Recovery">forgot passphrase</a>
-        </h5>
+        </div>
         <hr />
         <div class="form-group">
             <input id="username" type="text" class="form-control" name="UserName" placeholder="username" autocomplete="off">

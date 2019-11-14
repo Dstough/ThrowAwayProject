@@ -10,35 +10,35 @@
 }
 
 <div class="thread">
-    <h1>News Broadcasts</h1>
+    <h3>News Broadcasts</h3>
     <a>view all</a>
 </div>
 
 <div class="thread">
-    <h1>Job Postings</h1>
+    <h3>Job Postings</h3>
     <a>view all</a>
 </div>
 
 <div class="thread">
-    <h1>Run Archive</h1>
+    <h3>Run Archive</h3>
     <a>view all</a>
 </div>
 
 <div class="thread">
-    <h1>User Threads</h1>
+    <h3>User Threads</h3>
     <a href="/Forum/List/1">view all</a>
-    @foreach (var thread in Model.UserThreads)
-    {
-        <div class="post comment" onclick="location.href='@thread.Url';">
-            <span class="message-body">@thread.Body</span>
-            <div class="message-signature @thread.CSS ">
-                @thread.Author
-                <span class=time-stamp>
-                    @thread.PostDate.AddYears(60)
-                </span>
-            </div>
-        </div>
-    }
+    <table class="table">
+        <tbody>
+            @foreach (var thread in Model.UserThreads)
+            {
+                <tr class="post comment" onclick="location.href='@thread.Url';">
+                    <td>
+                        <span class="message-body">@thread.Body</span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>
 
 <script>
@@ -48,7 +48,7 @@
             strikethrough: true,
         });
 
-        $(".thread .message-body").each(function () {
+        $(".post .message-body").each(function () {
             var text = $(this).html()
             $(this).html(converter.makeHtml(text));
         });

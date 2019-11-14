@@ -58,7 +58,6 @@
 }
 
     .comment .message-body {
-        
     }
 
     .comment .message-signature {
@@ -82,13 +81,16 @@
     .comment p {
         display: inline;
         font-size: 18px;
+        border: 0;
+        font-weight: normal;
+        font-style: normal;
     }
 
     .comment table,
     .comment ol,
     .comment ul,
     .comment hr,
-    .comment img{
+    .comment img {
         display: none;
     }
 

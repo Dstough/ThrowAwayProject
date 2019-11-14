@@ -66,12 +66,13 @@
         </div>
     </nav>
     <div class="container body-content">
-        <div class="col-md-8">
+        <div class="col-md-7">
             @RenderBody()
         </div>
+        <div class="col-md-1"></div>
         <div class="col-md-4 side-bar">
             <div class="biometrics">
-                <h1>Biometrics:</h1>
+                <h2>Biometrics:</h2>
                 <p><span style="color:#aaa;">...Connected:</span> @ViewBag.DateConnected</p>
                 <p><span style="color:#aaa;">...Privilege:</span> @ViewBag.Privilege</p>
                 <p><span style="color:#aaa;">....Identity:</span> @ViewBag.UserName</p>
@@ -88,12 +89,12 @@
             }
 
             <div>
-                <h2>Posting rules:</h2>
+                <h3>Posting rules:</h3>
                 <ol>
-                    <li>Your account must be 1 week old to post responses.</li>
-                    <li>Once you have made a name for yourself here, you will be able to post longer articles.</li>
-                    <li>No doxing, harrasing, or generally offensive content.</li>
                     <li>Try to keep the posts on topic.</li>
+                    <li>No doxing, harrasing, or generally offensive content.</li>
+                    <li>Your account must be 1 week old to post responses.</li>
+                    <li>Get a good reputation and you will be able to post longer articles and make "ShadowTalk" comments.</li>
                 </ol>
                 <hr />
             </div>

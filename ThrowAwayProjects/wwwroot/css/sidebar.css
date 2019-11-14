@@ -1,10 +1,16 @@
 .side-bar {
     text-align: justify;
     right: 0;
+    padding-top: 20px;
 }
 
     .side-bar > * {
         max-width: 300px;
+    }
+
+    .side-bar p {
+        padding: 0 !important;
+        text-indent: 0;
     }
 
     .side-bar h2 {
@@ -19,37 +25,37 @@
         cursor: default;
     }
 
-        .side-bar .post:hover .message-body,
-        .side-bar .post:hover .message-signature {
-            text-shadow: none !important;
-        }
-
     .side-bar ol {
         text-align: left;
     }
 
         .side-bar ol li {
             padding-top: 15px;
+            margin-left: -15px;
         }
 
-.side-bar .biometrics {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-.side-bar .comment {
-    padding-left: 12px;
-    text-indent: -12px;
-    line-height: 1;
-}
-
-    .side-bar .comment .message-body,
-    .side-bar .comment .message-signature {
-        font-size: 11px;
-        
-        color: #808080;
+    .side-bar .post:hover .message-body,
+    .side-bar .post:hover .message-signature {
+        text-shadow: none !important;
     }
+
+    .side-bar .biometrics {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .side-bar .comment {
+        padding-left: 12px;
+        text-indent: -12px;
+        line-height: 1;
+    }
+
+        .side-bar .comment .message-body,
+        .side-bar .comment .message-signature {
+            font-size: 11px;
+            color: #808080;
+        }
 
 @media screen and (max-width: 992px) {
     .side-bar {
