@@ -10,7 +10,6 @@ namespace ThrowAwayData
         public bool Closed { get; set; }
         public int TagId { get; set; }
         public Tag Tag { get; set; }
-        public IEnumerable<Post> Post { get; set; }
 
         public Thread()
         {
@@ -19,7 +18,6 @@ namespace ThrowAwayData
             Closed = false;
             TagId = 0;
             Tag = new Tag();
-            Post = new List<Post>();
         }
     }
 }

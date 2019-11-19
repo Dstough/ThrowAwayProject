@@ -43,7 +43,8 @@ namespace ThrowAwayProjects.Controllers
         {
             return HandleExceptions(() =>
             {
-                var dbUser = database.Users.Where(new { viewModel.UserName }).Include("UserGroup").Find().FirstOrDefault();
+                var dbUser = database.Users.Where(new { viewModel.UserName }).Find().FirstOrDefault();
+                var dbGroup = database.UserGroups.Get(dbUser.UserGroupId);
 
                 if (dbUser == null || Sha512(viewModel.Passphrase + dbUser.CreatedOn) != dbUser.Passphrase)
                 {
@@ -55,6 +56,7 @@ namespace ThrowAwayProjects.Controllers
                 }
 
                 HttpContext.Session.SetString("UserKey", JsonConvert.SerializeObject(dbUser));
+                HttpContext.Session.SetString("GroupKey", JsonConvert.SerializeObject(dbGroup));
 
                 if (!dbUser.Authenticated)
                 {
@@ -71,13 +73,14 @@ namespace ThrowAwayProjects.Controllers
             return HandleExceptions(() =>
             {
                 var thread = database.Threads.GetRandom();
-                var author = database.Users.Include("UserGroup").Get(thread.CreatedBy);
+                var author = database.Users.Get(thread.CreatedBy);
+                var group = database.UserGroups.Get(author.UserGroupId);
 
                 return Json(new
                 {
                     message = thread.Body.Substring(0, 200) + "...",
                     signature = author.UserName,
-                    css = author.UserGroup.Name == "Admin" ? "admin-color" : "",
+                    css = group.Name == "Admin" ? "admin-color" : "",
                     url = "/Forum/Thread/" + thread.PublicId,
                     date = thread.CreatedOn.AddYears(60).ToString("MM/dd/yyyy h:mm:ss tt")
                 });

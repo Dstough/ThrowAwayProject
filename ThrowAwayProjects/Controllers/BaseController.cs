@@ -55,14 +55,16 @@ namespace ThrowAwayProjects.Controllers
 
                 ViewBag.DateConnected = JsonConvert.DeserializeObject<DateTime>(HttpContext.Session.GetString("SessionDate"));
 
-                if (HttpContext.Session.GetString("UserKey") != null)
+                if (HttpContext.Session.GetString("UserKey") != null && HttpContext.Session.GetString("GroupKey") != null)
                 {
                     var user = JsonConvert.DeserializeObject<UserIdentity>(HttpContext.Session.GetString("UserKey"));
+                    var group = JsonConvert.DeserializeObject<UserGroup>(HttpContext.Session.GetString("GroupKey"));
+
                     ViewBag.LoggedIn = true;
-                    ViewBag.Admin = user.UserGroup.Name == "Admin";
+                    ViewBag.Admin = group.Name == "Admin";
                     ViewBag.UserName = user.UserName;
                     ViewBag.Status = !user.Banned ? !user.Dead ? user.Authenticated ? "Active" : "Not Authenticated" : "Deceased" : "Banned";
-                    ViewBag.Privilege = user.UserGroup.Name;
+                    ViewBag.Privilege = group.Name;
                 }
 
                 return logic();

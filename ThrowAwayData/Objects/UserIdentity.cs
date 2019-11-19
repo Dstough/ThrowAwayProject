@@ -5,7 +5,6 @@ namespace ThrowAwayData
     public class UserIdentity : BaseObject
     {
         public int UserGroupId { get; set; }
-        public UserGroup UserGroup { get; set; }
         public string Email { get; set; }
         public string UserName { get; set; }
         public string Passphrase { get; set; }
@@ -17,7 +16,6 @@ namespace ThrowAwayData
         public UserIdentity() : base()
         {
             UserGroupId = 0;
-            UserGroup = null;
             Email = "";
             UserName = "";
             Passphrase = "";

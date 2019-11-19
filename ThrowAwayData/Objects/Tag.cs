@@ -6,12 +6,10 @@ namespace ThrowAwayData
     public class Tag : BaseObject
     {
         public string Name { get; set; }
-        public IEnumerable<Thread> Thread { get; set; }
 
         public Tag()
         {
             Name = "";
-            Thread = new List<Thread>();
         }
     }
 }

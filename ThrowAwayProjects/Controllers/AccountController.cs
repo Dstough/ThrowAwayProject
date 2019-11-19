@@ -78,10 +78,11 @@ namespace ThrowAwayProjects.Controllers
                     Passphrase = Sha512(viewModel.Passphrase + CreatedDate),
                     VerificationCode = Guid.NewGuid().ToString()
                 };
+
                 database.Users.Add(user);
 
-                user = database.Users.Include("UserGroup").Get(user.Id ?? 0);
                 HttpContext.Session.SetString("UserKey", JsonConvert.SerializeObject(user));
+                HttpContext.Session.SetString("GroupKey", JsonConvert.SerializeObject(defaultUserGroup));
 
                 //TODO: Send Auth Code to email.
 
@@ -93,10 +94,11 @@ namespace ThrowAwayProjects.Controllers
         {
             return HandleExceptions(() =>
             {
-                if (HttpContext.Session.GetString("UserKey") == null)
+                if (HttpContext.Session.GetString("UserKey") == null || HttpContext.Session.GetString("GroupKey") == null)
                     return RedirectToAction("Index", "Home");
 
                 var user = JsonConvert.DeserializeObject<UserIdentity>(HttpContext.Session.GetString("UserKey"));
+                var group = JsonConvert.DeserializeObject<UserGroup>(HttpContext.Session.GetString("GroupKey"));
 
                 if (user.Authenticated)
                     return RedirectToAction("Index", "Home");
@@ -105,6 +107,7 @@ namespace ThrowAwayProjects.Controllers
                 {
                     dbGuid = user.VerificationCode
                 };
+
                 return View(model);
             });
         }
@@ -114,11 +117,13 @@ namespace ThrowAwayProjects.Controllers
         {
             return HandleExceptions(() =>
             {
-                if (HttpContext.Session.GetString("UserKey") == null)
+                if (HttpContext.Session.GetString("UserKey") == null || HttpContext.Session.GetString("GroupKey") == null)
                     return RedirectToAction("Index", "Home");
 
                 var user = JsonConvert.DeserializeObject<UserIdentity>(HttpContext.Session.GetString("UserKey"));
-                var dbUser = database.Users.Include("UserGroup").Get(user.Id ?? 0);
+                var group = JsonConvert.DeserializeObject<UserGroup>(HttpContext.Session.GetString("GroupKey"));
+                var dbUser = database.Users.Get(user.Id ?? 0);
+                var dbGroup = database.UserGroups.Get(user.UserGroupId);
 
                 if (viewModel.inputGuid != dbUser.VerificationCode)
                     viewModel.ErrorMessage = "The verification code was not correct.";
@@ -160,6 +165,7 @@ namespace ThrowAwayProjects.Controllers
 
                 dbUser.Authenticated = false;
                 dbUser.VerificationCode = Guid.NewGuid().ToString();
+
                 database.Users.Edit(dbUser);
                 HttpContext.Session.SetString("UserKey", JsonConvert.SerializeObject(dbUser));
                 //TODO: Send guid over email.
@@ -175,7 +181,7 @@ namespace ThrowAwayProjects.Controllers
                     throw new Exception("You must be logged in to update your account.");
 
                 var user = JsonConvert.DeserializeObject<UserIdentity>(HttpContext.Session.GetString("UserKey"));
-                var dbUser = database.Users.Include("UserGroup").Get(user.Id ?? 0);
+                var dbUser = database.Users.Get(user.Id ?? 0);
 
                 if (!dbUser.Authenticated)
                     throw new Exception("You must verify your email address before you can update your account.");
@@ -199,7 +205,7 @@ namespace ThrowAwayProjects.Controllers
                     throw new Exception("You must be logged in to update your account.");
 
                 var user = JsonConvert.DeserializeObject<UserIdentity>(HttpContext.Session.GetString("UserKey"));
-                var dbUser = database.Users.Include("UserGroup").Get(user.Id ?? 0);
+                var dbUser = database.Users.Get(user.Id ?? 0);
 
                 if (!dbUser.Authenticated)
                     throw new Exception("You must verify your email address before you can update your account.");
@@ -241,8 +247,8 @@ namespace ThrowAwayProjects.Controllers
                     return RedirectToAction("Index", "Home");
 
                 var user = JsonConvert.DeserializeObject<UserIdentity>(HttpContext.Session.GetString("UserKey"));
-                var dbUser = database.Users.Include("UserGroup").Get(user.Id ?? 0);
-                var viewModel = new ChangeEmailViewModel(dbUser);
+                var viewModel = new ChangeEmailViewModel(user);
+
                 return View(viewModel);
             });
         }
@@ -256,7 +262,7 @@ namespace ThrowAwayProjects.Controllers
                     return RedirectToAction("Index", "Home");
 
                 var user = JsonConvert.DeserializeObject<UserIdentity>(HttpContext.Session.GetString("UserKey"));
-                var dbUser = database.Users.Include("UserGroup").Get(user.Id ?? 0);
+                var dbUser = database.Users.Get(user.Id ?? 0);
 
                 if (viewModel.NewEmail == null)
                     viewModel.ErrorMessage = "You have to type a new email for me to change it omae.";
@@ -273,9 +279,13 @@ namespace ThrowAwayProjects.Controllers
                 dbUser.Email = viewModel.NewEmail;
                 dbUser.Authenticated = false;
                 dbUser.VerificationCode = Guid.NewGuid().ToString();
+
                 database.Users.Edit(dbUser);
+
                 HttpContext.Session.SetString("UserKey", JsonConvert.SerializeObject(dbUser));
+
                 //TODO: Send code to new email.
+
                 return RedirectToAction("Verify", "Account");
             });
         }

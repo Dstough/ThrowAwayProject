@@ -23,7 +23,6 @@ namespace ThrowAwayDataBackground
         public BaseRepository(string _connectionString)
         {
             ConnString = _connectionString;
-            IncludeFields = new List<string>();
             WhereParameters = new Dictionary<string, Tuple<string, string>>();
             ApprovedOperators = new List<string> { "||", "*", "/", "%", "+", "-", "<<", ">>", "&", "|", "<", "<=", ">", ">=", "=", "==", "!=", "<>", "IS", "IS NOT", "IN", "LIKE", "GLOB", "MATCH", "REGEXP", "AND", "OR" };
         }
@@ -85,9 +84,7 @@ namespace ThrowAwayDataBackground
                     prop.SetValue(item, reader[prop.Name], null);
             }
 
-            item = IncludeProperties(item);
             WhereParameters.Clear();
-            IncludeFields.Clear();
 
             return item;
         }
@@ -126,9 +123,7 @@ namespace ThrowAwayDataBackground
                     prop.SetValue(item, reader[prop.Name], null);
             }
 
-            item = IncludeProperties(item);
             WhereParameters.Clear();
-            IncludeFields.Clear();
 
             return item;
         }
@@ -174,10 +169,9 @@ namespace ThrowAwayDataBackground
                     else
                         prop.SetValue(item, reader[prop.Name], null);
                 }
-                list.Add(IncludeProperties(item));
+                list.Add(item);
             }
 
-            IncludeFields.Clear();
             WhereParameters.Clear();
 
             return list;
@@ -215,7 +209,6 @@ namespace ThrowAwayDataBackground
                 return;
             entity.Id = Convert.ToInt32(reader[0] ?? 0);
 
-            IncludeFields.Clear();
             WhereParameters.Clear();
         }
 
@@ -242,7 +235,6 @@ namespace ThrowAwayDataBackground
             conn.Open();
             cmd.ExecuteNonQuery();
 
-            IncludeFields.Clear();
             WhereParameters.Clear();
         }
 
@@ -259,106 +251,12 @@ namespace ThrowAwayDataBackground
             conn.Open();
             cmd.ExecuteNonQuery();
 
-            IncludeFields.Clear();
             WhereParameters.Clear();
         }
 
         #endregion
 
         #region Extra
-
-        private List<string> IncludeFields { get; set; }
-
-        public virtual IRepository<T> Include(string name)
-        {
-            if (typeof(T).GetProperty(name) != null)
-                IncludeFields.Add(name);
-
-            return this;
-        }
-
-        private T IncludeProperties(T item)
-        {
-            if (IncludeFields.Count() <= 0)
-                return item;
-
-            var columnList = "";
-            using var conn = new SQLiteConnection(ConnString);
-            using var cmd = conn.CreateCommand();
-
-            conn.Open();
-            foreach (var field in IncludeFields)
-            {
-                var prop = typeof(T).GetProperties().Where(p => p.Name == field).FirstOrDefault();
-
-                if (prop == null)
-                    throw new Exception("The property was not found in the data object.");
-
-                if (!(prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
-                {
-                    var subItem = Activator.CreateInstance(prop.PropertyType);
-                    var subPropList = prop.PropertyType.GetProperties()
-                                                       .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
-                                                       .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
-                                                       .Where(e => e.CanWrite);
-
-                    foreach (var subProp in subPropList)
-                        columnList += subProp.Name + ",";
-
-                    cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + prop.Name + " WHERE Id = @Id;";
-                    cmd.Parameters.AddWithValue("@Id", item.GetPropValue(prop.Name + "Id"));
-
-                    using var reader = cmd.ExecuteReader();
-
-                    if (!reader.Read())
-                        return item;
-
-                    foreach (var subProp in subPropList)
-                    {
-                        if (subProp.PropertyType == typeof(int) || subProp.Name == "Id")
-                            subProp.SetValue(subItem, Convert.ToInt32(reader[subProp.Name]), null);
-                        else
-                            subProp.SetValue(subItem, reader[subProp.Name], null);
-                    }
-
-                    prop.SetValue(item, subItem);
-                }
-                else
-                {
-                    var listType = prop.PropertyType.GetAnyElementType();
-                    var subItem = Activator.CreateInstance(typeof(List<>).MakeGenericType(listType));
-                    var listItem = Activator.CreateInstance(listType);
-                    var subPropList = listType.GetProperties()
-                                              .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
-                                              .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
-                                              .Where(e => e.CanWrite);
-
-                    foreach (var subProp in subPropList)
-                        columnList += subProp.Name + ",";
-
-                    cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + listType.Name + " WHERE " + typeof(T).Name + "Id = @" + typeof(T).Name + "Id;";
-                    cmd.Parameters.AddWithValue("@" + typeof(T).Name + "Id", item.GetPropValue("Id"));
-
-                    using var reader = cmd.ExecuteReader();
-
-                    while (reader.Read())
-                    {
-                        foreach (var subProp in subPropList)
-                        {
-                            if (subProp.PropertyType == typeof(int) || subProp.Name == "Id")
-                                subProp.SetValue(listItem, Convert.ToInt32(reader[subProp.Name]), null);
-                            else
-                                subProp.SetValue(listItem, reader[subProp.Name], null);
-                        }
-                        ((IList)subItem).Add(listItem);
-                    }
-
-                    prop.SetValue(item, subItem);
-                }
-            }
-
-            return item;
-        }
 
         public virtual IEnumerable<T> GetAll()
         {
@@ -392,11 +290,9 @@ namespace ThrowAwayDataBackground
                     else
                         prop.SetValue(item, reader[prop.Name], null);
                 }
-                list.Add(IncludeProperties(item));
+                list.Add(item);
             }
 
-
-            IncludeFields.Clear();
             WhereParameters.Clear();
 
             return list;
@@ -432,7 +328,6 @@ namespace ThrowAwayDataBackground
             if (reader.Read())
                 count = Convert.ToInt32(reader["count"]);
 
-            IncludeFields.Clear();
             WhereParameters.Clear();
 
             return count;
@@ -471,10 +366,9 @@ namespace ThrowAwayDataBackground
                     else
                         prop.SetValue(item, reader[prop.Name], null);
                 }
-                list.Add(IncludeProperties(item));
+                list.Add(item);
             }
 
-            IncludeFields.Clear();
             WhereParameters.Clear();
 
             return list;

@@ -100,9 +100,10 @@ namespace ThrowAwayProjects.Controllers
                 if (Id == 0)
                     return Modal("_AddEdit", viewModel);
 
-                var dbUser = database.Users.Include("UserGroup").Get(Id ?? 0);
+                var dbUser = database.Users.Get(Id ?? 0);
+                var group = database.UserGroups.Get(dbUser.UserGroupId);
 
-                viewModel.GroupOptions.Where(e => e.Value == dbUser.UserGroup.Id.ToString()).First().Selected = true;
+                viewModel.GroupOptions.Where(e => e.Value == group.Id.ToString()).First().Selected = true;
                 viewModel.Id = dbUser.Id ?? 0;
                 viewModel.GroupId = dbUser.UserGroupId;
                 viewModel.UserName = dbUser.UserName;
@@ -110,7 +111,7 @@ namespace ThrowAwayProjects.Controllers
                 viewModel.Authenticated = dbUser.Authenticated;
                 viewModel.Banned = dbUser.Banned;
                 viewModel.Dead = dbUser.Dead;
-                viewModel.GroupName = dbUser.UserGroup.Name;
+                viewModel.GroupName = group.Name;
 
                 return Modal("_AddEdit", viewModel);
             });

@@ -6,7 +6,6 @@ namespace ThrowAwayDataBackground
 {
     public interface IRepository<T> where T : BaseObject
     {
-        IRepository<T> Include(string include);
         IRepository<T> Where(object arg);
         T Get(int id);
         IEnumerable<T> GetAll();

@@ -31,7 +31,8 @@ namespace ThrowAwayProjects.Controllers
                 if (dbThread == null)
                     throw new Exception("The thread doesn't exist.");
 
-                var dbAuthor = database.Users.Include("UserGroup").Get(dbThread.CreatedBy);
+                var dbAuthor = database.Users.Get(dbThread.CreatedBy);
+                var dbGroup = database.UserGroups.Get(dbAuthor.UserGroupId);
 
                 if (dbAuthor == null)
                     throw new Exception("The thread doesn't have a valid user.");
@@ -48,7 +49,7 @@ namespace ThrowAwayProjects.Controllers
                     Body = dbThread.Body,
                     Author = dbAuthor.UserName,
                     PostDate = dbAuthor.CreatedOn,
-                    CSS = dbAuthor.UserGroup.Name == "Admin" ? "admin-color" : "",
+                    CSS = dbGroup.Name == "Admin" ? "admin-color" : "",
                     Posts = new List<PostViewModel>()
                 };
 
@@ -56,7 +57,8 @@ namespace ThrowAwayProjects.Controllers
 
                 dbPosts.ToList().ForEach(dbPost =>
                 {
-                    var author = database.Users.Include("UserGroup").Get(dbPost.CreatedBy);
+                    var author = database.Users.Get(dbPost.CreatedBy);
+                    var group = database.UserGroups.Get(author.UserGroupId);
 
                     if (author == null)
                         throw new Exception("A post did not have a valid author.");
@@ -67,7 +69,7 @@ namespace ThrowAwayProjects.Controllers
                         Body = dbPost.Body,
                         Author = author.UserName,
                         PostDate = dbPost.CreatedOn,
-                        CSS = author.UserGroup.Name == "Admin" ? "admin-color" : ""
+                        CSS = group.Name == "Admin" ? "admin-color" : ""
                     };
 
                     viewModel.Posts.Add(post);
