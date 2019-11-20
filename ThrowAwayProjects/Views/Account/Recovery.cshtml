@@ -1,5 +1,5 @@
 @model RecoveryViewModel
-@if(Model.ErrorMessage != null)
+@if (Model.ErrorMessage != null)
 {
     <script>
         $(function() {
@@ -11,7 +11,7 @@
 
 <h3>Recover Account</h3>
 <div><a asp-area="" asp-controller="Home" asp-action="Index">Back to home page</a></div>
-<hr/>
+<hr />
 <form asp-controller="Account" asp-action="Recovery" method="post" id="RecoveryForm" role="form">
     <div class="form-group">
         <input id="email" type="email" class="form-control" name="Email" placeholder="email" autocomplete="off">
@@ -21,19 +21,21 @@
     </div>
     <button id="recover" class="btn btn-primary" style="width:100%">Recover</button>
 </form>
-<br/><br/>
-<span class="message-body">
-    Your original verification code will give you access to your account.
-    I hope you saved it like the email said.
-    As soon as you get in, change your Passphrase! 
-    I can't keep doing this for you.
-</span>
-<div class="message-signature admin-color">
-    Fastjack
+<br />
+<br />
+<div class="comment">
+    <span class="message-body">
+        Your original verification code will give you access to your account.
+        I hope you saved it like the email said.
+        As soon as you get in, change your Passphrase!
+        I can't keep doing this for you.
+    </span>
+    <div class="message-signature admin-color">
+        Fastjack
+    </div>
 </div>
-
 <script>
-    $(function(){
+    $(function () {
         BindValidation(["email", "verificationCode"], "recover");
     });
 </script>
