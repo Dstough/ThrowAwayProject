@@ -8,7 +8,7 @@ namespace ThrowAwayProjects.Models
         public string Section { get; set; }
         public string Body { get; set; }
         public string Author { get; set; }
-        public string CSS { get; set; }
+        public string Style { get; set; }
         public DateTime PostDate { get; set; }
     }
 }

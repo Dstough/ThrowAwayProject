@@ -8,7 +8,7 @@ namespace ThrowAwayProjects.Models
         public string Url { get; set; }
         public string Body { get; set; }
         public string Author { get; set; }
-        public string CSS { get; set; }
+        public string Style { get; set; }
         public DateTime PostDate { get; set; }
         public List<PostViewModel> Posts { get; set; }
 
@@ -21,7 +21,7 @@ namespace ThrowAwayProjects.Models
             Url = "/Forum/Thread/" + thread.PublicId;
             Body = thread.Body;
             Author = null;
-            CSS = null;
+            Style = null;
             PostDate = thread.CreatedOn;
             Posts = null;
         }

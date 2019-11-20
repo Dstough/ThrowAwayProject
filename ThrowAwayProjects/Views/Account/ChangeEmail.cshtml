@@ -1,5 +1,5 @@
 @model ChangeEmailViewModel
-@if(Model.ErrorMessage != null)
+@if (Model.ErrorMessage != null)
 {
     <script>
         $(function() {
@@ -10,7 +10,7 @@
 }
 <h3>Change Account Email</h3>
 <div><a asp-area="" asp-controller="Home" asp-action="Index">Back to home page</a></div>
-<hr/>
+<hr />
 <form asp-controller="Account" asp-action="Recovery" method="post" id="RecoveryForm" role="form">
     <div class="form-group">
         <input name="Passphrase" class="form-control" id="Passphrase" type="text" placeholder="Passphrase">
@@ -23,18 +23,19 @@
     </div>
     <span id="ChangeEmail" class="btn btn-primary" style="width:100%">Change Email</span>
 </form>
-<hr/>
-<span class="message-body">
-    You will need to input your passphrase and authentication code.
-    The one that was sent to your old email address.
-    Make sure that you still have access to that email address.
-</span>
-<div class="message-signature admin-color">
-    Fastjack
+<hr />
+<div class="comment">
+    <span class="message-body">
+        You will need to input your passphrase and authentication code.
+        The one that was sent to your old email address.
+        Make sure that you still have access to that email address.
+    </span>
+    <div class="message-signature" style="color:#ff0">
+        Fastjack
+    </div>
 </div>
-
 <script>
-    $(function() {
+    $(function () {
         BindValidation(["Passphrase", "AuthenticationCode", "NewEmail"], "ChangeEmail");
     });
 </script>

@@ -24,9 +24,8 @@
     <tbody>
         @foreach (var item in Model.list)
         {
-            var css = item.GroupName == "Admin" ? "admin-color" : "";
             <tr id="@item.Id" onclick='Modal("@Url.Action("AddEdit","User", new{Id=item.Id})")'>
-                <td class='@css'>@item.UserName</td>
+                <td style='@item.Style'>@item.UserName</td>
                 <td>@item.Email</td>
                 <td>@item.GroupName</td>
                 <td>@item.Authenticated</td>

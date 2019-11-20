@@ -30,7 +30,7 @@ namespace ThrowAwayProjects.Controllers
                     viewModel.UserThreads.Add(new ThreadViewModel(thread)
                     {
                         Author = author.UserName,
-                        CSS = group.Name == "Admin" ? "admin-color" : ""
+                        Style = group.Style + " " + author.Style
                     });
                 }
 
@@ -80,7 +80,7 @@ namespace ThrowAwayProjects.Controllers
                 {
                     message = thread.Body.Substring(0, 200) + "...",
                     signature = author.UserName,
-                    css = group.Name == "Admin" ? "admin-color" : "",
+                    style = group.Style + " " + author.Style,
                     url = "/Forum/Thread/" + thread.PublicId,
                     date = thread.CreatedOn.AddYears(60).ToString("MM/dd/yyyy h:mm:ss tt")
                 });

@@ -30,7 +30,7 @@
     </div>
     <div id="message" class="message">
         <span class='message-body'>Welcome back to JackPoint, Omae.</span>
-        <div class='message-signature admin-color'> FastJack</div>
+        <div class='message-signature' style="color:#ff0"> FastJack</div>
     </div>
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
@@ -71,7 +71,7 @@
         </div>
         <div class="col-md-1"></div>
         <div class="col-md-4 side-bar">
-            <div class="biometrics">
+            <div class="biometrics hide-when-small">
                 <h2>Biometrics:</h2>
                 <p><span style="color:#aaa;">...Connected:</span> @ViewBag.DateConnected</p>
                 <p><span style="color:#aaa;">...Privilege:</span> @ViewBag.Privilege</p>
@@ -88,7 +88,7 @@
                 </div>
             }
 
-            <div>
+            <div class="hide-when-small">
                 <h3>Posting rules:</h3>
                 <ol>
                     <li>Try to keep the posts on topic.</li>

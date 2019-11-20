@@ -4,7 +4,7 @@
 
     <div class="post">
         <span class="message-body">@Model.Body</span>
-        <div class="message-signature">
+        <div class="message-signature" style="@Model.Style">
             @Model.Author
             <span class=time-stamp>
                 @Model.PostDate.AddYears(60)

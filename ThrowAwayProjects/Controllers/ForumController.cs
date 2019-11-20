@@ -49,7 +49,7 @@ namespace ThrowAwayProjects.Controllers
                     Body = dbThread.Body,
                     Author = dbAuthor.UserName,
                     PostDate = dbAuthor.CreatedOn,
-                    CSS = dbGroup.Name == "Admin" ? "admin-color" : "",
+                    Style = dbGroup.Style + " " + dbAuthor.Style,
                     Posts = new List<PostViewModel>()
                 };
 
@@ -69,7 +69,7 @@ namespace ThrowAwayProjects.Controllers
                         Body = dbPost.Body,
                         Author = author.UserName,
                         PostDate = dbPost.CreatedOn,
-                        CSS = group.Name == "Admin" ? "admin-color" : ""
+                        Style = group.Style + " " + author.Style
                     };
 
                     viewModel.Posts.Add(post);
@@ -94,7 +94,7 @@ namespace ThrowAwayProjects.Controllers
 
                     threads.Add(new ThreadViewModel(dbThread)
                     {
-                        CSS = group.Name == "Admin" ? "admin-color" : "",
+                        Style = group.Style + " " + user.Style,
                         Author = user.UserName
                     }); ;
                 }

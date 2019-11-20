@@ -6,7 +6,7 @@
 --in sqlite. This is the equivilant to SQL server's
 --Identity field
 
-create table UserGroup
+create table if not exists UserGroup
 (
 	Id INTEGER PRIMARY KEY,
 	PublicId varchar not null unique,
@@ -14,23 +14,24 @@ create table UserGroup
 	CreatedBy integer not null,
 	Deleted bit not null,
 	Name varchar not null,
-	Description varhcar not null
+	Description varchar not null,
+    Style varchar null
 );
 
-insert into UserGroup(PublicId, CreatedOn, CreatedBy, Deleted, Name, Description)
+insert into UserGroup(PublicId, CreatedOn, CreatedBy, Deleted, Name, Description, Style)
 values
-    ('Admin', datetime('now'), 0, 0, 'Admin', 'The primary group giving you access'),
-    ('Runner', datetime('now'), 0, 0, 'Runner', 'The group for people who can post on closed topics'),
-    ('Users', datetime('now'), 0, 0, 'User', 'The primary group for users to post');
+    ('Admin', datetime('now'), 0, 0, 'Admin', 'The primary group giving you access', 'color: #ff0;'),
+    ('Runner', datetime('now'), 0, 0, 'Runner', 'The group for people who can post on closed topics','color: #fff;'),
+    ('Users', datetime('now'), 0, 0, 'User', 'The primary group for users to post', ' ');
 
-create table Tag
+create table if not exists Tag
 (
 	Id INTEGER PRIMARY KEY,
 	PublicId varchar not null unique,
 	CreatedOn datetime not null,
 	CreatedBy integer not null,
 	Deleted bit not null,
-	Name varchar not null
+	Name varchar
 );
 
 insert into Tag(PublicId, CreatedOn, CreatedBy, Deleted, Name)
@@ -40,7 +41,7 @@ values
     ('Jobs', datetime('now'), 0, 0, 'Jobs'),
     ('Runs', datetime('now'), 0, 0, 'Runs');
 
-create table UserIdentity
+create table if not exists UserIdentity
 (
 	Id INTEGER PRIMARY KEY,
 	PublicId varchar not null unique,
@@ -48,8 +49,9 @@ create table UserIdentity
 	CreatedBy integer not null,
 	Deleted bit not null,
 	UserGroupId integer not null,
-	Email varchar,
+	Email varchar not null,
 	UserName varchar not null,
+	Style varchar,
 	Passphrase varchar not null,
 	VerificationCode varchar not null,
 	Authenticated bit not null,
@@ -57,7 +59,7 @@ create table UserIdentity
 	Dead bit not null
 );
 
-create table Thread
+create table if not exists Thread
 (
 	Id INTEGER PRIMARY KEY,
 	PublicId varchar not null unique,
@@ -73,7 +75,7 @@ create table Thread
 		references Tag(Id)
 );
 
-create table Post
+create table if not exists Post
 (
 	Id INTEGER PRIMARY KEY,
 	PublicId varchar not null unique,

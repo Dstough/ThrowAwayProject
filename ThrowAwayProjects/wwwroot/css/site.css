@@ -220,6 +220,10 @@ a {
         right: 5%;
         min-width: 90%;
     }
+
+    .hide-when-small {
+        display: none;
+    }
 }
 
 @media screen and (max-width: 767px) {

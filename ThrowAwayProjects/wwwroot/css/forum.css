@@ -26,7 +26,6 @@
 
     .post .message-signature {
         font-size: 18px;
-        font-style: italic;
         margin-top: 10px;
         margin-bottom: 19px;
     }
@@ -62,7 +61,6 @@
 
     .comment .message-signature {
         font-size: 18px;
-        font-style: italic;
         margin-top: 10px;
         margin-bottom: 19px;
     }
@@ -93,10 +91,6 @@
     .comment img {
         display: none;
     }
-
-.admin-color {
-    color: #ff0;
-}
 
 #ThreadForm textarea {
     height: 500px;

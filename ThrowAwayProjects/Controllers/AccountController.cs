@@ -73,6 +73,7 @@ namespace ThrowAwayProjects.Controllers
                 {
                     UserGroupId = defaultUserGroup.Id ?? 0,
                     UserName = viewModel.UserName,
+                    Style = string.Empty,
                     CreatedOn = CreatedDate,
                     Email = viewModel.Email,
                     Passphrase = Sha512(viewModel.Passphrase + CreatedDate),

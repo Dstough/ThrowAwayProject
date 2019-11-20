@@ -13,7 +13,8 @@
         text-indent: 0;
     }
 
-    .side-bar h2 {
+    .side-bar h2,
+    .side-bar h3 {
         margin-top: 0;
     }
 
@@ -47,7 +48,7 @@
 
     .side-bar .comment {
         padding-left: 12px;
-        text-indent: -12px;
+        text-indent: -15px;
         line-height: 1;
     }
 
@@ -55,6 +56,7 @@
         .side-bar .comment .message-signature {
             font-size: 11px;
             color: #808080;
+            text-indent: -13px;
         }
 
 @media screen and (max-width: 992px) {
