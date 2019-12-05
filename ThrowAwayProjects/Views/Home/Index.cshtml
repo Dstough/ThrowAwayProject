@@ -33,24 +33,10 @@
             {
                 <tr class="post comment" onclick="location.href='@thread.Url';">
                     <td>
-                        <span class="message-body">@thread.Body</span>
+                        <span class="message-body">@thread.Title</span>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
-
-<script>
-    $(function () {
-        var converter = new showdown.Converter({
-            tables: true,
-            strikethrough: true,
-        });
-
-        $(".post .message-body").each(function () {
-            var text = $(this).html()
-            $(this).html(converter.makeHtml(text));
-        });
-    });
-</script>

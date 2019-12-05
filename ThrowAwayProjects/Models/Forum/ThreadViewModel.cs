@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using ThrowAwayData;
+
 namespace ThrowAwayProjects.Models
 {
     public class ThreadViewModel
     {
         public string Url { get; set; }
-        public string Body { get; set; }
+        public string Title { get; set; }
         public string Author { get; set; }
         public string Style { get; set; }
         public DateTime PostDate { get; set; }
@@ -19,11 +20,11 @@ namespace ThrowAwayProjects.Models
         public ThreadViewModel(Thread thread)
         {
             Url = "/Forum/Thread/" + thread.PublicId;
-            Body = thread.Body;
+            Title = thread.Title;
             Author = null;
             Style = null;
             PostDate = thread.CreatedOn;
-            Posts = null;
+            Posts = new List<PostViewModel>();
         }
     }
 }

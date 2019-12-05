@@ -46,19 +46,6 @@
         overflow: hidden;
     }
 
-    .side-bar .comment {
-        padding-left: 12px;
-        text-indent: -15px;
-        line-height: 1;
-    }
-
-        .side-bar .comment .message-body,
-        .side-bar .comment .message-signature {
-            font-size: 11px;
-            color: #808080;
-            text-indent: -13px;
-        }
-
 @media screen and (max-width: 992px) {
     .side-bar {
         position: inherit;

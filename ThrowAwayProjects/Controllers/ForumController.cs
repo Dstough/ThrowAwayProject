@@ -46,7 +46,7 @@ namespace ThrowAwayProjects.Controllers
 
                 var viewModel = new ThreadViewModel
                 {
-                    Body = dbThread.Body,
+                    Title = dbThread.Title,
                     Author = dbAuthor.UserName,
                     PostDate = dbAuthor.CreatedOn,
                     Style = dbGroup.Style + " " + dbAuthor.Style,
@@ -117,10 +117,7 @@ namespace ThrowAwayProjects.Controllers
                 if (dbThread == null)
                     throw new Exception("That thread couldn't be found in the database.");
 
-                var viewModel = new ThreadViewModel()
-                {
-                    Body = dbThread.Body.Substring(0, 200) + "..."
-                };
+                var viewModel = new ThreadViewModel(dbThread);
 
                 return Modal("_AddEditThread", viewModel);
             });
@@ -142,14 +139,14 @@ namespace ThrowAwayProjects.Controllers
 
                 if (currentEditId == null)
                 {
-                    dbThread.Body = viewModel.Body;
+                    dbThread.Title = viewModel.Title;
                     dbThread.CreatedBy = user.Id ?? 0;
                     database.Threads.Add(dbThread);
                 }
                 else
                 {
                     dbThread = database.Threads.Where(new { PublicId = currentEditId }).Find().FirstOrDefault();
-                    dbThread.Body = viewModel.Body;
+                    dbThread.Title = viewModel.Title;
                     database.Threads.Edit(dbThread);
                 }
 

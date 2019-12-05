@@ -1,18 +1,15 @@
-using ThrowAwayDataBackground;
+﻿using ThrowAwayDataBackground;
 
 namespace ThrowAwayData
 {
-    public class Post : BaseObject
+    class Comment : BaseObject
     {
         public string Body { get; set; }
         public bool Edited { get; set; }
-        public int ThreadId { get; set; }
-
-        public Post() : base()
+        public Comment() : base()
         {
             Body = "";
             Edited = false;
-            ThreadId = 0;
         }
     }
 }

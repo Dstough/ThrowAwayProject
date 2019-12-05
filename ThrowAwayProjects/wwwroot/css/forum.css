@@ -51,16 +51,14 @@
     }
 
 .comment {
-    padding-left: 22px;
-    text-indent: -22px;
-    font-size: 18px;
+    font-size: 11px;
+    padding-left: 12px;
+    text-indent: -13px;
+    text-align: justify;
+    line-height:1.5em;
 }
 
-    .comment .message-body {
-    }
-
     .comment .message-signature {
-        font-size: 18px;
         margin-top: 10px;
         margin-bottom: 19px;
     }
@@ -68,30 +66,9 @@
     .comment .message-body:before,
     .message-signature:before {
         content: "> ";
-    }
-
-    .comment h1,
-    .comment h2,
-    .comment h3,
-    .comment h4,
-    .comment h5,
-    .comment h6,
-    .comment p {
-        display: inline;
-        font-size: 18px;
-        border: 0;
-        font-weight: normal;
-        font-style: normal;
-    }
-
-    .comment table,
-    .comment ol,
-    .comment ul,
-    .comment hr,
-    .comment img {
-        display: none;
+        color: mediumpurple;
     }
 
 #ThreadForm textarea {
-    height: 500px;
+    height: 200px;
 }

@@ -78,7 +78,7 @@ namespace ThrowAwayProjects.Controllers
 
                 return Json(new
                 {
-                    message = thread.Body.Substring(0, 200) + "...",
+                    message = thread.Title.Substring(0, 200) + "...",
                     signature = author.UserName,
                     style = group.Style + " " + author.Style,
                     url = "/Forum/Thread/" + thread.PublicId,
