@@ -7,21 +7,22 @@ namespace ThrowAwayDaemon
 {
     public class Worker : IHostedService, IDisposable
     {
-        private Timer timer;
-        private int interval;
+        private readonly Timer timer;
+        public int Interval { get; set; }
 
         public Worker()
         {
-            interval = 1000 * 5;
+            Interval = 1000 * 5;
             timer = new Timer(Main, "started", Timeout.Infinite, Timeout.Infinite);
         }
+
         public void Dispose() => timer.Dispose();
 
         #region Service Framework
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            timer.Change(5000, interval);
+            timer.Change(5000, Interval);
             return Task.CompletedTask;
         }
 
