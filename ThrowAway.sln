@@ -10,6 +10,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThrowAwayProjects", "ThrowA
 		{F8A37DE6-E06A-4051-82DE-30AD4E95A2FA} = {F8A37DE6-E06A-4051-82DE-30AD4E95A2FA}
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ThrowAwayDaemon", "ThrowAwayDaemon\ThrowAwayDaemon.csproj", "{44548E49-6C36-43E6-BC60-21B5B5305D95}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +26,10 @@ Global
 		{2F0DEA1F-1DE3-48DC-B3DC-B9DC06A926CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F0DEA1F-1DE3-48DC-B3DC-B9DC06A926CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F0DEA1F-1DE3-48DC-B3DC-B9DC06A926CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44548E49-6C36-43E6-BC60-21B5B5305D95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44548E49-6C36-43E6-BC60-21B5B5305D95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44548E49-6C36-43E6-BC60-21B5B5305D95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44548E49-6C36-43E6-BC60-21B5B5305D95}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
