@@ -11,5 +11,7 @@
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />
     <ProjectReference Include="..\ThrowAwayData\ThrowAwayData.csproj" />
+    <ProjectReference Include="..\ThrowAwayDaemon\ThrowAwayDaemon.csproj" />
+    <RuntimeHostConfigurationOption Include="System.Globalization.Invariant" Value="true" />
   </ItemGroup>
 </Project>
