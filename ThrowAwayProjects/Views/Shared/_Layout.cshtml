@@ -28,85 +28,86 @@
             <div class="modal-content"></div>
         </div>
     </div>
-    <div id="message" class="message">
+    <div id="message" class="message comment">
         <span class='message-body'>Welcome back to JackPoint, Omae.</span>
         <div class='message-signature' style="color:#ff0"> FastJack</div>
     </div>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="col-md-1"></div>
-        <div class="col-md-9">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <img src="\Images\shadowrun-logo.svg" class="navbar-brand header-image" />
-                <a class="navbar-brand" asp-controller="Home" asp-action="Index">JackPoint</a>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav"></ul>
-                <ul class="nav navbar-nav right">
-                    @if (ViewBag.LoggedIn)
-                    {
-                        if (ViewBag.Admin)
+    <div class="container">
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <img src="\Images\shadowrun-logo.svg" class="navbar-brand header-image" />
+                    <a class="navbar-brand" asp-controller="Home" asp-action="Index">JackPoint</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav"></ul>
+                    <ul class="nav navbar-nav right">
+                        @if (ViewBag.LoggedIn)
                         {
-                            <li><a asp-area="" asp-controller="User" asp-action="Index">Users</a></li>
+                            if (ViewBag.Admin)
+                            {
+                                <li><a asp-area="" asp-controller="User" asp-action="Index">Users</a></li>
+                            }
+                            <li><a id="userLabel" onclick='Modal("@Url.Action("Update","Account")");'>@ViewBag.UserName</a></li>
+                            <li><a asp-area="" asp-controller="Account" asp-action="LogOut">Logout</a></li>
                         }
-                        <li><a id="userLabel" onclick='Modal("@Url.Action("Update","Account")");'>@ViewBag.UserName</a></li>
-                        <li><a asp-area="" asp-controller="Account" asp-action="LogOut">Logout</a></li>
-                    }
-                    else
-                    {
-                        <li><a id="userLabel" onclick='Modal("@Url.Action("LogIn","Account")");'>Log In</a></li>
-                        <li><a asp-area="" asp-controller="Account" asp-action="Register">Sign Up</a></li>
-                    }
-                </ul>
+                        else
+                        {
+                            <li><a id="userLabel" onclick='Modal("@Url.Action("LogIn","Account")");'>Log In</a></li>
+                            <li><a asp-area="" asp-controller="Account" asp-action="Register">Sign Up</a></li>
+                        }
+                    </ul>
+                </div>
             </div>
-        </div>
-        <div class="col-md-2"></div>
-    </nav>
-    <div class="col-md-1"></div>
-    <div class="col-md-7">
-        @RenderBody()
-    </div>
-    <div class="col-md-4 side-bar">
-        <div class="biometrics hide-when-small">
-            <h2>Biometrics:</h2>
-            <p><span style="color:#aaa;">...Connected:</span> @ViewBag.DateConnected</p>
-            <p><span style="color:#aaa;">...Privilege:</span> @ViewBag.Privilege</p>
-            <p><span style="color:#aaa;">....Identity:</span> @ViewBag.UserName</p>
-            <p><span style="color:#aaa;">......Status:</span> @ViewBag.Status</p>
-            <hr />
-        </div>
+        </nav>
+        <div class="col-md-8">
+            @RenderBody()
 
-        @if (ViewBag.LoggedIn)
-        {
-            <div class="control">
-                <button id="new-thread" class="btn btn-primary" onclick='Modal("@Url.Action("AddEditThread","Forum")");'>New Thread</button>
+        </div>
+        <div class="col-md-4 side-bar">
+            <div class="biometrics hide-when-small">
+                <h2>Biometrics:</h2>
+                <p><span style="color:#aaa;">...Connected:</span> @ViewBag.DateConnected</p>
+                <p><span style="color:#aaa;">...Privilege:</span> @ViewBag.Privilege</p>
+                <p><span style="color:#aaa;">....Identity:</span> @ViewBag.UserName</p>
+                <p><span style="color:#aaa;">......Status:</span> @ViewBag.Status</p>
                 <hr />
             </div>
-        }
 
-        <div class="hide-when-small">
-            <h3>Posting rules:</h3>
-            <ol>
-                <li>Try to keep the posts on topic.</li>
-                <li>No doxing, harrasing, or generally offensive content.</li>
-                <li>Your account must be 1 week old to post responses.</li>
-                <li>Get a good reputation and you will be able to post longer articles and make "ShadowTalk" comments.</li>
-            </ol>
-            <hr />
+            @if (ViewBag.LoggedIn)
+            {
+                <div class="control">
+                    <button id="new-thread" class="btn btn-primary" onclick='Modal("@Url.Action("AddEditThread","Forum")");'>New Thread</button>
+                    <hr />
+                </div>
+            }
+
+            <div class="hide-when-small">
+                <h3>Posting rules:</h3>
+                <ol>
+                    <li>Try to keep the posts on topic.</li>
+                    <li>No doxing, harrasing, or generally offensive content.</li>
+                    <li>Your account must be 1 week old to post responses.</li>
+                    <li>Get a good reputation and you will be able to post longer articles and make "ShadowTalk" comments.</li>
+                </ol>
+            </div>
         </div>
-
-        <div class="comment">
-            <span class='message-body'>
-                The Topps Company, Inc. has sole ownership of the names, logo, artwork, marks, photographs, sounds, audio, video and/or any proprietary material used in connection with the game Shadowrun.
-                The Topps Company, Inc. has granted permission to JackPoint to use such names, logos, artwork, marks and/or any proprietary materials for promotional and informational purposes on its website but does not endorse, and is not affiliated with JackPoint in any official capacity whatsoever.
-            </span>
-            <div class="message-signature">
-                &copy;@(DateTime.Now.Year + 60) - JackPoint
+        <div class="col-md-12"> 
+            <hr />
+            <div class="comment">
+                <span class='message-body text-muted'>
+                    The Topps Company, Inc. has sole ownership of the names, logo, artwork, marks, photographs, sounds, audio, video and/or any proprietary material used in connection with the game Shadowrun.
+                    The Topps Company, Inc. has granted permission to JackPoint to use such names, logos, artwork, marks and/or any proprietary materials for promotional and informational purposes on its website but does not endorse, and is not affiliated with JackPoint in any official capacity whatsoever.
+                </span>
+                <div class="message-signature text-muted">
+                    &copy;@(DateTime.Now.Year + 60) - JackPoint
+                </div>
             </div>
         </div>
     </div>

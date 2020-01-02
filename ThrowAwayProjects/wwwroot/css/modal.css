@@ -37,10 +37,7 @@
     margin-left: 1%;
 }
 
-@media screen and (max-width: 992px) {
-    .hide-when-small {
-        display: none !important;
-    }
+@media screen and (max-width: 991px) {
     .modal-collumn {
         width: 100% !important;
         margin-left: 0 !important;
