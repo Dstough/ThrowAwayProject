@@ -140,6 +140,7 @@ namespace ThrowAwayProjects.Controllers
                 if (currentEditId == null)
                 {
                     dbThread.Title = viewModel.Title;
+                    dbThread.Body = viewModel.Body;
                     dbThread.CreatedBy = user.Id ?? 0;
                     database.Threads.Add(dbThread);
                 }
@@ -147,6 +148,7 @@ namespace ThrowAwayProjects.Controllers
                 {
                     dbThread = database.Threads.Where(new { PublicId = currentEditId }).Find().FirstOrDefault();
                     dbThread.Title = viewModel.Title;
+                    dbThread.Body = viewModel.Body;
                     database.Threads.Edit(dbThread);
                 }
 

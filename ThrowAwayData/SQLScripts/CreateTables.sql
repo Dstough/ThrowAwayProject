@@ -59,6 +59,7 @@ create table if not exists Thread
 	Deleted bit not null,
 
 	Title varchar not null,
+	Body varchar,
 	TagId integer not null references Tag(Id) DEFERRABLE INITIALLY DEFERRED,
 	Edited bit not null,
 	Closed bit not null
@@ -74,7 +75,7 @@ create table if not exists Post
 
 	Body varchar not null,
 	Edited bit not null,
-	ThreadId integer not null references Thread(Id) DEFERRABLE INITIALLY DEFERRED,
+	ThreadId integer not null references Thread(Id) DEFERRABLE INITIALLY DEFERRED
 );
 
 create table if not exists Article
