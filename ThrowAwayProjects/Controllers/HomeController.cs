@@ -44,16 +44,14 @@ namespace ThrowAwayProjects.Controllers
             return HandleExceptions(() =>
             {
                 var dbUser = database.Users.Where(new { viewModel.UserName }).Find().FirstOrDefault();
-                var dbGroup = database.UserGroups.Get(dbUser.UserGroupId);
 
                 if (dbUser == null || Sha512(viewModel.Passphrase + dbUser.CreatedOn) != dbUser.Passphrase)
-                {
-                    var model = new HomeViewModel()
+                    return View("../Home/Index", new HomeViewModel()
                     {
                         ErrorMessage = "I couldn't find your account information. You eather had the wrong username or Passphrase."
-                    };
-                    return View("../Home/Index", model);
-                }
+                    });
+
+                var dbGroup = database.UserGroups.Get(dbUser.UserGroupId);
 
                 HttpContext.Session.SetString("UserKey", JsonConvert.SerializeObject(dbUser));
                 HttpContext.Session.SetString("GroupKey", JsonConvert.SerializeObject(dbGroup));

@@ -27,16 +27,12 @@
 <div class="thread">
     <h3>User Threads</h3>
     <a href="/Forum/List/1">view all</a>
-    <table class="table">
-        <tbody>
-            @foreach (var thread in Model.UserThreads)
-            {
-                <tr class="post comment" onclick="location.href='@thread.Url';">
-                    <td>
-                        <span class="message-body">@thread.Title</span>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    @foreach (var thread in Model.UserThreads)
+    {
+        <div onclick="location.href='@thread.Url';">
+            <div>
+                <span class="message-body">@thread.Title</span>
+            </div>
+        </div>
+    }
 </div>
