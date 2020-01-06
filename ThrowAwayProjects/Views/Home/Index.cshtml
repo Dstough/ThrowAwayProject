@@ -14,12 +14,12 @@
     <a href="/Forum/List/1">view all</a>
     @foreach (var thread in Model.UserThreads)
     {
-        <article>
+        <article >
             <div class="thread-metadata text-muted">
                 <a href="#">@thread.Author</a> - 
                 <span>@thread.PostDate.ToString("MMMM dd, yyyy")</span>
             </div>
-            <div>
+            <div style="text-align:justify;">
                 <h3 class="message-head" onclick=""><a href="@thread.Url">@thread.Title</a></h3>
                 <span class="message-body">@thread.Body</span>
             </div>

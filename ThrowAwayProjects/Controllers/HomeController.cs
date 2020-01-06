@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -30,7 +31,8 @@ namespace ThrowAwayProjects.Controllers
                     viewModel.UserThreads.Add(new ThreadViewModel(thread)
                     {
                         Author = author.UserName,
-                        Style = group.Style + " " + author.Style
+                        Style = group.Style + " " + author.Style,
+                        PostDate = thread.CreatedOn.AddYears(60)
                     });
                 }
 
@@ -46,10 +48,7 @@ namespace ThrowAwayProjects.Controllers
                 var dbUser = database.Users.Where(new { viewModel.UserName }).Find().FirstOrDefault();
 
                 if (dbUser == null || Sha512(viewModel.Passphrase + dbUser.CreatedOn) != dbUser.Passphrase)
-                    return View("../Home/Index", new HomeViewModel()
-                    {
-                        ErrorMessage = "I couldn't find your account information. You eather had the wrong username or Passphrase."
-                    });
+                    throw new Exception("I couldn't find your account information. You eather had the wrong username or passphrase.");
 
                 var dbGroup = database.UserGroups.Get(dbUser.UserGroupId);
 
