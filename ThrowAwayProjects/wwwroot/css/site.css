@@ -121,12 +121,12 @@ hr {
 
 a {
     cursor: pointer;
-    color: #337ab7 !important;
+    color: #37b733 !important;
 }
 
     a:hover {
         text-decoration: none;
-        color: #23527c !important;
+        color: #43e94d !important;
     }
 
     a:before {
