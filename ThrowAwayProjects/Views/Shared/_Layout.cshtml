@@ -45,7 +45,9 @@
                     <a class="navbar-brand" asp-controller="Home" asp-action="Index">JackPoint</a>
                 </div>
                 <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav"></ul>
+                    <ul class="nav navbar-nav">
+                        <li><a asp-area="" asp-controller="Forum" asp-action="List">Forum</a></li>
+                    </ul>
                     <ul class="nav navbar-nav right">
                         @if (ViewBag.LoggedIn)
                         {

@@ -80,7 +80,7 @@ namespace ThrowAwayProjects.Controllers
             });
         }
 
-        public ActionResult List(int Id = 0)
+        public ActionResult List(int Id = 1)
         {
             return HandleExceptions(() =>
             {
