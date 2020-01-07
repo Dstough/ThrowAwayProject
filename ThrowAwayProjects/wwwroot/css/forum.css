@@ -83,7 +83,7 @@ article {
     .comment .message-body:before,
     .message-signature:before {
         content: "> ";
-        color: mediumpurple;
+        color: #37b733;
     }
 
 #ThreadForm textarea {
