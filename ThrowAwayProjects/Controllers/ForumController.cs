@@ -80,26 +80,27 @@ namespace ThrowAwayProjects.Controllers
             });
         }
 
-        public ActionResult List(int Page = 0)
+        public ActionResult List(int Id = 0)
         {
             return HandleExceptions(() =>
             {
-                var dbThreads = database.Threads.GetPage(Page, 20);
-                var threads = new List<ThreadViewModel>();
+                var dbThreads = database.Threads.GetPage(Id, 20);
+                var viewModel = new ListViewModel(Id, 20);
 
                 foreach (var dbThread in dbThreads)
                 {
                     var user = database.Users.Get(dbThread.CreatedBy);
                     var group = database.UserGroups.Get(user.UserGroupId);
 
-                    threads.Add(new ThreadViewModel(dbThread)
+                    viewModel.threads.Add(new ThreadViewModel(dbThread)
                     {
                         Style = group.Style + " " + user.Style,
-                        Author = user.UserName
-                    }); ;
+                        Author = user.UserName,
+                        Body = dbThread.Body.Length > 255 ? dbThread.Body.Substring(0, 255) + "..." : dbThread.Body
+                    });
                 }
 
-                return View(threads);
+                return View(viewModel);
             });
         }
 

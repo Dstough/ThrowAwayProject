@@ -30,6 +30,7 @@ namespace ThrowAwayProjects.Controllers
 
                     viewModel.UserThreads.Add(new ThreadViewModel(thread)
                     {
+                        Body = thread.Body.Length > 255 ? thread.Body.Substring(0,255) + "..." : thread.Body,
                         Author = author.UserName,
                         Style = group.Style + " " + author.Style,
                         PostDate = thread.CreatedOn.AddYears(60)

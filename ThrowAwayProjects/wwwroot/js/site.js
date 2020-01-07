@@ -12,14 +12,19 @@
     }, 3000);
 }
 
-var RenderPageNavigation = function (url, pageNumber, tag) {
-    if (pageNumber === undefined || tag === undefined || url === undefined)
+var RenderPageNavigation = function (url, pageNumber, recordCount, maxRecordCount, tag) {
+    if (pageNumber === undefined || tag === undefined || url === undefined || recordCount === undefined)
         return;
 
-    var html = ' Page ' + (pageNumber + 1) + ' [<a href="' + url + '/' + (pageNumber + 1) + '">Next</a>]';
+    var html = '';
 
-    if (pageNumber > 0)
-        html = '[<a href="' + url + '/' + (pageNumber - 1) + '">Previous</a>] ' + html;
+    if (pageNumber > 1)
+        html += '<a href="' + url + '/' + (pageNumber - 1) + '">Previous</a> ';
+
+    html += ' Page ' + (pageNumber);
+
+    if (recordCount == maxRecordCount)
+        html += ' <a href="' + url + '/' + (pageNumber + 1) + '">Next</a>';
 
     $("#" + tag).html(html);
 }

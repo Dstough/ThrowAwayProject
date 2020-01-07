@@ -351,7 +351,7 @@ namespace ThrowAwayDataBackground
             using var conn = new SQLiteConnection(ConnString);
             using var cmd = conn.CreateCommand();
 
-            cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE Deleted = 0 ORDER BY Id LIMIT " + size + " OFFSET " + pageNumber + ";";
+            cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE Deleted = 0 ORDER BY Id desc LIMIT " + size + " OFFSET " + pageNumber + ";";
             conn.Open();
 
             using var reader = cmd.ExecuteReader();
