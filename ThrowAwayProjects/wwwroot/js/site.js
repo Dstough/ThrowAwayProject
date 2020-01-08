@@ -1,4 +1,9 @@
-﻿var DisplayMessage = function (message, signature) {
+﻿var converter = new showdown.Converter({
+    tables: true,
+    strikethrough: true,
+});
+
+var DisplayMessage = function (message, signature) {
     if (signature === undefined)
         signature = "Fastjack";
 

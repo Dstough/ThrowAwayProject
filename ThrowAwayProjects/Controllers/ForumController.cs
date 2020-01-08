@@ -47,6 +47,7 @@ namespace ThrowAwayProjects.Controllers
                 var viewModel = new ThreadViewModel
                 {
                     Title = dbThread.Title,
+                    Body = dbThread.Body,
                     Author = dbAuthor.UserName,
                     PostDate = dbAuthor.CreatedOn,
                     Style = dbGroup.Style + " " + dbAuthor.Style,

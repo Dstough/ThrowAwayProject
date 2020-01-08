@@ -1,30 +1,34 @@
 ﻿@model ThreadViewModel
 
 <div class="thread">
-
-    <div class="post">
-        <span class="message-body"></span>
-        <div class="message-signature" style="@Model.Style">
-            @Model.Author
-            <span class=time-stamp>
-                @Model.PostDate.AddYears(60)
-            </span>
+    <article>
+        <div class="thread-metadata text-muted">
+            <span style="@Model.Style">@Model.Author</span> -
+            <span>@Model.PostDate.ToString("MMMM dd, yyyy")</span>
         </div>
-    </div>
-
+        <div style="text-align:justify;">
+            <h2 style="margin-top:10px;" class="message-head">@Model.Title</h2><br />
+            <span class="message-body">@Model.Body</span>
+        </div>
+    </article>
+    @foreach (var item in Model.Posts)
+    {
+        <article>
+            <div class="thread-metadata text-muted">
+                <span style="@item.Style">@item.Author</span> -
+                <span>@item.PostDate.ToString("MMMM dd, yyyy")</span>
+            </div>
+            <div style="text-align:justify;">
+                <span class="message-body">@item.Body</span>
+            </div>
+        </article>
+    }
     <script>
         $(function () {
-
-            var converter = new showdown.Converter({
-                tables: true,
-                strikethrough: true,
-            });
-
             $(".thread .message-body").each(function () {
                 var text = $(this).html()
                 $(this).html(converter.makeHtml(text));
             });
         });
     </script>
-
 </div>
