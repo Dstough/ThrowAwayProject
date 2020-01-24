@@ -46,6 +46,7 @@ namespace ThrowAwayProjects.Controllers
 
                 var viewModel = new ThreadViewModel
                 {
+                    Id = dbThread.PublicId,
                     Title = dbThread.Title,
                     Body = dbThread.Body,
                     Author = dbAuthor.UserName,
@@ -105,16 +106,16 @@ namespace ThrowAwayProjects.Controllers
             });
         }
 
-        public JsonResult AddEditThread(string id)
+        public JsonResult AddEditThread(string Id)
         {
             return HandleExceptions(() =>
             {
-                if (id == null)
+                if (Id == null)
                     return Modal("_AddEditThread", new ThreadViewModel());
 
-                HttpContext.Session.SetString("CurrentEditId", id);
+                HttpContext.Session.SetString("CurrentEditId", Id);
 
-                var dbThread = database.Threads.Where(new { PublicId = id }).Find().FirstOrDefault();
+                var dbThread = database.Threads.Where(new { PublicId = Id }).Find().FirstOrDefault();
 
                 if (dbThread == null)
                     throw new Exception("That thread couldn't be found in the database.");

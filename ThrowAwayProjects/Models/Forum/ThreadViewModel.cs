@@ -6,6 +6,7 @@ namespace ThrowAwayProjects.Models
 {
     public class ThreadViewModel
     {
+        public string Id { get; set; }
         public string Url { get; set; }
         public string Title { get; set; }
         public string Body { get; set; }
@@ -20,6 +21,7 @@ namespace ThrowAwayProjects.Models
 
         public ThreadViewModel(Thread thread)
         {
+            Id = "0";
             Url = "/Forum/Thread/" + thread.PublicId;
             Title = thread.Title;
             Body = thread.Body;
