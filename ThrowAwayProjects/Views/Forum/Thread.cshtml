@@ -7,7 +7,11 @@
             <span>@Model.PostDate.ToString("MMMM dd, yyyy")</span>
            @if (ViewBag.LoggedIn)
             {
-               @if (ViewBag.Username == Model.Author) 
+                <span> - </span>
+                <span>
+                    <a href="#" onclick='Modal("@Url.Action("AddPost","Forum", new { Id = Model.Id })")'>Reply</a>
+                </span>
+               @if (ViewBag.Username == Model.Author)
                 {
                     <span> - </span>
                     <span>
@@ -20,27 +24,29 @@
             <h2 style="margin-top:10px;" class="message-head">@Model.Title</h2><br />
             <span class="message-body">@Model.Body</span>
         </div>
-       @foreach (var item in Model.Posts)
-        {
-            <div class="thread-metadata text-muted">
-                <span style="@item.Style">@item.Author</span> -
-                <span>@item.PostDate.ToString("MMMM dd, yyyy")</span>
-               @if (ViewBag.LoggedIn)
-                {
-                   @if (ViewBag.Username == Model.Author)
-                    {
-                        <span> - </span>
-                        <span>
-                            <a href="#" onclick='Modal("@Url.Action("AddEditThread","Forum",new { Id = item.Id })");'>Reply</a>
-                        </span>
-                    }
-                }
-            </div>
-            <div style="text-align:justify;">
-                <span class="message-body">@item.Body</span>
-            </div>
-        }
     </article>
+    
+   @foreach (var item in Model.Posts)
+    {
+        <div class="thread-metadata text-muted">
+            <span style="@item.Style">@item.Author</span> -
+            <span>@item.PostDate.ToString("MMMM dd, yyyy")</span>
+           @if (ViewBag.LoggedIn)
+            {
+               @if (ViewBag.Username == Model.Author)
+                {
+                    <span> - </span>
+                    <span>
+                        <a href="#" onclick='Modal("@Url.Action("EditPost","Forum", new { Id = item.Id })");'>Reply</a>
+                    </span>
+                }
+            }
+        </div>
+        <div style="text-align:justify;">
+            <span class="message-body">@item.Body</span>
+        </div>
+    }
+    
     <script>
         $(function () {
             $(".thread .message-body").each(function () {

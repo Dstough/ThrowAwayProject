@@ -159,31 +159,7 @@ namespace ThrowAwayProjects.Controllers
             });
         }
 
-        [HttpPost]
-        public ActionResult AddPost(PostViewModel viewModel)
-        {
-            return HandleExceptions(() =>
-            {
-                var user = HttpContext.Session.GetString("CurrentUserId");
-                var threadId = HttpContext.Session.GetString("CurrentThreadId");
-
-                if (user == null || threadId == null)
-                    throw new Exception("Stop poking around where you shouldn't be omae.");
-
-                var dbPost = new Post()
-                {
-                    Body = viewModel.Body,
-                    CreatedBy = Convert.ToInt32(User),
-                    ThreadId = Convert.ToInt32(threadId)
-                };
-
-                database.Posts.Add(dbPost);
-
-                return RedirectToAction("Thread", new { Id = threadId });
-            });
-        }
-
-        public JsonResult EditPost(int? Id)
+        public JsonResult AddPost(string Id)
         {
             return HandleExceptions(() =>
             {
@@ -197,33 +173,47 @@ namespace ThrowAwayProjects.Controllers
                 if (Id == null)
                     throw new Exception("You need to specify a post to edit chummer.");
 
-                var dbPost = database.Posts.Get(Id ?? 0);
+                var dbThread = database.Threads.Where(new { PublicId = Id }).Find().FirstOrDefault();
 
-                if (dbPost == null)
+                if (dbThread == null)
                     throw new Exception("That isn't a valid post omae.");
 
-                if (dbPost.CreatedBy != sessionUser.Id)
-                    throw new Exception("Stop poking around where you shouldn't be omae!");
+                HttpContext.Session.SetString("CurrentEditId", Id);
 
-                var viewModel = new PostViewModel()
-                {
-                    Id = dbPost.Id,
-                    Author = sessionUser.UserName,
-                    Body = dbPost.Body,
-                    PostDate = dbPost.CreatedOn
-                };
+                var viewModel = new PostViewModel();
 
-                return Modal("_EditPost", viewModel);
+                return Modal("_AddEditPost", viewModel);
             });
         }
 
         [HttpPost]
-        public JsonResult EditPost(PostViewModel viewModel)
+        public ActionResult AddEditPost(PostViewModel viewModel)
         {
             return HandleExceptions(() =>
             {
+                var userKey = HttpContext.Session.GetString("UserKey");
+                var currentEditId = HttpContext.Session.GetString("CurrentEditId");
 
-                return Json(new { });
+                if (userKey == null || currentEditId == null)
+                    throw new Exception("Stop poking around where you shouldn't be omae!");
+
+                var sessionUser = JsonConvert.DeserializeObject<UserIdentity>(userKey);
+                var dbThread = database.Threads.Where(new { PublicId = currentEditId }).Find().FirstOrDefault();
+
+                if (dbThread == null)
+                    throw new Exception("That thread doesn't exist. Sorry chummer.");
+
+                var dbPost = new Post()
+                {
+                    Body = viewModel.Body,
+                    CreatedBy = sessionUser.CreatedBy,
+                    CreatedOn = DateTime.Now,
+                    Deleted = false,
+                    Edited = false,
+                    ThreadId = dbThread.Id ?? 0
+                };
+
+                return RedirectToAction("Thread", new { Id = dbThread.PublicId });
             });
         }
     }
