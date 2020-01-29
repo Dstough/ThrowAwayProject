@@ -14,7 +14,7 @@
     <a href="/Forum/List/1">view all</a>
     @foreach (var thread in Model.UserThreads)
     {
-        <article >
+        <article>
             <div class="thread-metadata text-muted">
                 <span style="@thread.Style">@thread.Author</span> - 
                 <span>@thread.PostDate.AddYears(60).ToString("MMMM dd, yyyy hh:mm tt")</span>

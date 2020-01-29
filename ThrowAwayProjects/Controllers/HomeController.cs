@@ -23,7 +23,7 @@ namespace ThrowAwayProjects.Controllers
             {
                 var viewModel = new HomeViewModel();
 
-                foreach (var thread in database.Threads.Find(5))
+                foreach (var thread in database.Threads.Find(3))
                 {
                     var author = database.Users.Get(thread.CreatedBy);
                     var group = database.UserGroups.Get(author.UserGroupId);

@@ -31,7 +31,7 @@
         </div>
     </article>
 
-    @foreach (var item in Model.Posts)
+    @foreach (var item in Model.Posts.OrderBy(i=>i.PostDate))
     {
         <article>
             <div class="thread-metadata text-muted">
