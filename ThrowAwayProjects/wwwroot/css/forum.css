@@ -10,6 +10,10 @@ article {
         margin-top: 10px;
     }
 
+    article .message-body p {
+        padding-top: 5px;
+    }
+
 .thread-metadata {
     padding-bottom: 7px;
     border-bottom: 1px solid #333;
@@ -40,6 +44,8 @@ article {
     .post .message-body {
         font-size: 18px;
     }
+
+
 
     .post .message-signature {
         font-size: 18px;
