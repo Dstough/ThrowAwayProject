@@ -13,6 +13,7 @@ namespace ThrowAwayProjects.Models
         public string Author { get; set; }
         public string Style { get; set; }
         public DateTime PostDate { get; set; }
+        public bool Edited { get; set; }
         public List<PostViewModel> Posts { get; set; }
 
         public ThreadViewModel(): this(new Thread())
@@ -28,6 +29,7 @@ namespace ThrowAwayProjects.Models
             Author = null;
             Style = null;
             PostDate = thread.CreatedOn;
+            Edited = false;
             Posts = new List<PostViewModel>();
         }
     }

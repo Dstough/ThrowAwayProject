@@ -4,14 +4,19 @@
     <article>
         <div class="thread-metadata text-muted">
             <span style="@Model.Style">@Model.Author</span> -
-            <span>@Model.PostDate.ToString("MMMM dd, yyyy")</span>
-           @if (ViewBag.LoggedIn)
+            <span>@Model.PostDate.AddYears(60).ToString("MMMM dd, yyyy hh:mm tt")</span>
+            @if (Model.Edited)
+            {
+                <span> - </span>
+                <i>Edited</i>
+            }
+            @if (ViewBag.LoggedIn)
             {
                 <span> - </span>
                 <span>
                     <a href="#" onclick='Modal("@Url.Action("AddPost","Forum", new { Id = Model.Id })")'>Reply</a>
                 </span>
-               @if (ViewBag.Username == Model.Author)
+                @if (ViewBag.Username == Model.Author)
                 {
                     <span> - </span>
                     <span>
@@ -25,28 +30,35 @@
             <span class="message-body">@Model.Body</span>
         </div>
     </article>
-    
-   @foreach (var item in Model.Posts)
+
+    @foreach (var item in Model.Posts)
     {
-        <div class="thread-metadata text-muted">
-            <span style="@item.Style">@item.Author</span> -
-            <span>@item.PostDate.ToString("MMMM dd, yyyy")</span>
-           @if (ViewBag.LoggedIn)
-            {
-               @if (ViewBag.Username == Model.Author)
+        <article>
+            <div class="thread-metadata text-muted">
+                <span style="@item.Style">@item.Author</span> -
+                <span>@item.PostDate.AddYears(60).ToString("MMMM dd, yyyy hh:mm tt")</span>
+                @if (item.Edited)
                 {
                     <span> - </span>
-                    <span>
-                        <a href="#" onclick='Modal("@Url.Action("EditPost","Forum", new { Id = item.Id })");'>Reply</a>
-                    </span>
+                    <i>Edited</i>
                 }
-            }
-        </div>
-        <div style="text-align:justify;">
-            <span class="message-body">@item.Body</span>
-        </div>
+                @if(ViewBag.LoggedIn)
+                {
+                    @if (ViewBag.Username == Model.Author)
+                    {
+                        <span> - </span>
+                        <span>
+                            <a href="#" onclick='Modal("@Url.Action("EditPost","Forum", new { Id = item.Id })");'>Edit</a>
+                        </span>
+                    }
+                }
+            </div>
+            <div style="text-align:justify;">
+                <span class="message-body">@item.Body</span>
+            </div>
+        </article>
     }
-    
+
     <script>
         $(function () {
             $(".thread .message-body").each(function () {

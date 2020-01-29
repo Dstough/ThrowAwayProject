@@ -51,6 +51,7 @@ namespace ThrowAwayProjects.Controllers
                     Body = dbThread.Body,
                     Author = dbAuthor.UserName,
                     PostDate = dbAuthor.CreatedOn,
+                    Edited = dbThread.Edited,
                     Style = dbGroup.Style + " " + dbAuthor.Style,
                     Posts = new List<PostViewModel>()
                 };
@@ -67,10 +68,11 @@ namespace ThrowAwayProjects.Controllers
 
                     var post = new PostViewModel
                     {
-                        Id = dbPost.Id,
+                        Id = dbPost.PublicId,
                         Body = dbPost.Body,
                         Author = author.UserName,
                         PostDate = dbPost.CreatedOn,
+                        Edited = dbPost.Edited,
                         Style = group.Style + " " + author.Style
                     };
 
@@ -152,6 +154,7 @@ namespace ThrowAwayProjects.Controllers
                     dbThread = database.Threads.Where(new { PublicId = currentEditId }).Find().FirstOrDefault();
                     dbThread.Title = viewModel.Title;
                     dbThread.Body = viewModel.Body;
+                    dbThread.Edited = true;
                     database.Threads.Edit(dbThread);
                 }
 
@@ -178,9 +181,55 @@ namespace ThrowAwayProjects.Controllers
                 if (dbThread == null)
                     throw new Exception("That isn't a valid post omae.");
 
-                HttpContext.Session.SetString("CurrentEditId", Id);
+                HttpContext.Session.SetString("CurrentThreadId", Id);
+                HttpContext.Session.SetString("CurrentPostId", "");
 
                 var viewModel = new PostViewModel();
+
+                return Modal("_AddEditPost", viewModel);
+            });
+        }
+
+        public JsonResult EditPost(string Id)
+        {
+            return HandleExceptions(() => 
+            {
+                var userKey = HttpContext.Session.GetString("UserKey");
+
+                if (userKey == null)
+                    throw new Exception("Stop poking around where you shouldn't be omae!");
+
+                var sessionUser = JsonConvert.DeserializeObject<UserIdentity>(userKey);
+
+                if (Id == null)
+                    throw new Exception("You need to specify a post to edit chummer.");
+
+                HttpContext.Session.SetString("CurrentPostId", Id);
+
+                var dbPost = database.Posts.Where(new { PublicId = Id }).Find().FirstOrDefault();
+
+                if (dbPost == null)
+                    throw new Exception("That isn't a valid post omae.");
+
+                var dbAuthor = database.Users.Get(dbPost.CreatedBy);
+
+                if (dbAuthor == null)
+                    throw new Exception("The post has no author.");
+
+                var dbGroup = database.UserGroups.Get(dbAuthor.UserGroupId);
+
+                if (dbGroup == null)
+                    throw new Exception("The user is not valid.");
+
+                var viewModel = new PostViewModel()
+                {
+                    Author = dbAuthor.UserName,
+                    Body = dbPost.Body,
+                    Edited = dbPost.Edited,
+                    Id = dbPost.PublicId,
+                    PostDate = dbPost.CreatedOn,
+                    Style = dbGroup.Style + dbAuthor.Style
+                };
 
                 return Modal("_AddEditPost", viewModel);
             });
@@ -192,26 +241,42 @@ namespace ThrowAwayProjects.Controllers
             return HandleExceptions(() =>
             {
                 var userKey = HttpContext.Session.GetString("UserKey");
-                var currentEditId = HttpContext.Session.GetString("CurrentEditId");
+                var currentThreadId = HttpContext.Session.GetString("CurrentThreadId");
+                var currentPostId = HttpContext.Session.GetString("CurrentPostId");
 
-                if (userKey == null || currentEditId == null)
+                if (userKey == null || currentThreadId == null)
                     throw new Exception("Stop poking around where you shouldn't be omae!");
 
                 var sessionUser = JsonConvert.DeserializeObject<UserIdentity>(userKey);
-                var dbThread = database.Threads.Where(new { PublicId = currentEditId }).Find().FirstOrDefault();
+                var dbThread = database.Threads.Where(new { PublicId = currentThreadId }).Find().FirstOrDefault();
 
                 if (dbThread == null)
                     throw new Exception("That thread doesn't exist. Sorry chummer.");
 
-                var dbPost = new Post()
+                if (string.IsNullOrEmpty(currentPostId))
                 {
-                    Body = viewModel.Body,
-                    CreatedBy = sessionUser.CreatedBy,
-                    CreatedOn = DateTime.Now,
-                    Deleted = false,
-                    Edited = false,
-                    ThreadId = dbThread.Id ?? 0
-                };
+                    var dbPost = new Post()
+                    {
+                        Body = viewModel.Body,
+                        CreatedBy = sessionUser.Id ?? 0,
+                        CreatedOn = DateTime.Now,
+                        Deleted = false,
+                        Edited = false,
+                        ThreadId = dbThread.Id ?? 0
+                    };
+                    database.Posts.Add(dbPost);
+                }
+                else
+                {
+                    var dbPost = database.Posts.Where(new { PublicId = currentPostId }).Find().FirstOrDefault();
+
+                    if (dbPost == null)
+                        throw new Exception("That post isn't able to be edited.");
+
+                    dbPost.Body = viewModel.Body;
+                    dbPost.Edited = true;
+                    database.Posts.Edit(dbPost);
+                }
 
                 return RedirectToAction("Thread", new { Id = dbThread.PublicId });
             });

@@ -33,7 +33,7 @@ namespace ThrowAwayProjects.Controllers
                         Body = thread.Body.Length > 255 ? thread.Body.Substring(0,255) + "..." : thread.Body,
                         Author = author.UserName,
                         Style = group.Style + " " + author.Style,
-                        PostDate = thread.CreatedOn.AddYears(60)
+                        PostDate = thread.CreatedOn
                     });
                 }
 
