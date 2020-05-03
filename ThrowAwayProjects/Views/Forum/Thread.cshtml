@@ -1,6 +1,6 @@
 ﻿@model ThreadViewModel
 
-<div class="thread">
+<div class="thread fade-in">
     <article>
         <div class="thread-metadata text-muted">
             <span style="@Model.Style">@Model.Author</span> -
@@ -63,7 +63,12 @@
         $(function () {
             $(".thread .message-body").each(function () {
                 var text = $(this).html()
+                //TODO: Replace some characters here.
                 $(this).html(converter.makeHtml(text));
+            });
+
+            $(".thread .message-body img").each(function () {
+                $(this).wrap("<div class='img'></div>");
             });
         });
     </script>

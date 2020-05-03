@@ -1,4 +1,8 @@
-﻿var converter = new showdown.Converter({
+﻿$(function () {
+    $(".fade-in").fadeIn();
+});
+
+var converter = new showdown.Converter({
     tables: true,
     strikethrough: true,
 });

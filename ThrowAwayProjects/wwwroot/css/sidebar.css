@@ -4,10 +4,6 @@
     padding-top: 20px;
 }
 
-    .side-bar > * {
-        max-width: 300px;
-    }
-
     .side-bar p {
         padding: 0 !important;
         text-indent: 0;
@@ -19,7 +15,7 @@
     }
 
     .side-bar .btn-primary {
-        width: 290px;
+        width: 100%;
     }
 
     .side-bar .post {

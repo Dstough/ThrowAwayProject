@@ -68,26 +68,23 @@
             </div>
         </nav>
         <div class="col-md-8">
-            @RenderBody()
+            <div class="fade-in">
+                @RenderBody()
+            </div>
         </div>
         <div class="col-md-4 side-bar">
             <div class="biometrics hide-when-small">
-                <hr />
                 <p><span style="color:#aaa;">...Connected:</span> @ViewBag.DateConnected</p>
                 <p><span style="color:#aaa;">...Privilege:</span> @ViewBag.Privilege</p>
                 <p><span style="color:#aaa;">....Identity:</span> @ViewBag.UserName</p>
                 <p><span style="color:#aaa;">......Status:</span> @ViewBag.Status</p>
                 <hr />
             </div>
-
             @if (ViewBag.LoggedIn)
-            {
-                <div class="control">
-                    <button id="new-thread" class="btn btn-primary" onclick='Modal("@Url.Action("AddEditThread","Forum")");'>New Thread</button>
-                    <hr />
-                </div>
-            }
-
+            {<div class="control">
+                <button id="new-thread" class="btn btn-primary" onclick='Modal("@Url.Action("AddEditThread","Forum")");'>New Thread</button>
+                <hr />
+            </div>}
             <div class="hide-when-small">
                 <h3>Posting rules:</h3>
                 <ol>
@@ -99,6 +96,7 @@
                 </ol>
             </div>
         </div>
+        <br/>
         <div class="col-md-12" style="margin:20px 0 0 0;">
             <div class="text-center">
                 <img src="\Images\shadowrun-logo.svg" class="header-image navbar-brand" style="float:initial;" alt="JackPoint" /><br />

@@ -29,17 +29,21 @@ body {
 h1 {
     display: inline-block;
     border-top: 1px solid #4c4c4c;
-    border-bottom: 1px solid #4c4c4c;
+    border-bottom: 1px solid #0a0;
 }
 
 h2 {
     display: inline-block;
-    border-bottom: 1px solid #4c4c4c;
+    border-bottom: 1px solid #0a0;
 }
 
 h4 {
     display: inline;
     font-weight: bold;
+}
+
+h3 {
+    color: #0a0;
 }
 
 h5 {
@@ -49,17 +53,53 @@ h5 {
     font-size: 18px;
 }
 
-h4+p, h5+p {
-    display: inline;
-}
+    h4 + p,
+    h5 + p {
+        display: inline;
+    }
 
 p {
+    padding-top: 5px;
     text-indent: 22px;
     margin: 0;
+    vertical-align: top;
 }
 
-p+p {
-    padding-top: 20px;
+    p + p {
+        padding-top: 20px;
+    }
+
+a {
+    cursor: pointer;
+    color: #0a0 !important;
+}
+
+    a:hover {
+        text-decoration: none;
+        color: #0f0 !important;
+    }
+
+    a:before {
+        content: "[";
+        color: #eee;
+    }
+
+    a:after {
+        content: "]";
+        color: #eee;
+    }
+
+input::placeholder,
+textarea::placeholder {
+    color: #555 !important;
+}
+
+input[type=checkbox],
+input[type=radio] {
+    width: 35px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-top: 0;
 }
 
 .navbar-header {
@@ -82,17 +122,6 @@ p+p {
     color: #000;
 }
 
-input::placeholder, textarea::placeholder {
-    color: #555 !important;
-}
-
-input[type=checkbox], input[type=radio] {
-    width: 35px;
-    display: inline-block;
-    vertical-align: middle;
-    margin-top: 0;
-}
-
 .btn-primary {
     color: #ccc;
     box-shadow: 0 0 7px black;
@@ -106,10 +135,10 @@ input[type=checkbox], input[type=radio] {
     border-color: black;
 }
 
-.btn-danger:hover {
-    background: linear-gradient( #dd0000, #2b0000);
-    border-color: black;
-}
+    .btn-danger:hover {
+        background: linear-gradient( #dd0000, #2b0000);
+        border-color: black;
+    }
 
 .btn-primary:hover {
     background: linear-gradient( #6d6d6d, #1f1f1f);
@@ -119,32 +148,8 @@ hr {
     border-color: #4c4c4c;
 }
 
-.header-image {
-    padding: 7px;
-}
-
 .right {
     float: right;
-}
-
-a {
-    cursor: pointer;
-    color: #0a0 !important;
-}
-
-a:hover {
-    text-decoration: none;
-    color: #0f0 !important;
-}
-
-a:before {
-    content: "[";
-    color: #eee;
-}
-
-a:after {
-    content: "]";
-    color: #eee;
 }
 
 .close {
@@ -156,10 +161,10 @@ a:after {
     text-shadow: 2px 2px 15px #000;
 }
 
-.close:hover {
-    color: #e1e1e1;
-    text-shadow: 2px 2px 15px #fff;
-}
+    .close:hover {
+        color: #e1e1e1;
+        text-shadow: 2px 2px 15px #fff;
+    }
 
 .lbl {
     text-decoration: underline;
@@ -181,10 +186,10 @@ a:after {
     display: none;
     overflow: hidden;
     text-align: left;
-    max-width: 350px;
 }
 
 .message {
+    display: none;
     position: fixed;
     z-index: 1031;
     background-color: #000;
@@ -192,7 +197,6 @@ a:after {
     background-size: 10px 10px, 10px 10px, 10px 5px;
     background-position: 0 0, 5px 5px, 0 0;
     box-shadow: 0 0 10px #333 inset;
-    border-left: 3px solid #aaa;
     border-radius: 10px;
     padding: 20px;
     right: 50%;
@@ -201,43 +205,40 @@ a:after {
 
 .grid-card {
     width: 33%;
-    padding: 5px;
     display: inline-block;
     vertical-align: top;
     text-align: center;
     overflow-x: hidden;
-    text-overflow: ellipsis;
-}
-
-.grid-card:first-child {
-    padding-left: 0;
-}
-
-.grid-card:nth-child(2) {
-    width: 34%;
-}
-
-.grid-card:last-child {
-    padding-right: 0;
-}
-
-.grid-card a {
-    white-space: nowrap;
-}
-
-.grid-card .img {
-    box-shadow: 0 0 10px #000 inset;
-    border-radius: 5px;
-}
-
-.grid-card img {
-    background-color: #000;
     position: relative;
-    border-radius: 5px;
-    display: block;
-    height: auto;
-    width: 100%;
-    z-index: -1;
+    padding: 5px;
+}
+
+    .grid-card a {
+        white-space: nowrap;
+        position: absolute;
+        top: 45%;
+        left: 0;
+        text-align: center;
+        width: 100%;
+    }
+
+    .grid-card .img {
+        box-shadow: 0 0 10px #000 inset;
+        border-radius: 5px;
+    }
+
+    .grid-card img {
+        background-color: #000;
+        position: relative;
+        border-radius: 5px;
+        display: block;
+        height: auto;
+        width: 100%;
+        z-index: -1;
+    }
+
+.fade-in {
+    display: none;
 }
 
 @media screen and (max-width: 991px) {
@@ -245,6 +246,7 @@ a:after {
         right: 5%;
         min-width: 90%;
     }
+
     .hide-when-small {
         display: none;
     }
@@ -263,15 +265,19 @@ a:after {
         padding-right: 100px;
         margin: 0 !important;
     }
+
     .post .message-body, h4, h5, h6 {
         font-size: 14px !important;
     }
+
     .time-stamp {
         display: block !important;
     }
+
     col-md-8 {
         width: auto !important;
     }
+
     .side-bar {
         display: none;
     }
