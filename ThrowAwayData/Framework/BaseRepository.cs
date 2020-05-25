@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
 using System.Data.SQLite;
-using System.Collections;
 using System.Collections.Generic;
+using ThrowAwayData.Framework.Attributes;
 
 namespace ThrowAwayDataBackground
 {
@@ -41,7 +41,7 @@ namespace ThrowAwayDataBackground
 
             foreach (var prop in obj.GetType().GetProperties())
             {
-                if (typeof(T).GetProperty(prop.Name) == null)
+                if (typeof(T).GetProperty(prop.Name) == null && Attribute.GetCustomAttribute(prop, typeof(IgnoreAttribute)) == null)
                     continue;
 
                 WhereParameters.Add(prop.Name, Tuple.Create(OperatorSymbol, obj.GetPropValue(prop.Name).ToString()));
@@ -57,6 +57,7 @@ namespace ThrowAwayDataBackground
             var columnList = "";
             var propList = item.GetType()
                                .GetProperties()
+                               .Where(p => Attribute.GetCustomAttribute(p, typeof(IgnoreAttribute)) == null)
                                .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
                                .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
                                .Where(e => e.CanWrite);
@@ -96,6 +97,7 @@ namespace ThrowAwayDataBackground
             var columnList = "";
             var propList = item.GetType()
                                .GetProperties()
+                               .Where(p => Attribute.GetCustomAttribute(p, typeof(IgnoreAttribute)) == null)
                                .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
                                .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
                                .Where(e => e.CanWrite);
@@ -137,6 +139,7 @@ namespace ThrowAwayDataBackground
             var whereClause = "Deleted = 0";
             var limitClause = count > 0 ? " LIMIT " + count : "";
             var propList = typeof(T).GetProperties()
+                                    .Where(p => Attribute.GetCustomAttribute(p, typeof(IgnoreAttribute)) == null)
                                     .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
                                     .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
                                     .Where(e => e.CanWrite);
@@ -184,6 +187,7 @@ namespace ThrowAwayDataBackground
             var paramiters = "";
             var propList = typeof(T).GetProperties()
                                     .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
+                                    .Where(p => Attribute.GetCustomAttribute(p, typeof(IgnoreAttribute)) == null)
                                     .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
                                     .Where(e => e.Name != "Id");
 
@@ -216,6 +220,7 @@ namespace ThrowAwayDataBackground
         {
             var tableName = entity.GetType().Name;
             var propList = typeof(T).GetProperties()
+                                    .Where(p => Attribute.GetCustomAttribute(p, typeof(IgnoreAttribute)) == null)
                                     .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
                                     .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
                                     .Where(e => e.Name != "Id");
@@ -265,6 +270,7 @@ namespace ThrowAwayDataBackground
             var tableName = itemTemplate.GetType().Name;
             var columnList = "";
             var propList = typeof(T).GetProperties()
+                                    .Where(p => Attribute.GetCustomAttribute(p, typeof(IgnoreAttribute)) == null)
                                     .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
                                     .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
                                     .Where(e => e.CanWrite);
@@ -306,6 +312,7 @@ namespace ThrowAwayDataBackground
             var whereClause = "Deleted = 0";
             var columnList = "";
             var propList = typeof(T).GetProperties()
+                                    .Where(p => Attribute.GetCustomAttribute(p, typeof(IgnoreAttribute)) == null)
                                     .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
                                     .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)));
 
@@ -341,6 +348,7 @@ namespace ThrowAwayDataBackground
             var columnList = "";
             var pageNumber = (page - 1) * size;
             var propList = typeof(T).GetProperties()
+                                    .Where(p => Attribute.GetCustomAttribute(p, typeof(IgnoreAttribute)) == null)
                                     .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
                                     .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
                                     .Where(e => e.CanWrite);
@@ -381,6 +389,7 @@ namespace ThrowAwayDataBackground
             var whereClause = "Deleted = 0";
             var columnList = "";
             var propList = typeof(T).GetProperties()
+                                    .Where(p => Attribute.GetCustomAttribute(p, typeof(IgnoreAttribute)) == null)
                                     .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
                                     .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)));
 
@@ -424,7 +433,7 @@ namespace ThrowAwayDataBackground
                 var value = "".RandomString(11);
                 using var conn = new SQLiteConnection(ConnString);
                 using var cmd = conn.CreateCommand();
-                
+
                 cmd.CommandText = "SELECT PublicId FROM " + tableName + " WHERE PublicId = @publicId";
                 cmd.Parameters.AddWithValue("@publicId", value);
 
