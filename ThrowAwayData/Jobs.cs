@@ -11,7 +11,8 @@ namespace ThrowAwayData
             {
                 var dbThreads = Threads
                     .Where(new { Closed = 0 })
-                    .Find();
+                    .Find()
+                    .Where(item => item.CreatedOn <= DateTime.Now.AddDays(-7));
 
                 Console.WriteLine($"Found {dbThreads.Count()} threads to close");
 
