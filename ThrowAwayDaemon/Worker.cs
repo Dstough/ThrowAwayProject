@@ -17,13 +17,13 @@ namespace ThrowAwayDaemon
 
         public Worker()
         {
-            Interval = 1000 * 5;
+            Interval = 1000 * 60 * 5;
             timer = new Timer(Main, "started", Timeout.Infinite, Timeout.Infinite);
             configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName)
                 .AddJsonFile("appsettings.json", false)
                 .Build();
-            database = new Database(ConfigurationBinder.GetValue<string>(configuration,"ThrowAwayDB"));
+            database = new Database(ConfigurationBinder.GetValue<string>(configuration, "ThrowAwayDB"));
         }
 
         public void Dispose() => timer.Dispose();

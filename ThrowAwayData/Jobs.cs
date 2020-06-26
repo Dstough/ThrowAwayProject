@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace ThrowAwayData
 {
@@ -9,19 +10,22 @@ namespace ThrowAwayData
             try
             {
                 var dbThreads = Threads
-                    .Where(new { Closed = false })
-                    .Where(new { OperatorSymbol = "<=", CreatedOn = DateTime.Now.AddDays(-7) })
+                    .Where(new { Closed = 0 })
                     .Find();
 
-                foreach(var item in dbThreads)
+                Console.WriteLine($"Found {dbThreads.Count()} threads to close");
+
+                foreach (var item in dbThreads)
                 {
                     item.Closed = true;
                     Threads.Edit(item);
+
+                    Console.WriteLine($"Closed Thread {item.PublicId}");
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //Do Nothing
+                Console.WriteLine(ex.ToString().Replace(" at ", "\n"));
             }
         }
     }

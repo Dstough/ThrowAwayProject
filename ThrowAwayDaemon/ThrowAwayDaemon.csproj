@@ -3,6 +3,7 @@
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <UserSecretsId>dotnet-ThrowAwayDaemon-0495FA1F-21F3-43A4-A70F-B4F5E98AC648</UserSecretsId>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <OutputPath>..\ThrowAwayProjects\bin\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
