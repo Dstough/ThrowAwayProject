@@ -2,7 +2,7 @@
 
 namespace ThrowAwayData
 {
-    public class Database
+    public partial class Database
     {
         public TagRepository Tags { get; private set; }
         public PostRepository Posts { get; private set; }
