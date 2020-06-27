@@ -50,7 +50,7 @@ namespace ThrowAwayProjects.Controllers
             return HandleExceptions(() =>
             {
                 var CreatedDate = DateTime.Now;
-                var defaultUserGroup = database.UserGroups.Where(new { Name = "User" }).Find().FirstOrDefault();
+                var defaultUserGroup = database.UserGroups.Where(new { Name = "Chummer" }).Find().FirstOrDefault();
                 var userNameCheck = database.Users.Where(new { viewModel.UserName }).Find().FirstOrDefault();
                 var emailCheck = database.Users.Where(new { viewModel.Email }).Find().FirstOrDefault();
 

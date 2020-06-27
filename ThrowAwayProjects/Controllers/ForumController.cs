@@ -122,6 +122,11 @@ namespace ThrowAwayProjects.Controllers
                 if (dbThread == null)
                     throw new Exception("That thread couldn't be found in the database.");
 
+                var currentUserId = Convert.ToInt32(HttpContext.Session.GetString("CurrentUserId"));
+
+                if (currentUserId != dbThread.CreatedBy)
+                    throw new Exception("You cannot edit a thread that you didn't write.");
+
                 var viewModel = new ThreadViewModel(dbThread);
 
                 return Modal("_AddEditThread", viewModel);

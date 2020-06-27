@@ -80,7 +80,7 @@
                 <p><span style="color:#aaa;">......Status:</span> @ViewBag.Status</p>
                 <hr />
             </div>
-            @if (ViewBag.LoggedIn)
+            @if (ViewBag.LoggedIn && ViewBag.Privilege != "Chummer")
             {<div class="control">
                 <button id="new-thread" class="btn btn-primary" onclick='Modal("@Url.Action("AddEditThread","Forum")");'>New Thread</button>
                 <hr />
