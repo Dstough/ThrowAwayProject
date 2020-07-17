@@ -87,7 +87,9 @@ create table if not exists Article
 	Deleted bit not null,
 
 	Title varchar not null,
-	Body varchar not null
+	Category varchar not null,
+	Body varchar not null,
+	Image blob,
 );
 
 create table if not exists Comment
