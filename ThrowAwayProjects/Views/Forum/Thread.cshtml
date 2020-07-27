@@ -14,13 +14,13 @@
             {
                 <span> - </span>
                 <span>
-                    <a href="#" onclick='Modal("@Url.Action("AddPost","Forum", new { Id = Model.Id })")'>Reply</a>
+                    <a href="#" onclick='Modal("@Url.Action("AddPost","Forum", new { Id = Model.publicId })")'>Reply</a>
                 </span>
                 @if (ViewBag.Username == Model.Author)
                 {
                     <span> - </span>
                     <span>
-                        <a href="#" onclick='Modal("@Url.Action("AddEditThread","Forum",new { Id = Model.Id })");'>Edit</a>
+                        <a href="#" onclick='Modal("@Url.Action("AddEditThread","Forum",new { Id = Model.publicId })");'>Edit</a>
                     </span>
                 }
             }
@@ -48,7 +48,7 @@
                     {
                         <span> - </span>
                         <span>
-                            <a href="#" onclick='Modal("@Url.Action("EditPost","Forum", new { Id = item.Id })");'>Edit</a>
+                            <a href="#" onclick='Modal("@Url.Action("EditPost","Forum", new { publicId = item.publicId })");'>Edit</a>
                         </span>
                     }
                 }

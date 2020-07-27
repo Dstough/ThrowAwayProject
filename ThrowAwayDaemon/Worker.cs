@@ -47,6 +47,7 @@ namespace ThrowAwayDaemon
         public void Main(object state)
         {
             database.CloseWeekOldThreads();
+            database.AllowWeekOldUsersToPost();
         }
     }
 }

@@ -5,7 +5,7 @@ namespace ThrowAwayProjects.Models
 {
     public class UserViewModel : BaseViewModel
     {
-        public int Id { get; set; }
+        public string PublicId { get; set; }
         public string Email { get; set; }
         public string UserName { get; set; }
         public string Style { get; set; }
@@ -23,7 +23,7 @@ namespace ThrowAwayProjects.Models
 
         public UserViewModel(UserIdentity user)
         {
-            Id = user.Id ?? 0;
+            PublicId = user.PublicId;
             GroupId = user.UserGroupId;
             Email = user.Email;
             UserName = user.UserName;

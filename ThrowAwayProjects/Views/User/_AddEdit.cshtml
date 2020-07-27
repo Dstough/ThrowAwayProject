@@ -39,7 +39,7 @@
 </div>
 <script>
     $(function () {
-        VerifyDelete('delete', '@Url.Action("Delete", "User")', '@Model.Id.ToString()');
+        VerifyDelete('delete', '@Url.Action("Delete", "User")', '@Model.PublicId.ToString()');
         BindModalValidation('AddEditUser', ['UserName', 'Email'], 'save', function() {
             Submit('@Url.Action("AddEdit", "User")', {
                 UserName : $('#UserName').val(),
@@ -49,7 +49,7 @@
                 Authenticated : $("#Authenticated").is(":checked"),
                 Banned : $("#Banned").is(":checked"),
                 Dead : $("#Dead").is(":checked")
-            },'@Model.Id.ToString()');
+            },'@Model.PublicId');
         });
     });
 </script>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace ThrowAwayData
 {
@@ -8,16 +9,14 @@ namespace ThrowAwayData
         {
             try
             {
-                var dbThreads = Threads
+                Threads
                     .Where(new { Closed = 0 })
                     .Where(new { OperatorSymbol = "<=", CreatedOn = DateTime.Now.AddDays(-7).ToString("yyyy-MM-dd hh-mm-ss") })
-                    .Find();
-
-                foreach (var item in dbThreads)
-                {
-                    item.Closed = true;
-                    Threads.Edit(item);
-                }
+                    .Find().ToList().ForEach(thread =>
+                    {
+                        thread.Closed = true;
+                        Threads.Edit(thread);
+                    });
             }
             catch (Exception)
             {
@@ -28,8 +27,22 @@ namespace ThrowAwayData
         {
             try
             {
+                var chummerGroup = UserGroups.Where(new { Name = "Chummer" }).Find().FirstOrDefault();
+                var userGroup = UserGroups.Where(new { Name = "User" }).Find().FirstOrDefault();
+
+                if (chummerGroup == null || userGroup == null)
+                    return;
+
+                Users
+                    .Where(new { UserGroupId = chummerGroup.Id })
+                    .Where(new { OperatorSymbol = "<=", CreatedOn = DateTime.Now.AddDays(-7).ToString("yyyy-MM-dd hh-mm-ss") })
+                    .Find().ToList().ForEach(user => 
+                    {
+                        user.UserGroupId = userGroup.Id ?? 0;
+                        Users.Edit(user);
+                    });
             }
-            catch(Exception)
+            catch (Exception)
             {
             }
         }

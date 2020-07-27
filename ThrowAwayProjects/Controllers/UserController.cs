@@ -60,17 +60,17 @@ namespace ThrowAwayProjects.Controllers
             }
         }
 
-        public ActionResult Index(int? id)
+        public ActionResult Index(int? publicId)
         {
             return HandleExceptions(() =>
             {
-                if (id == null)
+                if (publicId == null)
                     throw new Exception("That set isn't in the database chummer. Try again.");
 
-                var dbUsers = database.Users.GetPage((id ?? 0) + 1, 50);
+                var dbUsers = database.Users.GetPage((publicId ?? 0) + 1, 50);
                 var viewModel = new UserListViewModel()
                 {
-                    page = id ?? 0
+                    page = publicId ?? 0
                 };
 
                 foreach (var user in dbUsers)
@@ -85,11 +85,11 @@ namespace ThrowAwayProjects.Controllers
             });
         }
 
-        public JsonResult AddEdit(int? Id)
+        public JsonResult AddEdit(string publicId)
         {
             return HandleExceptions(() =>
             {
-                HttpContext.Session.SetString("CurrentEditId", Id.ToString());
+                HttpContext.Session.SetString("CurrentEditId", publicId.ToString());
 
                 var groups = database.UserGroups.GetAll();
                 var viewModel = new UserViewModel();
@@ -97,14 +97,18 @@ namespace ThrowAwayProjects.Controllers
                 foreach (var item in groups)
                     viewModel.GroupOptions.Add(new SelectListItem(item.Name, item.Id.ToString()));
 
-                if (Id == 0)
+                if (publicId == null)
                     return Modal("_AddEdit", viewModel);
 
-                var dbUser = database.Users.Get(Id ?? 0);
+                var dbUser = database.Users.Where(new { PublicId = publicId }).Find().FirstOrDefault();
+
+                if (dbUser == null)
+                    throw new Exception("User not found in database");
+
                 var group = database.UserGroups.Get(dbUser.UserGroupId);
 
                 viewModel.GroupOptions.Where(e => e.Value == group.Id.ToString()).First().Selected = true;
-                viewModel.Id = dbUser.Id ?? 0;
+                viewModel.PublicId = dbUser.PublicId;
                 viewModel.GroupId = dbUser.UserGroupId;
                 viewModel.UserName = dbUser.UserName;
                 viewModel.Email = dbUser.Email;
@@ -128,12 +132,12 @@ namespace ThrowAwayProjects.Controllers
                 if (key == null)
                     throw new Exception("Stop poking around where you shouldn't be omae.");
 
-                var Id = Convert.ToInt32(key);
+                var publicId = key;
 
-                viewModel.Id = Id;
+                viewModel.PublicId = publicId;
                 HttpContext.Session.SetString("CurrentEditId", 0.ToString());
 
-                var dbUser = Id == 0 ? new UserIdentity() : database.Users.Get(Id);
+                var dbUser = publicId == null ? new UserIdentity() : database.Users.Where(new { PublicId = publicId }).Find().FirstOrDefault();
 
                 if (dbUser.UserName != viewModel.UserName)
                     dbUser.UserName = viewModel.UserName;
@@ -186,14 +190,17 @@ namespace ThrowAwayProjects.Controllers
         {
             return HandleExceptions(() =>
             {
-                var key = HttpContext.Session.GetString("CurrentEditId");
+                var publicId = HttpContext.Session.GetString("CurrentEditId");
 
-                if (key == null)
+                if (publicId == null)
                     throw new Exception("Stop poking around where you shouldn't be omae.");
 
-                var Id = Convert.ToInt32(key);
+                var user = database.Users.Where(new { PublicId = publicId }).Find().FirstOrDefault();
 
-                database.Users.Delete(Id);
+                if (user == null)
+                    throw new Exception("user not found in the database.");
+
+                database.Users.Delete(user.Id ?? 0);
 
                 return Json(new
                 {

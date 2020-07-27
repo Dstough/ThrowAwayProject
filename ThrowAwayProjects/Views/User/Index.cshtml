@@ -24,7 +24,7 @@
     <tbody>
         @foreach (var item in Model.list)
         {
-            <tr id="@item.Id" onclick='Modal("@Url.Action("AddEdit","User", new{Id=item.Id})")'>
+            <tr id="@item.PublicId" onclick='Modal("@Url.Action("AddEdit","User", new{publicId=item.PublicId})")'>
                 <td style='@item.Style'>@item.UserName</td>
                 <td>@item.Email</td>
                 <td>@item.GroupName</td>

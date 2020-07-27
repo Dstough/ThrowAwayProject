@@ -9,6 +9,8 @@ namespace ThrowAwayData
         public ThreadRepository Threads { get; private set; }
         public UserGroupRepository UserGroups { get; private set; }
         public UserIdentityRepository Users { get; private set; }
+        public ArticleRepository Articles { get; private set; }
+        public CommentRepository Comments { get; private set; }
 
         public Database() : this("")
         { }
@@ -20,6 +22,8 @@ namespace ThrowAwayData
             Users = new UserIdentityRepository(ConnectionString);
             Threads = new ThreadRepository(ConnectionString);
             UserGroups = new UserGroupRepository(ConnectionString);
+            Articles = new ArticleRepository(ConnectionString);
+            Comments = new CommentRepository(ConnectionString);
         }
     }
 }

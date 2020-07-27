@@ -89,7 +89,7 @@ create table if not exists Article
 	Title varchar not null,
 	Category varchar not null,
 	Body varchar not null,
-	Image blob,
+	Image blob
 );
 
 create table if not exists Comment
@@ -110,7 +110,7 @@ begin;
 	values
 		('Admin', datetime('now'), 1, 0, 'Admin', 'The primary group giving you access', 'color: #ff0;'),
 		('Runner', datetime('now'), 1, 0, 'Runner', 'The group for people with above normal access','color: #fff;'),
-		('User', datetime('now'), 1, 0, 'User', 'The primary group for users to post', ' ')
+		('User', datetime('now'), 1, 0, 'User', 'The primary group for users to post', ' '),
 		('Chummer', datetime('now'), 1, 0, 'Chummer', 'The first group all accounts become', 'color: #aaa');
 
 	insert into Tag(PublicId, CreatedOn, CreatedBy, Deleted, Name)

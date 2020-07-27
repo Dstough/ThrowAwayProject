@@ -2,7 +2,7 @@
 
 namespace ThrowAwayData
 {
-    class Article : BaseObject
+    public class Article : BaseObject
     {
         public string Title { get; set; }
         public string Body { get; set; }

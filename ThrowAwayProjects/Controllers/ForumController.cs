@@ -19,14 +19,14 @@ namespace ThrowAwayProjects.Controllers
         {
         }
 
-        public ActionResult Thread(string Id)
+        public ActionResult Thread(string publicId)
         {
             return HandleExceptions(() =>
             {
-                if (Id == null)
+                if (publicId == null)
                     throw new Exception("The thread id needs to be specified in the address bar.");
 
-                var dbThread = database.Threads.Where(new { PublicId = Id }).Find().FirstOrDefault();
+                var dbThread = database.Threads.Where(new { PublicId = publicId }).Find().FirstOrDefault();
 
                 if (dbThread == null)
                     throw new Exception("The thread doesn't exist.");
@@ -41,12 +41,12 @@ namespace ThrowAwayProjects.Controllers
                 {
                     var user = JsonConvert.DeserializeObject<UserIdentity>(HttpContext.Session.GetString("UserKey"));
                     HttpContext.Session.SetString("CurrentUserId", user.Id.ToString());
-                    HttpContext.Session.SetString("CurrentThreadId", Id.ToString());
+                    HttpContext.Session.SetString("CurrentThreadId", publicId.ToString());
                 }
 
                 var viewModel = new ThreadViewModel
                 {
-                    Id = dbThread.PublicId,
+                    publicId = dbThread.PublicId,
                     Title = dbThread.Title,
                     Body = dbThread.Body,
                     Author = dbAuthor.UserName,
@@ -68,7 +68,7 @@ namespace ThrowAwayProjects.Controllers
 
                     var post = new PostViewModel
                     {
-                        Id = dbPost.PublicId,
+                        publicId = dbPost.PublicId,
                         Body = dbPost.Body,
                         Author = author.UserName,
                         PostDate = dbPost.CreatedOn,
@@ -84,12 +84,12 @@ namespace ThrowAwayProjects.Controllers
             });
         }
 
-        public ActionResult List(int Id = 1)
+        public ActionResult List(int publicId = 1)
         {
             return HandleExceptions(() =>
             {
-                var dbThreads = database.Threads.GetPage(Id, 20);
-                var viewModel = new ListViewModel(Id, 20);
+                var dbThreads = database.Threads.GetPage(publicId, 20);
+                var viewModel = new ListViewModel(publicId, 20);
 
                 foreach (var dbThread in dbThreads)
                 {
@@ -108,16 +108,16 @@ namespace ThrowAwayProjects.Controllers
             });
         }
 
-        public JsonResult AddEditThread(string Id)
+        public JsonResult AddEditThread(string publicId)
         {
             return HandleExceptions(() =>
             {
-                if (Id == null)
+                if (publicId == null)
                     return Modal("_AddEditThread", new ThreadViewModel());
 
-                HttpContext.Session.SetString("CurrentEditId", Id);
+                HttpContext.Session.SetString("CurrentEditId", publicId);
 
-                var dbThread = database.Threads.Where(new { PublicId = Id }).Find().FirstOrDefault();
+                var dbThread = database.Threads.Where(new { PublicId = publicId }).Find().FirstOrDefault();
 
                 if (dbThread == null)
                     throw new Exception("That thread couldn't be found in the database.");
@@ -163,11 +163,11 @@ namespace ThrowAwayProjects.Controllers
                     database.Threads.Edit(dbThread);
                 }
 
-                return RedirectToAction("Thread", new { Id = dbThread.PublicId });
+                return RedirectToAction("Thread", new { publicId = dbThread.PublicId });
             });
         }
 
-        public JsonResult AddPost(string Id)
+        public JsonResult AddPost(string publicId)
         {
             return HandleExceptions(() =>
             {
@@ -178,15 +178,15 @@ namespace ThrowAwayProjects.Controllers
 
                 var sessionUser = JsonConvert.DeserializeObject<UserIdentity>(userKey);
 
-                if (Id == null)
+                if (publicId == null)
                     throw new Exception("You need to specify a post to edit chummer.");
 
-                var dbThread = database.Threads.Where(new { PublicId = Id }).Find().FirstOrDefault();
+                var dbThread = database.Threads.Where(new { PublicId = publicId }).Find().FirstOrDefault();
 
                 if (dbThread == null)
                     throw new Exception("That isn't a valid post omae.");
 
-                HttpContext.Session.SetString("CurrentThreadId", Id);
+                HttpContext.Session.SetString("CurrentThreadId", publicId);
                 HttpContext.Session.SetString("CurrentPostId", "");
 
                 var viewModel = new PostViewModel();
@@ -195,7 +195,7 @@ namespace ThrowAwayProjects.Controllers
             });
         }
 
-        public JsonResult EditPost(string Id)
+        public JsonResult EditPost(string publicId)
         {
             return HandleExceptions(() => 
             {
@@ -206,12 +206,12 @@ namespace ThrowAwayProjects.Controllers
 
                 var sessionUser = JsonConvert.DeserializeObject<UserIdentity>(userKey);
 
-                if (Id == null)
+                if (publicId == null)
                     throw new Exception("You need to specify a post to edit chummer.");
 
-                HttpContext.Session.SetString("CurrentPostId", Id);
+                HttpContext.Session.SetString("CurrentPostId", publicId);
 
-                var dbPost = database.Posts.Where(new { PublicId = Id }).Find().FirstOrDefault();
+                var dbPost = database.Posts.Where(new { PublicId = publicId }).Find().FirstOrDefault();
 
                 if (dbPost == null)
                     throw new Exception("That isn't a valid post omae.");
@@ -231,7 +231,7 @@ namespace ThrowAwayProjects.Controllers
                     Author = dbAuthor.UserName,
                     Body = dbPost.Body,
                     Edited = dbPost.Edited,
-                    Id = dbPost.PublicId,
+                    publicId = dbPost.PublicId,
                     PostDate = dbPost.CreatedOn,
                     Style = dbGroup.Style + dbAuthor.Style
                 };
@@ -283,7 +283,7 @@ namespace ThrowAwayProjects.Controllers
                     database.Posts.Edit(dbPost);
                 }
 
-                return RedirectToAction("Thread", new { Id = dbThread.PublicId });
+                return RedirectToAction("Thread", new { publicId = dbThread.PublicId });
             });
         }
     }

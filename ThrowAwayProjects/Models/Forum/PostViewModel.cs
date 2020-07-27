@@ -4,7 +4,7 @@ namespace ThrowAwayProjects.Models
 {
     public class PostViewModel
     {
-        public string Id { get; set; }
+        public string publicId { get; set; }
         public bool Edited { get; set; }
         public string Body { get; set; }
         public string Author { get; set; }
@@ -13,7 +13,7 @@ namespace ThrowAwayProjects.Models
 
         public PostViewModel()
         {
-            Id = null;
+            publicId = null;
             Edited = false;
             Body = "";
             Author = "";

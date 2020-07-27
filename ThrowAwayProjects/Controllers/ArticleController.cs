@@ -12,9 +12,9 @@ namespace ThrowAwayProjects.Controllers
     public class ArticleController : BaseController
     {
         public ArticleController(ICompositeViewEngine _viewEngine, IConfiguration _config, IWebHostEnvironment _environment) : base(_viewEngine, _config, _environment)
-        {}
+        { }
 
-        public ActionResult Article(string Id)
+        public ActionResult Article(string publicId)
         {
             
             return View();

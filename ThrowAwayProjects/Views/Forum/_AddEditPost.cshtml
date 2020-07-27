@@ -3,7 +3,7 @@
 <form asp-controller="Forum" asp-action="AddEditPost" method="post" id="PostForm" role="form">
     <div class="modal-header">
         <span type="button" class="close" data-dismiss="modal">&times;</span>
-        <h4 class="modal-title">Post: @Model.Id</h4>
+        <h4 class="modal-title">Post: @Model.publicId</h4>
     </div>
     <div class="modal-body">
         <div class="form-group">
@@ -12,7 +12,7 @@
     </div>
     <div class="modal-footer">
         <button id="submit" class="btn btn-primary">
-            @if (Model.Id == null)
+            @if (Model.publicId == null)
             {
                 <span>Add Post</span>
             }
