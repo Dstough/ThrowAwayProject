@@ -60,17 +60,14 @@ namespace ThrowAwayProjects.Controllers
             }
         }
 
-        public ActionResult Index(int? publicId)
+        public ActionResult Index(int publicId = 0)
         {
             return HandleExceptions(() =>
             {
-                if (publicId == null)
-                    throw new Exception("That set isn't in the database chummer. Try again.");
-
-                var dbUsers = database.Users.GetPage((publicId ?? 0) + 1, 50);
+                var dbUsers = database.Users.GetPage((publicId), 50);
                 var viewModel = new UserListViewModel()
                 {
-                    page = publicId ?? 0
+                    page = publicId
                 };
 
                 foreach (var user in dbUsers)
@@ -85,12 +82,10 @@ namespace ThrowAwayProjects.Controllers
             });
         }
 
-        public JsonResult AddEdit(string publicId)
+        public JsonResult AddEdit(string publicId = "")
         {
             return HandleExceptions(() =>
             {
-                HttpContext.Session.SetString("CurrentEditId", publicId.ToString());
-
                 var groups = database.UserGroups.GetAll();
                 var viewModel = new UserViewModel();
 
@@ -99,6 +94,8 @@ namespace ThrowAwayProjects.Controllers
 
                 if (publicId == null)
                     return Modal("_AddEdit", viewModel);
+                
+                HttpContext.Session.SetString("CurrentEditId", publicId);
 
                 var dbUser = database.Users.Where(new { PublicId = publicId }).Find().FirstOrDefault();
 

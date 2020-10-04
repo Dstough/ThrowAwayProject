@@ -28,7 +28,7 @@ namespace ThrowAwayProjects.Controllers
             configuration = _config;
             viewEngine = _viewEngine;
             environment = _environment;
-            database = new Database(configuration.GetConnectionString("ThrowAwayDB"));
+            database = new Database(configuration.GetConnectionString("JackpointDatabase"));
             python = new ProcessStartInfo
             {
                 FileName = "Python",

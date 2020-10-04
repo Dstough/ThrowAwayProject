@@ -23,7 +23,7 @@ namespace ThrowAwayDaemon
                 .SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName)
                 .AddJsonFile("appsettings.json", false)
                 .Build();
-            database = new Database(ConfigurationBinder.GetValue<string>(configuration, "ThrowAwayDB"));
+            database = new Database(ConfigurationBinder.GetValue<string>(configuration, "JackpointDatabase"));
         }
 
         public void Dispose() => timer.Dispose();

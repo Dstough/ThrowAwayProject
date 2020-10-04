@@ -216,21 +216,25 @@ hr {
     .grid-card a {
         white-space: nowrap;
         position: absolute;
-        top: 45%;
+        top: 40%;
         left: 0;
         text-align: center;
         width: 100%;
     }
 
     .grid-card .img {
-        box-shadow: 0 0 10px #000 inset;
-        border-radius: 5px;
+        box-shadow: 0 0 50px #000 inset;
+        border-radius: 10px;
+        border: 1px solid #333;
+        background: linear-gradient(27deg, #151515 2px, transparent 2px) 0 2px, linear-gradient(207deg, #151515 2px, transparent 2px) 5px 0px, linear-gradient(27deg, #222 2px, transparent 2px) 0px 5px, linear-gradient(207deg, #222 2px, transparent 2px) 5px 2px, linear-gradient(90deg, #1b1b1b 5px, transparent 5px), linear-gradient(#1d1d1d 25%, #1a1a1a 25%, #1a1a1a 50%, transparent 50%, transparent 75%, #242424 75%, #242424);
+        background-color: #131313;
+        background-size: 10px 10px;
     }
 
     .grid-card img {
         background-color: #000;
         position: relative;
-        border-radius: 5px;
+        border-radius: 10px;
         display: block;
         height: auto;
         width: 100%;

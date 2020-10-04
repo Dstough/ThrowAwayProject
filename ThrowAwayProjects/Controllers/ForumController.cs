@@ -88,7 +88,7 @@ namespace ThrowAwayProjects.Controllers
         {
             return HandleExceptions(() =>
             {
-                var dbThreads = database.Threads.GetPage(publicId, 20);
+                var dbThreads = database.Threads.GetPage(publicId - 1, 20);
                 var viewModel = new ListViewModel(publicId, 20);
 
                 foreach (var dbThread in dbThreads)
@@ -197,7 +197,7 @@ namespace ThrowAwayProjects.Controllers
 
         public JsonResult EditPost(string publicId)
         {
-            return HandleExceptions(() => 
+            return HandleExceptions(() =>
             {
                 var userKey = HttpContext.Session.GetString("UserKey");
 

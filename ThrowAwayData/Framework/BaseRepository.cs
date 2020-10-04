@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
-using System.Data.SQLite;
 using System.Collections.Generic;
 using ThrowAwayData.Framework.Attributes;
+using MySql.Data.MySqlClient;
 
 namespace ThrowAwayDataBackground
 {
@@ -62,7 +62,7 @@ namespace ThrowAwayDataBackground
                                .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
                                .Where(e => e.CanWrite);
 
-            using var conn = new SQLiteConnection(ConnString);
+            using var conn = new MySqlConnection(ConnString);
             using var cmd = conn.CreateCommand();
 
             foreach (var prop in propList)
@@ -102,7 +102,7 @@ namespace ThrowAwayDataBackground
                                .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
                                .Where(e => e.CanWrite);
 
-            using var conn = new SQLiteConnection(ConnString);
+            using var conn = new MySqlConnection(ConnString);
             using var cmd = conn.CreateCommand();
 
             foreach (var prop in propList)
@@ -147,7 +147,7 @@ namespace ThrowAwayDataBackground
             foreach (var prop in propList)
                 columnList += prop.Name + ",";
 
-            using var conn = new SQLiteConnection(ConnString);
+            using var conn = new MySqlConnection(ConnString);
             using var cmd = conn.CreateCommand();
 
             foreach (var paramiter in WhereParameters)
@@ -193,7 +193,7 @@ namespace ThrowAwayDataBackground
 
             entity.PublicId = GetNewPublicId();
 
-            using var conn = new SQLiteConnection(ConnString);
+            using var conn = new MySqlConnection(ConnString);
             using var cmd = conn.CreateCommand();
 
             foreach (var prop in propList)
@@ -204,7 +204,7 @@ namespace ThrowAwayDataBackground
             }
             cmd.CommandText = "INSERT INTO " + tableName + " (" + columns.TrimEnd(',') + ")";
             cmd.CommandText += "VALUES (" + paramiters.TrimEnd(',') + ");";
-            cmd.CommandText += "SELECT MAX (Id) FROM " + tableName + " AS Id;";
+            cmd.CommandText += "SELECT MAX(Id) FROM " + tableName + " AS Id;";
             conn.Open();
 
             using var reader = cmd.ExecuteReader();
@@ -225,7 +225,7 @@ namespace ThrowAwayDataBackground
                                     .Where(t => !(t.PropertyType.IsGenericType && t.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
                                     .Where(e => e.Name != "Id");
 
-            using var conn = new SQLiteConnection(ConnString);
+            using var conn = new MySqlConnection(ConnString);
             using var cmd = conn.CreateCommand();
 
             cmd.CommandText = "UPDATE " + tableName + " SET ";
@@ -248,7 +248,7 @@ namespace ThrowAwayDataBackground
             var itemTemplate = new T();
             var tableName = itemTemplate.GetType().Name;
 
-            using var conn = new SQLiteConnection(ConnString);
+            using var conn = new MySqlConnection(ConnString);
             using var cmd = conn.CreateCommand();
 
             cmd.CommandText = "UPDATE " + tableName + " SET Deleted = 1 WHERE Id = @Id";
@@ -278,7 +278,7 @@ namespace ThrowAwayDataBackground
             foreach (var prop in propList)
                 columnList += prop.Name + ",";
 
-            using var conn = new SQLiteConnection(ConnString);
+            using var conn = new MySqlConnection(ConnString);
             using var cmd = conn.CreateCommand();
 
             cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE Deleted = 0;";
@@ -319,7 +319,7 @@ namespace ThrowAwayDataBackground
             foreach (var prop in propList)
                 columnList += prop.Name + ",";
 
-            using var conn = new SQLiteConnection(ConnString);
+            using var conn = new MySqlConnection(ConnString);
             using var cmd = conn.CreateCommand();
 
             foreach (var paramiter in WhereParameters)
@@ -346,7 +346,7 @@ namespace ThrowAwayDataBackground
             var itemTemplate = new T();
             var tableName = itemTemplate.GetType().Name;
             var columnList = "";
-            var pageNumber = (page - 1) * size;
+            var pageNumber = page * size;
             var propList = typeof(T).GetProperties()
                                     .Where(p => Attribute.GetCustomAttribute(p, typeof(IgnoreAttribute)) == null)
                                     .Where(t => !t.PropertyType.IsSubclassOf(typeof(BaseObject)))
@@ -356,7 +356,7 @@ namespace ThrowAwayDataBackground
             foreach (var prop in propList)
                 columnList += prop.Name + ",";
 
-            using var conn = new SQLiteConnection(ConnString);
+            using var conn = new MySqlConnection(ConnString);
             using var cmd = conn.CreateCommand();
 
             cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE Deleted = 0 ORDER BY Id desc LIMIT " + size + " OFFSET " + pageNumber + ";";
@@ -396,7 +396,7 @@ namespace ThrowAwayDataBackground
             foreach (var prop in propList)
                 columnList += prop.Name + ",";
 
-            using var conn = new SQLiteConnection(ConnString);
+            using var conn = new MySqlConnection(ConnString);
             using var cmd = conn.CreateCommand();
 
             foreach (var paramiter in WhereParameters)
@@ -405,7 +405,7 @@ namespace ThrowAwayDataBackground
                 cmd.Parameters.AddWithValue("@" + paramiter.Key, paramiter.Value.Item2);
             }
 
-            cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE " + whereClause + " ORDER BY RANDOM() LIMIT 1";
+            cmd.CommandText = "SELECT " + columnList.TrimEnd(',') + " FROM " + tableName + " WHERE " + whereClause + " ORDER BY RAND() LIMIT 1";
             conn.Open();
 
             using var reader = cmd.ExecuteReader();
@@ -431,7 +431,7 @@ namespace ThrowAwayDataBackground
             while (true)
             {
                 var value = "".RandomString(11);
-                using var conn = new SQLiteConnection(ConnString);
+                using var conn = new MySqlConnection(ConnString);
                 using var cmd = conn.CreateCommand();
 
                 cmd.CommandText = "SELECT PublicId FROM " + tableName + " WHERE PublicId = @publicId";

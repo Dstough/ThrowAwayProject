@@ -16,7 +16,7 @@ namespace ThrowAwayData
 
         public UserIdentity() : base()
         {
-            UserGroupId = 0;
+            UserGroupId = 4;
             Email = "";
             UserName = "";
             Style = "";

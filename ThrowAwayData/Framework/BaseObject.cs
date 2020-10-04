@@ -14,7 +14,7 @@ namespace ThrowAwayDataBackground
             Id = null;
             PublicId = null;
             CreatedOn = DateTime.Now;
-            CreatedBy = 0;
+            CreatedBy = 1;
             Deleted = false;
         }
     }

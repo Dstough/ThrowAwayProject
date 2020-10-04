@@ -22,6 +22,9 @@ namespace ThrowAwayProjects.Controllers
             return HandleExceptions(() =>
             {
                 var viewModel = new HomeViewModel();
+                var newsTag = database.Tags.Where(new { Name = "News" }).Find().FirstOrDefault();
+                var jobsTag = database.Tags.Where(new { Name = "Jobs" }).Find().FirstOrDefault();
+                var runsTag = database.Tags.Where(new { Name = "Runs" }).Find().FirstOrDefault();
 
                 foreach (var thread in database.Threads.Find(5))
                 {
@@ -36,6 +39,15 @@ namespace ThrowAwayProjects.Controllers
                         PostDate = thread.CreatedOn
                     });
                 }
+
+                foreach(var newsArticle in database.Articles.Where(new { TagId = newsTag.Id }).Find(3))
+                    viewModel.NewsArticles.Add(newsArticle.Title);
+
+                foreach(var jobArticle in database.Articles.Where(new { TagId = jobsTag.Id }).Find(3))
+                    viewModel.JobArticles.Add(jobArticle.Title);
+
+                foreach (var runArticle in database.Articles.Where(new { TagId = runsTag.Id }).Find(3))
+                    viewModel.RunArticles.Add(runArticle.Title);
 
                 return View(viewModel);
             });
