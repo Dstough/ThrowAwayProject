@@ -140,7 +140,8 @@ namespace ThrowAwayProjects.Controllers
             {
                 var key = HttpContext.Session.GetString("UserKey");
                 var currentEditId = HttpContext.Session.GetString("CurrentEditId");
-                var dbThread = new Thread();
+                var defaultTagId = "User";
+                var dbThread = new Thread() { };
 
                 if (key == null)
                     throw new Exception("You must be logged in to do that.");
@@ -152,6 +153,7 @@ namespace ThrowAwayProjects.Controllers
                     dbThread.Title = viewModel.Title;
                     dbThread.Body = viewModel.Body;
                     dbThread.CreatedBy = user.Id ?? 0;
+                    dbThread.TagId = database.Tags.Where(new { PublicId = defaultTagId }).Find().FirstOrDefault().Id ?? 0;
                     database.Threads.Add(dbThread);
                 }
                 else
