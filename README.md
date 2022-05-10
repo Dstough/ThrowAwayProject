@@ -8,3 +8,4 @@
 * Set up an MVC web site in dot net core.
 * Built a modal dialog that renders a view.
 * Manage a data layer with SQLite.
+* How to do somewhat propper passphrase hashing and account security.
